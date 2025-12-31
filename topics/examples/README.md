@@ -175,6 +175,7 @@
 - Kafka: `go get github.com/segmentio/kafka-go`
 - MQTT: `go get github.com/eclipse/paho.mqtt.golang`
 - NATS: `go get github.com/nats-io/nats.go`
+- Pulsar: `go get github.com/apache/pulsar-client-go`
 
 **Rust**:
 
@@ -182,12 +183,14 @@
 - Kafka: `rdkafka = "0.36"` (Cargo.toml)
 - MQTT: `paho-mqtt = "0.12"` (Cargo.toml)
 - NATS: `async-nats = "0.32"` (Cargo.toml)
+- Pulsar: `pulsar-client = "0.1"` (Cargo.toml，社区实现)
 
 **C++**:
 
 - C++11+
 - Kafka: librdkafka (<https://github.com/edenhill/librdkafka>)
 - MQTT: paho.mqtt.cpp (<https://github.com/eclipse/paho.mqtt.cpp>)
+- Pulsar: pulsar-client-cpp (<https://github.com/apache/pulsar-client-cpp>)
 
 **C**:
 
