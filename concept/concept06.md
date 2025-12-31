@@ -266,7 +266,7 @@ consumer.negativeAcknowledge(msg3); // **自动重试**
 
 **代码结构**（基于模块划分）：
 
-```
+```text
 pulsar-broker/
 ├── protocol/          # Netty协议处理
 ├── service/           # Broker核心逻辑

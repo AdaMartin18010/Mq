@@ -221,6 +221,7 @@
 
 - **Kafka**: 消息保留时间或大小限制
 - **NATS JetStream**: Stream保留策略
+- **Pulsar**: Namespace级保留策略，支持分层存储自动卸载
 
 ## S
 
@@ -238,6 +239,7 @@
 
 - **MQTT**: 订阅Topic接收消息
 - **NATS**: 订阅Subject接收消息
+- **Pulsar**: Subscription订阅Topic，支持Exclusive/Shared/Failover/Key_Shared四种模式
 
 ## T
 
@@ -245,11 +247,13 @@
 
 - **Kafka**: 消息的逻辑分类
 - **MQTT**: 消息的主题名称，支持层级结构
+- **Pulsar**: Topic位于Namespace下，支持多租户层级结构（tenant/namespace/topic）
 
 **Transaction** - 事务
 
 - **Kafka**: 支持跨Partition事务
 - **NATS JetStream**: 支持事务模式
+- **Pulsar**: 支持跨Topic事务，保证恰好一次投递
 
 ## U
 
@@ -265,6 +269,7 @@
 - **MQTT**: 3.1.1 / 5.0
 - **Kafka**: 持续演进，支持KRaft模式
 - **NATS**: 持续更新，向后兼容
+- **Pulsar**: 持续演进，支持多协议适配器（Kafka/MQTT/AMQP）
 
 ## W
 
@@ -287,3 +292,4 @@
 - [Kafka术语表](https://kafka.apache.org/documentation/#terminology)
 - [MQTT规范](https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html)
 - [NATS文档](https://docs.nats.io/)
+- [Pulsar文档](https://pulsar.apache.org/docs/)

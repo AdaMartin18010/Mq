@@ -22,12 +22,14 @@
       - [Kafka监控指标](#kafka监控指标)
       - [MQTT监控指标](#mqtt监控指标)
       - [NATS监控指标](#nats监控指标)
+      - [Pulsar监控指标](#pulsar监控指标)
   - [5. 故障处理实践指南](#5-故障处理实践指南)
     - [5.1 故障处理流程](#51-故障处理流程)
     - [5.2 常见故障处理手册](#52-常见故障处理手册)
       - [Kafka常见故障](#kafka常见故障)
       - [MQTT常见故障](#mqtt常见故障)
       - [NATS常见故障](#nats常见故障)
+      - [Pulsar常见故障](#pulsar常见故障)
     - [5.3 应急预案模板](#53-应急预案模板)
 
 ---
@@ -373,6 +375,28 @@ warning_alerts:
     action: "限制连接数或增加节点"
 ```
 
+#### Pulsar监控指标
+
+```yaml
+critical_alerts:
+  - name: ConsumerLag
+    threshold: ">10000"
+    action: "增加Consumer实例或优化消费逻辑"
+
+  - name: BookKeeperBookieDown
+    threshold: ">0"
+    action: "检查BookKeeper节点状态"
+
+warning_alerts:
+  - name: Backlog
+    threshold: ">1000000"
+    action: "检查消费速率和Producer速率"
+
+  - name: NamespaceQuotaExceeded
+    threshold: ">80%"
+    action: "调整Namespace配额或清理数据"
+```
+
 ## 5. 故障处理实践指南
 
 ### 5.1 故障处理流程
@@ -504,6 +528,57 @@ warning_alerts:
 - 性能测试
 - 资源监控
 - 自动断开慢消费者
+```
+
+#### Pulsar常见故障
+
+**故障1: BookKeeper节点故障**
+
+```markdown
+症状: Ledger副本数不足，消息写入失败
+原因: BookKeeper节点宕机、磁盘故障
+处理步骤:
+1. BookKeeper自动重新复制（无需操作）
+2. 检查BookKeeper节点状态
+3. 修复或替换故障节点
+4. 验证Ledger副本数恢复
+预防措施:
+- 增加BookKeeper节点数（至少3个）
+- 跨机架部署
+- 监控BookKeeper健康状态
+```
+
+**故障2: Consumer Lag积压**
+
+```markdown
+症状: 消费延迟持续增长，Backlog增加
+原因: Consumer处理慢、Consumer数量不足、消息积压
+处理步骤:
+1. 增加Consumer实例
+2. 优化消费逻辑
+3. 检查Consumer性能
+4. 考虑调整Subscription模式
+预防措施:
+- 容量规划
+- 性能测试
+- 监控ConsumerLag和Backlog
+- 设置合理的消息保留策略
+```
+
+**故障3: 多租户配额超限**
+
+```markdown
+症状: Namespace消息速率受限，Producer发送失败
+原因: Namespace配额设置过低、流量突增
+处理步骤:
+1. 检查Namespace配额使用率
+2. 临时调整配额（动态配置）
+3. 优化Producer发送速率
+4. 长期扩容Namespace配额
+预防措施:
+- 合理的配额规划
+- 监控配额使用率
+- 设置告警阈值
 ```
 
 ### 5.3 应急预案模板

@@ -15,6 +15,7 @@
     - [微服务通信场景](#微服务通信场景)
   - [按技术查找](#按技术查找)
     - [Kafka相关](#kafka相关)
+    - [Pulsar相关](#pulsar相关)
     - [MQTT相关](#mqtt相关)
     - [NATS相关](#nats相关)
   - [按问题查找](#按问题查找)
@@ -103,8 +104,19 @@
 
 ### Pulsar相关
 
-- [01-12-Pulsar深度分析](./01-基础概念与对比分析/01-12-Pulsar深度分析.md) - Pulsar架构、性能、一致性机制
+- [01-12-Pulsar深度分析](./01-基础概念与对比分析/01-12-Pulsar深度分析.md) - Pulsar架构、性能、一致性机制、开发架构与程序设计
 - [01-01-多维度概念矩阵对比](./01-基础概念与对比分析/01-01-多维度概念矩阵对比.md) - Pulsar性能对比
+- [01-09-异常处理与容错机制](./01-基础概念与对比分析/01-09-异常处理与容错机制.md) - Pulsar异常处理（多语言）
+- [01-10-系统控制与反馈机制](./01-基础概念与对比分析/01-10-系统控制与反馈机制.md) - Pulsar控制机制
+- [02-01-场景化功能架构矩阵](./02-场景驱动架构设计/02-01-场景化功能架构矩阵.md) - Pulsar多租户/地理复制场景
+- [03-02-成本模型与监控告警](./03-架构与运维实践/03-02-成本模型与监控告警.md) - Pulsar成本模型和监控指标
+- [03-03-故障场景与恢复策略](./03-架构与运维实践/03-03-故障场景与恢复策略.md) - Pulsar故障场景和恢复策略
+- [04-动态系统论与演化分析](./04-动态系统论与演化分析/) - Pulsar动态系统模型和演化分析
+- [examples/pulsar-producer-example.java](./examples/pulsar-producer-example.java) - Pulsar Producer示例
+- [examples/pulsar-consumer-example.java](./examples/pulsar-consumer-example.java) - Pulsar Consumer示例
+- [examples/pulsar-producer-error-handling.go](./examples/pulsar-producer-error-handling.go) - Pulsar Go容错示例
+- [examples/pulsar-consumer-error-handling.go](./examples/pulsar-consumer-error-handling.go) - Pulsar Go容错示例
+- [BEST_PRACTICES.md](./BEST_PRACTICES.md) - Pulsar最佳实践和常见陷阱
 
 ### MQTT相关
 
