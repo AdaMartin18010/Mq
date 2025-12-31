@@ -49,6 +49,8 @@
   - Producer/Consumer/Broker异常处理、容错机制对比、最佳实践
 - [01-10-系统控制与反馈机制](./01-基础概念与对比分析/01-10-系统控制与反馈机制.md)
   - 控制理论基础、流量控制、速率控制、自适应控制
+- [01-11-核心概念全面梳理](./01-基础概念与对比分析/01-11-核心概念全面梳理.md)
+  - 消息模型、一致性、可靠性、性能、架构概念的形式化定义和证明
 
 ### [02-场景驱动架构设计](./02-场景驱动架构设计/)
 
@@ -212,9 +214,9 @@
 ---
 
 **最后更新**: 2025-12-31
-**文件总数**: 77个（56个Markdown文件 + 20个代码示例 + 1个完成度报告）
+**文件总数**: 78个（57个Markdown文件 + 20个代码示例 + 1个完成度报告）
 
-- 29个主题文件（核心内容文档，含异常处理、系统控制、容错设计、可观测性、动态运维、SRE实践、动态系统总结等）
+- 30个主题文件（核心内容文档，含异常处理、系统控制、容错设计、可观测性、动态运维、SRE实践、动态系统总结、核心概念全面梳理等）
 - 5个README文件（各主题和总目录说明）
 - 2个索引文件（INDEX.md, CROSS_REFERENCES.md）
 - 13个工具文档（QUICK_REFERENCE.md, GLOSSARY.md, SUMMARY.md, PRACTICE_GUIDE.md, IMPLEMENTATION_CHECKLIST.md, PROJECT_STATUS.md, CROSS_REFERENCES.md, FINAL_SUMMARY.md, CHANGELOG.md, README_FIRST.md, CONTRIBUTING.md, BEST_PRACTICES.md, COMPLETION_REPORT.md）
