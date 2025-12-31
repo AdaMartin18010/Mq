@@ -141,6 +141,22 @@
 - **依赖**: `async-nats = "0.32"` (Cargo.toml)
 - **特点**: 内存安全，性能极高
 
+## Pulsar示例
+
+### Java示例
+
+- **Producer**: [pulsar-producer-example.java](./pulsar-producer-example.java)
+- **Consumer**: [pulsar-consumer-example.java](./pulsar-consumer-example.java)
+- **依赖**: `pulsar-client` (Maven/Gradle)
+- **特点**: 官方支持，功能完整，支持事务和多订阅模式
+
+### Python示例
+
+- **Producer**: [pulsar-producer-example.py](./pulsar-producer-example.py)
+- **Consumer**: [pulsar-consumer-example.py](./pulsar-consumer-example.py)
+- **依赖**: `pip install pulsar-client`
+- **特点**: 简洁易用，支持异步发送和多种订阅模式
+
 ## 使用说明
 
 ### 运行环境要求
@@ -151,6 +167,7 @@
 - Kafka: `pip install kafka-python`
 - MQTT: `pip install paho-mqtt`
 - NATS: `pip install nats-py`
+- Pulsar: `pip install pulsar-client`
 
 **Go**:
 
@@ -182,6 +199,7 @@
 
 - Java 8+
 - Kafka: kafka-clients (Maven/Gradle)
+- Pulsar: pulsar-client (Maven/Gradle)
 
 ### 快速开始
 
@@ -208,7 +226,8 @@
 | **Kafka** | 2 | 2 | 2 | 2 | 2 | 2 | 12 |
 | **MQTT** | 1 | 1 | 1 | 1 | 1 | 0 | 5 |
 | **NATS** | 1 | 1 | 1 | 0 | 0 | 0 | 3 |
-| **总计** | 4 | 4 | 4 | 3 | 3 | 2 | **20** |
+| **Pulsar** | 2 | 0 | 0 | 0 | 0 | 2 | 4 |
+| **总计** | 6 | 4 | 4 | 3 | 3 | 4 | **24** |
 
 **文档**: [编程语言对比分析](./01-编程语言对比分析.md)
 

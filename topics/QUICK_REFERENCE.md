@@ -21,12 +21,12 @@
 
 ### 性能指标速查
 
-| 指标 | Kafka | MQTT | NATS Core | NATS JetStream |
-|------|-------|------|-----------|----------------|
-| **吞吐量** | 100万+ TPS<br/>*LinkedIn: 2M+ TPS* | 10万级 TPS<br/>*EMQX: 100K+ TPS* | 200万+ TPS<br/>*官方: 500K+ TPS/核* | 50万+ TPS<br/>*JetStream持久化* |
-| **延迟** | 5-100ms<br/>*P99: <10ms* | 亚毫秒-10ms<br/>*QoS 0: <1ms* | 30-100μs<br/>*P99: <100μs* | 亚毫秒-毫秒<br/>*P99: <1ms* |
-| **持久化** | ✅ 磁盘+副本 | ⚠️ 可选 | ❌ 无 | ✅ 文件+Raft |
-| **一致性** | ✅ 强一致(ISR) | ⚠️ QoS分级 | ❌ 最多一次 | ✅ 强一致(Raft) |
+| 指标 | Kafka | MQTT | NATS Core | NATS JetStream | Pulsar |
+|------|-------|------|-----------|----------------|--------|
+| **吞吐量** | 100万+ TPS<br/>*LinkedIn: 2M+ TPS* | 10万级 TPS<br/>*EMQX: 100K+ TPS* | 200万+ TPS<br/>*官方: 500K+ TPS/核* | 50万+ TPS<br/>*JetStream持久化* | 100万+ TPS<br/>*官方: 1.5M+ msg/s* |
+| **延迟** | 5-100ms<br/>*P99: <10ms* | 亚毫秒-10ms<br/>*QoS 0: <1ms* | 30-100μs<br/>*P99: <100μs* | 亚毫秒-毫秒<br/>*P99: <1ms* | 5-50ms<br/>*P99: <20ms* |
+| **持久化** | ✅ 磁盘+副本 | ⚠️ 可选 | ❌ 无 | ✅ 文件+Raft | ✅ BookKeeper |
+| **一致性** | ✅ 强一致(ISR) | ⚠️ QoS分级 | ❌ 最多一次 | ✅ 强一致(Raft) | ✅ 强一致(Quorum) |
 
 ## 📊 核心参数对比
 
@@ -36,22 +36,25 @@
 - **MQTT**: 发布-订阅（Topic）
 - **NATS Core**: 发布-订阅 + 请求-响应
 - **NATS JetStream**: 发布-订阅 + 流
+- **Pulsar**: 发布-订阅 + 队列（多种订阅模式）
 
 ### 协议特性
 
 - **Kafka**: 自定义二进制协议
 - **MQTT**: OASIS标准（3.1.1/5.0），2字节固定头
 - **NATS**: 文本协议，简单易调试
+- **Pulsar**: 自定义二进制协议 + 多协议适配器（Kafka/MQTT/AMQP）
 
 ### 集群模式
 
 - **Kafka**: Leader-Follower + ZooKeeper
 - **MQTT**: 主从/集群（共享存储）
 - **NATS**: 全网状自愈（Gossip协议）
+- **Pulsar**: Broker无状态 + BookKeeper集群（存储与计算分离）
 
 ## 🎯 选型决策树（简化版）
 
-```
+```text
 需要持久化？
 ├─ 是 → 吞吐量 > 100万TPS?
 │   ├─ 是 → Kafka

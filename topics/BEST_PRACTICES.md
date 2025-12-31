@@ -16,11 +16,24 @@
     - [集群配置](#集群配置)
     - [性能调优](#性能调优)
     - [JetStream使用](#jetstream使用)
+  - [Pulsar最佳实践](#pulsar最佳实践)
+    - [多租户配置](#多租户配置)
+    - [性能优化](#性能优化-1)
+    - [BookKeeper配置](#bookkeeper配置)
+  - [Pulsar最佳实践](#pulsar最佳实践-1)
+    - [多租户配置](#多租户配置-1)
+    - [性能优化](#性能优化-2)
+    - [BookKeeper配置](#bookkeeper配置-1)
   - [常见陷阱与避免方法](#常见陷阱与避免方法)
     - [Kafka常见陷阱](#kafka常见陷阱)
     - [MQTT常见陷阱](#mqtt常见陷阱)
     - [NATS常见陷阱](#nats常见陷阱)
+    - [Pulsar常见陷阱](#pulsar常见陷阱)
   - [性能调优检查清单](#性能调优检查清单)
+    - [Kafka性能调优](#kafka性能调优)
+    - [MQTT性能调优](#mqtt性能调优)
+    - [NATS性能调优](#nats性能调优)
+    - [Pulsar性能调优](#pulsar性能调优)
 
 ---
 
@@ -290,6 +303,128 @@ nc.Flush()  // 等待所有消息发送完成
 **1. Stream配置**
 
 ```go
+// Stream配置示例
+js.AddStream(&nats.StreamConfig{
+    Name:     "ORDERS",
+    Subjects: []string{"orders.*"},
+    Replicas: 3,
+    MaxAge:   24 * time.Hour,
+})
+```
+
+**参考**: [JetStream Configuration](https://docs.nats.io/nats-concepts/jetstream)
+
+---
+
+## Pulsar最佳实践
+
+### 多租户配置
+
+**1. Tenant和Namespace规划**
+
+```bash
+# 创建Tenant
+pulsar-admin tenants create acme-corp
+
+# 创建Namespace
+pulsar-admin namespaces create acme-corp/production
+
+# 设置保留策略
+pulsar-admin namespaces set-retention acme-corp/production \
+  --time 7d --size 10GB
+
+# 设置复制策略
+pulsar-admin namespaces set-replication-clusters \
+  acme-corp/production --clusters us-west,us-east
+```
+
+**2. 权限管理**
+
+```bash
+# 授予Producer权限
+pulsar-admin namespaces grant-permission acme-corp/production \
+  --role producer-role --actions produce
+
+# 授予Consumer权限
+pulsar-admin namespaces grant-permission acme-corp/production \
+  --role consumer-role --actions consume
+```
+
+**参考**: [Pulsar Multi-tenancy](https://pulsar.apache.org/docs/concepts-multi-tenancy/)
+
+---
+
+### 性能优化
+
+**1. Producer配置优化**
+
+```java
+Producer<byte[]> producer = pulsarClient.newProducer()
+    .topic("persistent://tenant/ns/topic")
+    .producerName("my-producer")
+    .enableBatching(true)
+    .batchingMaxMessages(100)
+    .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS)
+    .compressionType(CompressionType.LZ4)
+    .create();
+```
+
+**2. Consumer配置优化**
+
+```java
+Consumer<byte[]> consumer = pulsarClient.newConsumer()
+    .topic("persistent://tenant/ns/topic")
+    .subscriptionName("my-subscription")
+    .subscriptionType(SubscriptionType.Shared)
+    .ackTimeout(30, TimeUnit.SECONDS)
+    .receiverQueueSize(1000)
+    .subscribe();
+```
+
+**3. 订阅模式选择**
+
+| 订阅模式 | 适用场景 | 特点 |
+|---------|---------|------|
+| **Exclusive** | 单Consumer场景 | 独占消费，顺序保证 |
+| **Shared** | 多Consumer负载均衡 | 负载均衡，无序 |
+| **Failover** | 高可用场景 | 主备切换，顺序保证 |
+| **Key_Shared** | 按Key有序 | Key有序，负载均衡 |
+
+**参考**: [Pulsar Performance Tuning](https://pulsar.apache.org/docs/performance-tuning/)
+
+---
+
+### BookKeeper配置
+
+**1. BookKeeper性能优化**
+
+```properties
+# BookKeeper配置
+bookieMaxPendingReadRequestsPerThread=0
+bookieFlushEntrylogBytes=268435456
+bookieFlushEntrylogIntervalMillis=60000
+journalSyncData=false
+```
+
+**2. Ledger配置**
+
+```bash
+# 设置Ledger保留策略
+pulsar-admin namespaces set-retention tenant/ns \
+  --time 7d --size 10GB
+
+# 设置Ledger配额
+pulsar-admin namespaces set-backlog-quota tenant/ns \
+  --limit 10GB --policy producer_request_hold
+```
+
+**参考**: [BookKeeper Configuration](https://bookkeeper.apache.org/docs/4.15.0/reference/config/)
+
+---
+
+**1. Stream配置**
+
+```go
 // 创建持久化Stream
 js, _ := nc.JetStream()
 
@@ -316,6 +451,114 @@ js.AddConsumer("ORDERS", &nats.ConsumerConfig{
 
 **参考**: [JetStream Best Practices](https://docs.nats.io/nats-concepts/jetstream)
 
+---
+
+## Pulsar最佳实践
+
+### 多租户配置
+
+**1. Tenant和Namespace规划**
+
+```bash
+# 创建Tenant
+pulsar-admin tenants create acme-corp
+
+# 创建Namespace
+pulsar-admin namespaces create acme-corp/production
+
+# 设置保留策略
+pulsar-admin namespaces set-retention acme-corp/production \
+  --time 7d --size 10GB
+
+# 设置复制策略
+pulsar-admin namespaces set-replication-clusters \
+  acme-corp/production --clusters us-west,us-east
+```
+
+**2. 权限管理**
+
+```bash
+# 授予Producer权限
+pulsar-admin namespaces grant-permission acme-corp/production \
+  --role producer-role --actions produce
+
+# 授予Consumer权限
+pulsar-admin namespaces grant-permission acme-corp/production \
+  --role consumer-role --actions consume
+```
+
+**参考**: [Pulsar Multi-tenancy](https://pulsar.apache.org/docs/concepts-multi-tenancy/)
+
+---
+
+### 性能优化
+
+**1. Producer配置优化**
+
+```java
+Producer<byte[]> producer = pulsarClient.newProducer()
+    .topic("persistent://tenant/ns/topic")
+    .producerName("my-producer")
+    .enableBatching(true)
+    .batchingMaxMessages(100)
+    .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS)
+    .compressionType(CompressionType.LZ4)
+    .create();
+```
+
+**2. Consumer配置优化**
+
+```java
+Consumer<byte[]> consumer = pulsarClient.newConsumer()
+    .topic("persistent://tenant/ns/topic")
+    .subscriptionName("my-subscription")
+    .subscriptionType(SubscriptionType.Shared)
+    .ackTimeout(30, TimeUnit.SECONDS)
+    .receiverQueueSize(1000)
+    .subscribe();
+```
+
+**3. 订阅模式选择**
+
+| 订阅模式 | 适用场景 | 特点 |
+|---------|---------|------|
+| **Exclusive** | 单Consumer场景 | 独占消费，顺序保证 |
+| **Shared** | 多Consumer负载均衡 | 负载均衡，无序 |
+| **Failover** | 高可用场景 | 主备切换，顺序保证 |
+| **Key_Shared** | 按Key有序 | Key有序，负载均衡 |
+
+**参考**: [Pulsar Performance Tuning](https://pulsar.apache.org/docs/performance-tuning/)
+
+---
+
+### BookKeeper配置
+
+**1. BookKeeper性能优化**
+
+```properties
+# BookKeeper配置
+bookieMaxPendingReadRequestsPerThread=0
+bookieFlushEntrylogBytes=268435456
+bookieFlushEntrylogIntervalMillis=60000
+journalSyncData=false
+```
+
+**2. Ledger配置**
+
+```bash
+# 设置Ledger保留策略
+pulsar-admin namespaces set-retention tenant/ns \
+  --time 7d --size 10GB
+
+# 设置Ledger配额
+pulsar-admin namespaces set-backlog-quota tenant/ns \
+  --limit 10GB --policy producer_request_hold
+```
+
+**参考**: [BookKeeper Configuration](https://bookkeeper.apache.org/docs/4.15.0/reference/config/)
+
+---
+
 ## 常见陷阱与避免方法
 
 ### Kafka常见陷阱
@@ -323,11 +566,13 @@ js.AddConsumer("ORDERS", &nats.ConsumerConfig{
 **1. 分区数过多**
 
 **问题**: 分区数过多导致：
+
 - Controller选举延迟增加
 - 元数据管理开销增大
 - Rebalance时间延长
 
 **解决方案**:
+
 - 单Topic分区数建议不超过1000
 - 根据吞吐量计算：分区数 = 目标吞吐量 / 单分区吞吐量（10万/秒）
 
@@ -338,6 +583,7 @@ js.AddConsumer("ORDERS", &nats.ConsumerConfig{
 **问题**: `enable.auto.commit=true`时，Consumer崩溃可能导致消息丢失
 
 **解决方案**:
+
 ```properties
 enable.auto.commit=false
 # 处理完成后手动提交
@@ -349,6 +595,7 @@ consumer.commitSync();
 **问题**: 跨机房部署时，ISR同步延迟高，影响吞吐量
 
 **解决方案**:
+
 - 使用同机房部署（Rack Awareness）
 - 调整`replica.fetch.wait.max.ms`和`replica.fetch.max.bytes`
 - 考虑使用MirrorMaker进行跨区域复制
@@ -360,6 +607,7 @@ consumer.commitSync();
 **问题**: QoS 2四步握手导致延迟和吞吐量下降
 
 **解决方案**:
+
 - 传感器数据使用QoS 0
 - 控制指令使用QoS 1
 - 仅在关键操作使用QoS 2
@@ -369,6 +617,7 @@ consumer.commitSync();
 **问题**: 动态主题过多导致内存占用不可控
 
 **解决方案**:
+
 - 使用固定主题模板：`{device_type}/{device_id}/{data_type}`
 - 限制主题层级深度（建议≤5层）
 - 定期清理过期订阅
@@ -378,6 +627,7 @@ consumer.commitSync();
 **问题**: 设备批量重连时，Broker会话恢复压力大
 
 **解决方案**:
+
 - 使用指数退避重连策略
 - 限制单IP连接数
 - 使用负载均衡分散连接
@@ -389,6 +639,7 @@ consumer.commitSync();
 **问题**: Subject命名混乱导致路由效率低
 
 **解决方案**:
+
 - 使用层级结构：`service.action.response`
 - 避免过长的Subject名称（建议<100字符）
 - 使用通配符订阅时注意性能影响
@@ -398,6 +649,7 @@ consumer.commitSync();
 **问题**: Core模式无持久化，消息积压导致内存溢出
 
 **解决方案**:
+
 - 监控内存使用情况
 - 设置消息大小限制
 - 使用JetStream进行持久化
@@ -407,9 +659,48 @@ consumer.commitSync();
 **问题**: 集群配置错误导致消息路由失败
 
 **解决方案**:
+
 - 确保所有节点配置一致
 - 使用DNS自动发现简化配置
 - 监控集群连接状态
+
+---
+
+### Pulsar常见陷阱
+
+**1. BookKeeper配置错误**
+
+**问题**: BookKeeper配置不当导致性能下降
+
+**解决方案**:
+
+- 合理设置Ledger保留策略
+- 配置BookKeeper磁盘IO优化
+- 监控BookKeeper性能指标
+
+**2. 多租户权限配置错误**
+
+**问题**: 权限配置错误导致安全漏洞
+
+**解决方案**:
+
+- 使用最小权限原则
+- 定期审查权限配置
+- 使用角色和策略管理权限
+
+**3. 订阅模式选择错误**
+
+**问题**: 选择错误的订阅模式导致消息丢失或重复
+
+**解决方案**:
+
+- 根据场景选择合适的订阅模式
+- Exclusive：单Consumer场景
+- Shared：多Consumer负载均衡
+- Failover：高可用场景
+- Key_Shared：按Key有序
+
+---
 
 ## 性能调优检查清单
 
@@ -441,9 +732,19 @@ consumer.commitSync();
 - [ ] JetStream配置（Stream和Consumer配置）
 - [ ] 内存监控（Core模式内存使用）
 
+### Pulsar性能调优
+
+- [ ] Producer批量发送配置（batchingMaxMessages, batchingMaxPublishDelay）
+- [ ] Consumer接收队列大小（receiverQueueSize）
+- [ ] BookKeeper Ledger配置优化
+- [ ] 多租户资源配额设置
+- [ ] 订阅模式选择（Exclusive/Shared/Failover/Key_Shared）
+- [ ] 地理复制配置优化
+
 ---
 
 **参考文档**:
+
 - [Kafka官方文档](https://kafka.apache.org/documentation/)
 - [MQTT OASIS标准](https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html)
 - [NATS官方文档](https://docs.nats.io/)

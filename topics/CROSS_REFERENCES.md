@@ -101,6 +101,11 @@
 - [examples/kafka-consumer-example.java](./examples/kafka-consumer-example.java) - Consumer示例
 - [config-templates/kafka-server.properties.template](./config-templates/kafka-server.properties.template) - 配置模板
 
+### Pulsar相关
+
+- [01-12-Pulsar深度分析](./01-基础概念与对比分析/01-12-Pulsar深度分析.md) - Pulsar架构、性能、一致性机制
+- [01-01-多维度概念矩阵对比](./01-基础概念与对比分析/01-01-多维度概念矩阵对比.md) - Pulsar性能对比
+
 ### MQTT相关
 
 - [01-02-思维导图架构设计](./01-基础概念与对比分析/01-02-思维导图架构设计.md) - MQTT架构
@@ -117,6 +122,7 @@
 - [01-08-权威数据与基准测试](./01-基础概念与对比分析/01-08-权威数据与基准测试.md) - NATS性能基准
 - [02-05-生产环境案例研究](./02-场景驱动架构设计/02-05-生产环境案例研究.md) - Cloudflare、Docker Hub、Apcera案例
 - [03-01-部署架构模式矩阵](./03-架构与运维实践/03-01-部署架构模式矩阵.md) - NATS部署
+- [03-09-集群管理与分布式架构](./03-架构与运维实践/03-09-集群管理与分布式架构.md) - NATS集群架构、Raft共识、集群监控
 - [04-03-负载动态响应与故障传播](./04-动态系统论与演化分析/04-03-负载动态响应与故障传播.md) - NATS故障隔离
 - [examples/nats-client-example.go](./examples/nats-client-example.go) - 客户端示例
 - [config-templates/nats-server.conf.template](./config-templates/nats-server.conf.template) - 配置模板
@@ -141,6 +147,7 @@
 
 - [03-01-部署架构模式矩阵](./03-架构与运维实践/03-01-部署架构模式矩阵.md) - 部署架构
 - [03-02-成本模型与监控告警](./03-架构与运维实践/03-02-成本模型与监控告警.md) - 监控告警
+- [03-09-集群管理与分布式架构](./03-架构与运维实践/03-09-集群管理与分布式架构.md) - 集群管理、分布式架构、集群监控
 - [PRACTICE_GUIDE.md](./PRACTICE_GUIDE.md) - 部署实施实践指南
 - [config-templates/](./config-templates/) - 配置模板
 

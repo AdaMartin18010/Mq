@@ -6,7 +6,7 @@
 
 #### 主题文档（19个文件）
 
-**01-基础概念与对比分析（11个文件）**
+**01-基础概念与对比分析（12个文件）**
 
 - ✅ 01-01-多维度概念矩阵对比
 - ✅ 01-02-思维导图架构设计
@@ -19,6 +19,7 @@
 - ✅ 01-09-异常处理与容错机制（新增）
 - ✅ 01-10-系统控制与反馈机制（新增）
 - ✅ 01-11-核心概念全面梳理（新增）
+- ✅ 01-12-Pulsar深度分析（新增）
 
 **02-场景驱动架构设计（4个文件）**
 
@@ -29,7 +30,7 @@
 - ✅ 02-05-生产环境案例研究（新增）
 - ✅ 02-06-异常场景与容错设计（新增）
 
-**03-架构与运维实践（4个文件）**
+**03-架构与运维实践（9个文件）**
 
 - ✅ 03-01-部署架构模式矩阵
 - ✅ 03-02-成本模型与监控告警
@@ -39,6 +40,7 @@
 - ✅ 03-06-可观测性体系设计（新增）
 - ✅ 03-07-动态运维与自动化（新增）
 - ✅ 03-08-SRE实践与错误预算（新增）
+- ✅ 03-09-集群管理与分布式架构（新增）
 
 **04-动态系统论与演化分析（4个文件）**
 
@@ -65,12 +67,14 @@
 - ✅ BEST_PRACTICES.md - 最佳实践和常见陷阱（新增）
 - ✅ COMPLETION_REPORT.md - 项目100%完成度报告（新增）
 
-#### 代码示例（20个文件）
+#### 代码示例（24个文件）
 
 **Java**:
 
 - ✅ kafka-producer-example.java - Kafka Producer示例
 - ✅ kafka-consumer-example.java - Kafka Consumer示例
+- ✅ pulsar-producer-example.java - Pulsar Producer示例（新增）
+- ✅ pulsar-consumer-example.java - Pulsar Consumer示例（新增）
 
 **Python**:
 
@@ -78,6 +82,8 @@
 - ✅ kafka-consumer-example.py - Kafka Consumer示例
 - ✅ mqtt-client-example.py - MQTT Client示例（已有）
 - ✅ nats-client-example.py - NATS Client示例
+- ✅ pulsar-producer-example.py - Pulsar Producer示例（新增）
+- ✅ pulsar-consumer-example.py - Pulsar Consumer示例（新增）
 
 **Go**:
 
@@ -127,12 +133,12 @@
 
 ### 文档统计
 
-- **总文件数**：78个（57个Markdown文件 + 20个代码示例 + 1个完成度报告）
-- **主题文件**：30个
+- **总文件数**：84个（59个Markdown文件 + 24个代码示例 + 1个完成度报告）
+- **主题文件**：32个（含Pulsar深度分析）
 - **工具文档**：13个（含CHANGELOG、README_FIRST、CONTRIBUTING、BEST_PRACTICES、COMPLETION_REPORT）
-- **代码示例**：4个
+- **代码示例**：24个（含4个Pulsar示例）
 - **配置模板**：3个
-- **README文件**：5个
+- **README文件**：6个
 - **索引文件**：2个
 
 ### 改进
@@ -141,6 +147,17 @@
 - ✅ 完善交叉引用链接
 - ✅ 更新文件统计信息
 - ✅ 优化导航系统
+
+### Pulsar支持（新增）
+
+- ✅ 新增Pulsar深度分析文档（01-12-Pulsar深度分析.md）
+- ✅ 所有对比矩阵加入Pulsar列
+- ✅ 思维导图架构设计加入Pulsar架构
+- ✅ 决策图网分析加入Pulsar决策路径和CAP分析
+- ✅ 场景化功能架构矩阵加入Pulsar列和多租户/地理复制场景
+- ✅ 部署架构模式矩阵加入Pulsar部署架构
+- ✅ 新增Pulsar代码示例（Java和Python，4个示例）
+- ✅ 更新所有文档引用和统计数字
 
 ---
 
