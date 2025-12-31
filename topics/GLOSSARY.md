@@ -32,6 +32,7 @@
 - **Kafka**: Broker节点，存储Partition
 - **MQTT**: Broker服务器，管理连接和路由
 - **NATS**: Server节点，路由消息
+- **Pulsar**: Broker节点（无状态），负责消息路由和负载均衡
 
 ## C
 
@@ -40,12 +41,14 @@
 - **Kafka**: CP系统（一致性+分区容忍）
 - **NATS Core**: AP系统（可用性+分区容忍）
 - **NATS JetStream**: CP系统（Raft共识）
+- **Pulsar**: CP系统（BookKeeper Quorum共识）
 
 **Consumer** - 消费者
 
 - **Kafka**: Consumer从Broker拉取消息
 - **MQTT**: Subscriber订阅Topic接收消息
 - **NATS**: Subscriber订阅Subject接收消息
+- **Pulsar**: Consumer订阅Topic，支持Exclusive/Shared/Failover/Key_Shared四种订阅模式
 
 **Consumer Group** - 消费者组
 
@@ -57,6 +60,7 @@
 
 - **Kafka**: CP系统，ISR机制保证一致性
 - **NATS JetStream**: CP系统，Raft共识算法
+- **Pulsar**: CP系统，BookKeeper Quorum共识算法
 
 ## D
 
@@ -65,6 +69,7 @@
 - 处理失败消息的队列
 - Kafka通过Consumer异常处理实现
 - NATS JetStream支持消息重试和DLQ
+- **Pulsar**: 原生支持死信队列，自动处理失败消息
 
 ## E
 
@@ -73,6 +78,7 @@
 - **Kafka**: acks=-1 + 幂等性 + 事务
 - **MQTT**: QoS 2，四步握手保证
 - **NATS JetStream**: 事务模式支持
+- **Pulsar**: 事务模式支持，保证恰好一次投递
 
 ## F
 
@@ -170,6 +176,7 @@
 **Partition** - 分区
 
 - **Kafka**: Topic的物理分片
+- **Pulsar**: Topic的逻辑分片（Ledger），自动管理
 - 实现并行处理和水平扩展
 
 **Producer** - 生产者
@@ -177,6 +184,7 @@
 - **Kafka**: 发送消息到Broker
 - **MQTT**: Publisher发布消息到Topic
 - **NATS**: Publisher发布消息到Subject
+- **Pulsar**: Producer发送消息到Topic，支持批量发送和压缩
 
 **Pub/Sub** - 发布-订阅模式
 
