@@ -1,0 +1,99 @@
+# NATS Server配置文件模板
+#
+# 参考文档：
+# - [03-01-部署架构模式矩阵](../03-架构与运维实践/03-01-部署架构模式矩阵.md)
+# - [01-06-架构设计深度分析](../01-基础概念与对比分析/01-06-架构设计深度分析.md)
+
+# 服务器监听端口
+port: 4222
+
+# HTTP监控端口
+http_port: 8222
+
+# 服务器名称
+server_name: "nats-server-1"
+
+# 集群配置（多节点部署）
+cluster {
+  # 集群监听端口
+  port: 6222
+  
+  # 集群路由地址
+  routes = [
+    nats://nats-server-2:6222
+    nats://nats-server-3:6222
+  ]
+  
+  # 集群名称
+  name: "nats-cluster"
+}
+
+# JetStream配置（持久化流处理）
+jetstream {
+  # 存储目录
+  store_dir: "/data/jetstream"
+  
+  # 最大内存使用（字节）
+  max_mem_store: 2GB
+  
+  # 最大文件存储（字节）
+  max_file_store: 10GB
+}
+
+# 连接限制
+max_connections: 10000
+
+# 最大有效载荷大小（字节）
+max_payload: 1048576
+
+# 最大订阅数（每个连接）
+max_subscriptions: 100
+
+# 慢消费者检测
+max_pending_msgs: 65536
+
+# 写超时（毫秒）
+write_deadline: "10s"
+
+# 读超时（毫秒）
+read_deadline: "10s"
+
+# Ping间隔（秒）
+ping_interval: 120
+
+# Ping最大失败次数
+ping_max: 2
+
+# TLS配置（如需要）
+# tls {
+#   cert_file: "/path/to/server.crt"
+#   key_file: "/path/to/server.key"
+#   ca_file: "/path/to/ca.crt"
+# }
+
+# 认证配置（如需要）
+# authorization {
+#   users = [
+#     {user: "admin", password: "$2a$10$..."}
+#   ]
+# }
+
+# 日志配置
+log_file: "/var/log/nats/nats.log"
+log_time: true
+log_debug: false
+log_trace: false
+
+# 系统账户（用于系统消息）
+# system_account: "SYS"
+
+############################# 生产环境建议 #############################
+# 1. 配置集群模式，至少3个节点
+# 2. 设置合理的资源限制（max_connections, max_memory）
+# 3. 启用JetStream用于需要持久化的场景
+# 4. 配置TLS加密（生产环境必需）
+# 5. 配置认证授权（生产环境必需）
+# 6. 监控关键指标：Routes、SlowConsumers、MemoryUsage
+
+# 启动命令：
+# nats-server -c nats-server.conf
