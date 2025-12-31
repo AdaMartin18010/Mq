@@ -154,8 +154,38 @@
 
 - **Producer**: [pulsar-producer-example.py](./pulsar-producer-example.py)
 - **Consumer**: [pulsar-consumer-example.py](./pulsar-consumer-example.py)
+- **Producer容错**: [pulsar-producer-error-handling.py](./pulsar-producer-error-handling.py)
 - **依赖**: `pip install pulsar-client`
-- **特点**: 简洁易用，支持异步发送和多种订阅模式
+- **特点**: 简洁易用，支持异步发送和多种订阅模式，包含完整的容错异常处理
+
+### Go示例
+
+- **Producer容错**: [pulsar-producer-error-handling.go](./pulsar-producer-error-handling.go)
+- **Consumer容错**: [pulsar-consumer-error-handling.go](./pulsar-consumer-error-handling.go)
+- **依赖**: `go get github.com/apache/pulsar-client-go/pulsar`
+- **特点**: 纯Go实现，无CGO依赖，包含完整的重试机制、死信队列、错误处理
+
+### Rust示例
+
+- **Producer容错**: [pulsar-producer-error-handling.rs](./pulsar-producer-error-handling.rs)
+- **Consumer容错**: [pulsar-consumer-error-handling.rs](./pulsar-consumer-error-handling.rs)
+- **依赖**: `pulsar-client = "0.1"` (Cargo.toml)
+- **特点**: 内存安全，性能极高，包含指数退避重试、错误分类处理
+
+### C++示例
+
+- **Producer容错**: [pulsar-producer-error-handling.cpp](./pulsar-producer-error-handling.cpp)
+- **Consumer容错**: [pulsar-consumer-error-handling.cpp](./pulsar-consumer-error-handling.cpp)
+- **依赖**: pulsar-client-cpp (<https://github.com/apache/pulsar-client-cpp>)
+- **特点**: 性能极高，控制精细，包含完整的异步回调和错误处理机制
+
+**容错特性**（基于concept06.md）：
+
+- ✅ **自动重连机制**：多Broker故障转移
+- ✅ **指数退避重试**：可配置的重试策略
+- ✅ **死信队列支持**：自动处理失败消息
+- ✅ **错误分类处理**：区分可重试和不可重试错误
+- ✅ **连接状态监听**：实时监控连接健康状态
 
 ## 使用说明
 
@@ -183,7 +213,7 @@
 - Kafka: `rdkafka = "0.36"` (Cargo.toml)
 - MQTT: `paho-mqtt = "0.12"` (Cargo.toml)
 - NATS: `async-nats = "0.32"` (Cargo.toml)
-- Pulsar: `pulsar-client = "0.1"` (Cargo.toml，社区实现)
+- Pulsar: `pulsar-client = "0.1"` (Cargo.toml)
 
 **C++**:
 
@@ -229,8 +259,8 @@
 | **Kafka** | 2 | 2 | 2 | 2 | 2 | 2 | 12 |
 | **MQTT** | 1 | 1 | 1 | 1 | 1 | 0 | 5 |
 | **NATS** | 1 | 1 | 1 | 0 | 0 | 0 | 3 |
-| **Pulsar** | 2 | 0 | 0 | 0 | 0 | 2 | 4 |
-| **总计** | 6 | 4 | 4 | 3 | 3 | 4 | **24** |
+| **Pulsar** | 3 | 2 | 2 | 2 | 0 | 2 | **11** |
+| **总计** | 7 | 6 | 6 | 5 | 3 | 4 | **31** |
 
 **文档**: [编程语言对比分析](./01-编程语言对比分析.md)
 

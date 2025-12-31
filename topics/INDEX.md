@@ -46,7 +46,7 @@
 - [01-08-权威数据与基准测试](./01-基础概念与对比分析/01-08-权威数据与基准测试.md)
   - Kafka/MQTT/NATS官方性能数据、基准测试、生产环境案例
 - [01-09-异常处理与容错机制](./01-基础概念与对比分析/01-09-异常处理与容错机制.md)
-  - Producer/Consumer/Broker异常处理、容错机制对比、最佳实践
+  - Kafka/MQTT/NATS/Pulsar异常处理、容错机制对比矩阵、多语言最佳实践
 - [01-10-系统控制与反馈机制](./01-基础概念与对比分析/01-10-系统控制与反馈机制.md)
   - 控制理论基础、流量控制、速率控制、自适应控制
 - [01-11-核心概念全面梳理](./01-基础概念与对比分析/01-11-核心概念全面梳理.md)
@@ -225,6 +225,6 @@
 - 2个索引文件（INDEX.md, CROSS_REFERENCES.md）
 - 13个工具文档（QUICK_REFERENCE.md, GLOSSARY.md, SUMMARY.md, PRACTICE_GUIDE.md, IMPLEMENTATION_CHECKLIST.md, PROJECT_STATUS.md, CROSS_REFERENCES.md, FINAL_SUMMARY.md, CHANGELOG.md, README_FIRST.md, CONTRIBUTING.md, BEST_PRACTICES.md, COMPLETION_REPORT.md）
 - 1个新增权威数据文档（01-08-权威数据与基准测试.md）
-- 20个代码示例文件（5种语言：Python/Go/Rust/C++/C/Java，覆盖Kafka/MQTT/NATS）
+- 31个代码示例文件（5种语言：Python/Go/Rust/C++/C/Java，覆盖Kafka/MQTT/NATS/Pulsar）
 - 3个配置模板文件（Kafka Server, NATS Server, README）
 - 1个主README

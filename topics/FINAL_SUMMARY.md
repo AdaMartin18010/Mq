@@ -4,7 +4,7 @@
 
 ### ✅ 已完成的核心内容
 
-本项目对Kafka、MQTT、NATS三大主流消息队列系统进行了全面、深入的分析论证，建立了完整的知识体系框架。
+本项目对Kafka、MQTT、NATS、Pulsar四大主流消息队列系统进行了全面、深入的分析论证，建立了完整的知识体系框架。
 
 #### 1. 理论分析体系（32个主题文件）
 
@@ -69,16 +69,16 @@
 - **BEST_PRACTICES.md** - 最佳实践和常见陷阱
 - **COMPLETION_REPORT.md** - 项目100%完成度报告
 
-#### 3. 代码示例库（20个文件）
+#### 3. 代码示例库（31个文件）
 
 **5种编程语言完整支持**：
 
-- **Python**: Kafka Producer/Consumer, MQTT Client, NATS Client（4个）
-- **Go**: Kafka Producer/Consumer, MQTT Client, NATS Client（4个）
-- **Rust**: Kafka Producer/Consumer, MQTT Client, NATS Client（4个）
-- **C++**: Kafka Producer/Consumer, MQTT Client（3个）
+- **Python**: Kafka Producer/Consumer, MQTT Client, NATS Client, Pulsar Producer/Consumer（7个）
+- **Go**: Kafka Producer/Consumer, MQTT Client, NATS Client, Pulsar Producer/Consumer（6个）
+- **Rust**: Kafka Producer/Consumer, MQTT Client, NATS Client, Pulsar Producer/Consumer（6个）
+- **C++**: Kafka Producer/Consumer, MQTT Client, Pulsar Producer/Consumer（5个）
 - **C**: Kafka Producer/Consumer, MQTT Client（3个）
-- **Java**: Kafka Producer/Consumer（2个）
+- **Java**: Kafka Producer/Consumer, Pulsar Producer/Consumer（4个）
 
 **语言对比文档**: [编程语言对比分析](./examples/01-编程语言对比分析.md)
 
@@ -159,11 +159,11 @@
 
 ### 系统韧性对比
 
-| 维度 | Kafka | MQTT | NATS Core | NATS JetStream |
-|------|-------|------|-----------|----------------|
-| **故障恢复时间** | 30秒-2分钟 | 1-3分钟 | 0-5秒 | 0-10秒 |
-| **自动恢复能力** | 部分 | 部分 | 完全 | 完全 |
-| **网络分区韧性** | 低（CP系统） | 中 | 高（AP系统） | 中（CP+自动恢复） |
+| 维度 | Kafka | MQTT | NATS Core | NATS JetStream | Pulsar |
+|------|-------|------|-----------|----------------|--------|
+| **故障恢复时间** | 30秒-2分钟 | 1-3分钟 | 0-5秒 | 0-10秒 | 2秒-1分钟（Broker无状态） |
+| **自动恢复能力** | 部分 | 部分 | 完全 | 完全 | 完全（Broker无状态+BookKeeper自动恢复） |
+| **网络分区韧性** | 低（CP系统） | 中 | 高（AP系统） | 中（CP+自动恢复） | 中（CP系统，BookKeeper Quorum） |
 
 ## 文档使用指南
 
