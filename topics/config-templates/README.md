@@ -5,15 +5,24 @@
 - [配置模板库](#配置模板库)
   - [目录](#目录)
   - [Kafka配置模板](#kafka配置模板)
+    - [Server配置](#server配置)
+    - [Producer配置](#producer配置)
+    - [Consumer配置](#consumer配置)
   - [MQTT配置模板](#mqtt配置模板)
+    - [Broker配置](#broker配置)
   - [NATS配置模板](#nats配置模板)
+    - [Server配置](#server配置-1)
   - [使用说明](#使用说明)
+    - [配置步骤](#配置步骤)
+    - [配置检查清单](#配置检查清单)
+    - [配置优化建议](#配置优化建议)
 
 ---
 
 ## Kafka配置模板
 
 ### Server配置
+
 - **文件**: [kafka-server.properties.template](./kafka-server.properties.template)
 - **用途**: Kafka Broker服务器配置
 - **关键配置项**:
@@ -27,17 +36,23 @@
   - [01-06-架构设计深度分析](../01-基础概念与对比分析/01-06-架构设计深度分析.md)
 
 ### Producer配置
+
 参考代码示例中的Producer配置：
+
 - [kafka-producer-example.java](../examples/kafka-producer-example.java)
 
 ### Consumer配置
+
 参考代码示例中的Consumer配置：
+
 - [kafka-consumer-example.java](../examples/kafka-consumer-example.java)
 
 ## MQTT配置模板
 
 ### Broker配置
+
 MQTT Broker配置因实现而异，常见配置项包括：
+
 - 监听端口和协议
 - 最大连接数
 - 会话存储配置
@@ -45,6 +60,7 @@ MQTT Broker配置因实现而异，常见配置项包括：
 - 主题权限配置
 
 **推荐Broker**:
+
 - EMQX: [官方文档](https://www.emqx.io/docs)
 - Eclipse Mosquitto: [官方文档](https://mosquitto.org/man/mosquitto-conf-5.html)
 - HiveMQ: [官方文档](https://www.hivemq.com/docs/)
@@ -52,6 +68,7 @@ MQTT Broker配置因实现而异，常见配置项包括：
 ## NATS配置模板
 
 ### Server配置
+
 - **文件**: [nats-server.conf.template](./nats-server.conf.template)
 - **用途**: NATS Server服务器配置
 - **关键配置项**:
@@ -87,18 +104,21 @@ MQTT Broker配置因实现而异，常见配置项包括：
 ### 配置优化建议
 
 **Kafka**:
+
 - 使用独立磁盘存储日志
 - 合理设置分区数和副本数
 - 启用压缩降低存储成本
 - 配置JMX监控
 
 **MQTT**:
+
 - 合理设置最大连接数
 - 配置会话存储
 - 启用TLS加密
 - 配置主题权限
 
 **NATS**:
+
 - 配置集群模式（至少3节点）
 - 合理设置资源限制
 - 启用JetStream（如需要）
@@ -107,6 +127,7 @@ MQTT Broker配置因实现而异，常见配置项包括：
 ---
 
 **参考文档**:
+
 - [部署架构模式矩阵](../03-架构与运维实践/03-01-部署架构模式矩阵.md)
 - [实践指南](../PRACTICE_GUIDE.md)
 - [实施检查清单](../IMPLEMENTATION_CHECKLIST.md)
