@@ -13,20 +13,22 @@
 | 场景 | 首选 | 关键指标 | 备选 |
 |------|------|----------|------|
 | **日志聚合** | Kafka | 100万+ TPS, 持久化 | Pulsar |
+| **任务队列** | RabbitMQ | Exchange-Queue模型 | Kafka |
 | **IoT设备** | MQTT | 2字节头, QoS分级 | NATS+桥接 |
-| **微服务通信** | NATS | 30-100μs延迟 | gRPC+Kafka |
+| **微服务通信** | NATS/RabbitMQ | 30-100μs延迟/灵活路由 | gRPC+Kafka |
 | **事件溯源** | Kafka | 不可变日志, 重放 | JetStream |
 | **边缘计算** | NATS Core | <20MB二进制 | NanoMQ |
 | **金融交易** | Kafka+事务 | 精确一次, 顺序 | RabbitMQ |
+| **轻量级流** | Redis Stream | <1ms延迟 | Kafka |
 
 ### 性能指标速查
 
-| 指标 | Kafka | MQTT | NATS Core | NATS JetStream | Pulsar |
-|------|-------|------|-----------|----------------|--------|
-| **吞吐量** | 100万+ TPS<br/>*LinkedIn: 2M+ TPS* | 10万级 TPS<br/>*EMQX: 100K+ TPS* | 200万+ TPS<br/>*官方: 500K+ TPS/核* | 50万+ TPS<br/>*JetStream持久化* | 100万+ TPS<br/>*官方: 1.5M+ msg/s* |
-| **延迟** | 5-100ms<br/>*P99: <10ms* | 亚毫秒-10ms<br/>*QoS 0: <1ms* | 30-100μs<br/>*P99: <100μs* | 亚毫秒-毫秒<br/>*P99: <1ms* | 5-50ms<br/>*P99: <20ms* |
-| **持久化** | ✅ 磁盘+副本 | ⚠️ 可选 | ❌ 无 | ✅ 文件+Raft | ✅ BookKeeper |
-| **一致性** | ✅ 强一致(ISR) | ⚠️ QoS分级 | ❌ 最多一次 | ✅ 强一致(Raft) | ✅ 强一致(Quorum) |
+| 指标 | Kafka | MQTT | NATS Core | NATS JetStream | Pulsar | RabbitMQ | Redis Stream |
+|------|-------|------|-----------|----------------|--------|----------|-------------|
+| **吞吐量** | 100万+ TPS<br/>*LinkedIn: 2M+ TPS* | 10万级 TPS<br/>*EMQX: 100K+ TPS* | 200万+ TPS<br/>*官方: 500K+ TPS/核* | 50万+ TPS<br/>*JetStream持久化* | 100万+ TPS<br/>*官方: 1.5M+ msg/s* | 5-20万 TPS<br/>*单队列10-50K* | 10-50万 TPS<br/>*轻量级流* |
+| **延迟** | 5-100ms<br/>*P99: <10ms* | 亚毫秒-10ms<br/>*QoS 0: <1ms* | 30-100μs<br/>*P99: <100μs* | 亚毫秒-毫秒<br/>*P99: <1ms* | 5-50ms<br/>*P99: <20ms* | 1-10ms<br/>*内存<1ms* | <1ms<br/>*内存操作* |
+| **持久化** | ✅ 磁盘+副本 | ⚠️ 可选 | ❌ 无 | ✅ 文件+Raft | ✅ BookKeeper | ✅ 内存/磁盘 | ⚠️ 可选 |
+| **一致性** | ✅ 强一致(ISR) | ⚠️ QoS分级 | ❌ 最多一次 | ✅ 强一致(Raft) | ✅ 强一致(Quorum) | ✅ ACK机制 | ⚠️ 有限 |
 
 ## 📊 核心参数对比
 
@@ -37,17 +39,23 @@
 - **NATS Core**: 发布-订阅 + 请求-响应
 - **NATS JetStream**: 发布-订阅 + 流
 - **Pulsar**: 发布-订阅 + 队列（多种订阅模式）
+- **RabbitMQ**: Exchange-Queue（Direct/Topic/Fanout/Headers）
+- **Redis Stream**: 流数据结构（消费者组支持）
 
 ### 协议特性
 
-- **Kafka**: 自定义二进制协议
+- **Kafka**: 自定义二进制协议（KRaft模式，无ZooKeeper）
 - **MQTT**: OASIS标准（3.1.1/5.0），2字节固定头
 - **NATS**: 文本协议，简单易调试
 - **Pulsar**: 自定义二进制协议 + 多协议适配器（Kafka/MQTT/AMQP）
+- **RabbitMQ**: AMQP 0-9-1标准协议
+- **Redis Stream**: Redis协议扩展
 
 ### 集群模式
 
-- **Kafka**: Leader-Follower + ZooKeeper
+- **Kafka**: Leader-Follower + KRaft（3.5+无ZooKeeper）
+- **RabbitMQ**: Erlang集群（镜像队列）
+- **Redis Stream**: Redis集群模式
 - **MQTT**: 主从/集群（共享存储）
 - **NATS**: 全网状自愈（Gossip协议）
 - **Pulsar**: Broker无状态 + BookKeeper集群（存储与计算分离）

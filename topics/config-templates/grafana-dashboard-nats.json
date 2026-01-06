@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "title": "NATS监控仪表板",
+    "panels": [
+      {
+        "title": "连接数",
+        "targets": [
+          {
+            "expr": "nats_connz_connections"
+          }
+        ]
+      },
+      {
+        "title": "消息吞吐量",
+        "targets": [
+          {
+            "expr": "rate(nats_varz_in_msgs[5m])"
+          },
+          {
+            "expr": "rate(nats_varz_out_msgs[5m])"
+          }
+        ]
+      },
+      {
+        "title": "内存使用",
+        "targets": [
+          {
+            "expr": "nats_varz_mem"
+          }
+        ]
+      },
+      {
+        "title": "CPU使用率",
+        "targets": [
+          {
+            "expr": "rate(nats_varz_cpu[5m])"
+          }
+        ]
+      }
+    ]
+  }
+}

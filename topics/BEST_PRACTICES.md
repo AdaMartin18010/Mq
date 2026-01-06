@@ -4,6 +4,17 @@
 
 - [消息队列最佳实践与常见陷阱](#消息队列最佳实践与常见陷阱)
   - [目录](#目录)
+  - [RabbitMQ最佳实践](#rabbitmq最佳实践)
+    - [Exchange设计](#exchange设计)
+    - [Queue管理](#queue管理)
+    - [消息确认机制](#消息确认机制)
+  - [Redis Stream最佳实践](#redis-stream最佳实践)
+    - [Stream设计](#stream设计)
+    - [消费者组配置](#消费者组配置)
+  - [RabbitMQ常见陷阱](#rabbitmq常见陷阱)
+  - [Redis Stream常见陷阱](#redis-stream常见陷阱)
+  - [RabbitMQ性能调优](#rabbitmq性能调优)
+  - [Redis Stream性能调优](#redis-stream性能调优)
   - [Kafka最佳实践](#kafka最佳实践)
     - [性能优化](#性能优化)
     - [可靠性保证](#可靠性保证)
@@ -33,11 +44,225 @@
 
 ---
 
+## RabbitMQ最佳实践
+
+### Exchange设计
+
+**1. Exchange类型选择**：
+
+- **Direct Exchange**：点对点消息，精确路由
+- **Topic Exchange**：主题订阅，模式匹配
+- **Fanout Exchange**：广播消息
+- **Headers Exchange**：复杂路由规则
+
+**2. Exchange持久化**：
+
+```python
+channel.exchange_declare(
+    exchange='order_exchange',
+    exchange_type='topic',
+    durable=True  # 生产环境必须持久化
+)
+```
+
+### Queue管理
+
+**1. 队列持久化**：
+
+```python
+channel.queue_declare(
+    queue='order_queue',
+    durable=True  # 队列持久化
+)
+```
+
+**2. 队列参数配置**：
+
+```python
+channel.queue_declare(
+    queue='task_queue',
+    durable=True,
+    arguments={
+        'x-message-ttl': 3600000,  # 1小时TTL
+        'x-max-length': 10000,     # 最大10000条
+        'x-dead-letter-exchange': 'dlx'  # 死信Exchange
+    }
+)
+```
+
+### 消息确认机制
+
+**1. 手动确认**：
+
+```python
+def callback(ch, method, properties, body):
+    try:
+        process_message(body)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+    except Exception as e:
+        ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+```
+
+**2. 预取数量**：
+
+```python
+channel.basic_qos(prefetch_count=1)  # 公平分发
+```
+
+---
+
+## Redis Stream最佳实践
+
+### Stream设计
+
+**1. Stream命名**：
+
+```bash
+# 使用命名空间
+events:orders
+events:payments
+logs:application
+```
+
+**2. 消息格式**：
+
+```python
+message = {
+    'event_type': 'order.created',
+    'order_id': 'ORD-001',
+    'timestamp': time.time()
+}
+```
+
+### 消费者组配置
+
+**1. 创建消费者组**：
+
+```python
+client.xgroup_create('events:orders', 'processors', id='0', mkstream=True)
+```
+
+**2. 消费消息**：
+
+```python
+messages = client.xreadgroup(
+    'processors',
+    'consumer-1',
+    {'events:orders': '>'},
+    count=10
+)
+```
+
+---
+
+## RabbitMQ常见陷阱
+
+**1. 自动确认导致消息丢失**：
+
+❌ **错误**：使用自动确认
+
+```python
+channel.basic_consume(queue='queue', auto_ack=True)
+```
+
+✅ **正确**：使用手动确认
+
+```python
+channel.basic_consume(queue='queue', on_message_callback=callback, auto_ack=False)
+```
+
+**2. 队列未持久化**：
+
+❌ **错误**：队列不持久化
+
+```python
+channel.queue_declare(queue='queue', durable=False)
+```
+
+✅ **正确**：队列持久化
+
+```python
+channel.queue_declare(queue='queue', durable=True)
+```
+
+---
+
+## Redis Stream常见陷阱
+
+**1. 消息未确认导致重复消费**：
+
+❌ **错误**：消费后未确认
+
+```python
+messages = client.xreadgroup(...)
+# 处理消息但未确认
+```
+
+✅ **正确**：处理完成后确认
+
+```python
+messages = client.xreadgroup(...)
+for msg_id, data in messages:
+    process_message(data)
+    client.xack(stream_name, group_name, msg_id)
+```
+
+---
+
+## RabbitMQ性能调优
+
+**1. 批量确认**：
+
+```python
+# 批量处理消息后确认
+ack_count = 0
+for msg_id, data in messages:
+    process_message(data)
+    ack_count += 1
+    if ack_count >= 100:
+        client.xack(...)
+        ack_count = 0
+```
+
+**2. 连接池**：
+
+```python
+# 使用连接池复用连接
+from pika import BlockingConnection, ConnectionParameters
+connection_pool = ConnectionPool(...)
+```
+
+---
+
+## Redis Stream性能调优
+
+**1. 批量读取**：
+
+```python
+messages = client.xreadgroup(
+    group_name,
+    consumer_name,
+    {stream_name: '>'},
+    count=100  # 批量读取100条
+)
+```
+
+**2. 使用Pipeline**：
+
+```python
+pipe = client.pipeline()
+pipe.xreadgroup(...)
+pipe.xack(...)
+results = pipe.execute()
+```
+
+---
+
 ## Kafka最佳实践
 
 ### 性能优化
 
-**1. Producer配置优化**
+**1. Producer配置优化**:
 
 ```properties
 # 批量发送配置
@@ -56,7 +281,7 @@ enable.idempotence=true   # 启用幂等性，避免重复消息
 
 **参考**: [Kafka Producer Configuration](https://kafka.apache.org/documentation/#producerconfigs)
 
-**2. Consumer配置优化**
+**2. Consumer配置优化**:
 
 ```properties
 # 批量拉取配置
@@ -74,7 +299,7 @@ enable.auto.commit=false   # 手动提交，保证处理完成后再提交
 
 **参考**: [Kafka Consumer Configuration](https://kafka.apache.org/documentation/#consumerconfigs)
 
-**3. Broker配置优化**
+**3. Broker配置优化**:
 
 ```properties
 # 日志保留策略
@@ -89,7 +314,7 @@ replica.fetch.max.bytes=10485760  # 10MB副本拉取大小
 
 ### 可靠性保证
 
-**1. 消息不丢失配置**
+**1. 消息不丢失配置**:
 
 ```properties
 # Producer端
@@ -108,7 +333,7 @@ auto.offset.reset=earliest # 从最早开始消费（避免丢失）
 
 **参考**: [Kafka Reliability Guarantees](https://kafka.apache.org/documentation/#design_guarantees)
 
-**2. 消息不重复配置**
+**2. 消息不重复配置**:
 
 ```properties
 # Producer端
@@ -122,7 +347,7 @@ isolation.level=read_committed  # 只读取已提交消息（事务模式）
 
 ### 运维管理
 
-**1. 监控关键指标**
+**1. 监控关键指标**:
 
 - **UnderReplicatedPartitions**: 欠副本分区数（应=0）
 - **ISRShrinkRate**: ISR收缩速率（应<10/min）
@@ -131,7 +356,7 @@ isolation.level=read_committed  # 只读取已提交消息（事务模式）
 
 **参考**: [Kafka Monitoring](https://kafka.apache.org/documentation/#monitoring)
 
-**2. 容量规划**
+**2. 容量规划**:
 
 - **分区数**: 单分区吞吐量约10万消息/秒，根据总吞吐量计算
 - **副本数**: 生产环境建议3副本（1个Leader + 2个Follower）
@@ -141,7 +366,7 @@ isolation.level=read_committed  # 只读取已提交消息（事务模式）
 
 ### 协议使用
 
-**1. QoS级别选择**
+**1. QoS级别选择**:
 
 ```python
 # QoS 0: 传感器数据（高频、可容忍丢失）
@@ -156,9 +381,9 @@ client.publish("devices/payment/confirm", payload, qos=2)
 
 **参考**: [MQTT QoS Levels](https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html#_Toc3901233)
 
-**2. 主题设计规范**
+**2. 主题设计规范**:
 
-```
+```text
 # 推荐：层级结构
 factory/line1/sensor/temperature
 factory/line1/sensor/humidity
@@ -173,7 +398,7 @@ factory/line1/#     # 订阅line1的所有数据
 
 ### 设备管理
 
-**1. 会话管理**
+**1. 会话管理**:
 
 ```python
 # 持久会话（Clean Session=0）
@@ -185,7 +410,7 @@ will_payload = json.dumps({"status": "offline", "timestamp": time.time()})
 client.will_set(will_topic, will_payload, qos=1, retain=True)
 ```
 
-**2. 重连策略**
+**2. 重连策略**:
 
 ```python
 # 指数退避重连
@@ -206,7 +431,7 @@ def reconnect_with_backoff(client, max_retries=10):
 
 ### 安全配置
 
-**1. TLS加密**
+**1. TLS加密**:
 
 ```python
 # 使用TLS连接
@@ -217,7 +442,7 @@ client.tls_set_context(context)
 client.connect("broker.example.com", 8883)  # MQTT over TLS端口
 ```
 
-**2. 认证授权**
+**2. 认证授权**:
 
 ```python
 # 用户名密码认证
@@ -235,7 +460,7 @@ client.tls_set_context(context)
 
 ### 集群配置
 
-**1. 集群配置示例**
+**1. 集群配置示例**:
 
 ```conf
 # nats-server.conf
@@ -253,7 +478,7 @@ cluster {
 
 **参考**: [NATS Clustering](https://docs.nats.io/nats-concepts/clustering)
 
-**2. 自动发现配置**
+**2. 自动发现配置**:
 
 ```conf
 # 使用DNS自动发现
@@ -268,7 +493,7 @@ cluster {
 
 ### 性能调优
 
-**1. 连接池配置**
+**1. 连接池配置**:
 
 ```go
 // Go客户端连接池
@@ -282,7 +507,7 @@ opts := []nats.Option{
 nc, err := nats.Connect("nats://localhost:4222", opts...)
 ```
 
-**2. 批量发布优化**
+**2. 批量发布优化**:
 
 ```go
 // 批量发布消息
@@ -296,7 +521,7 @@ nc.Flush()  // 等待所有消息发送完成
 
 ### JetStream使用
 
-**1. Stream配置**
+**1. Stream配置**:
 
 ```go
 // Stream配置示例
@@ -316,7 +541,7 @@ js.AddStream(&nats.StreamConfig{
 
 ### 多租户配置
 
-**1. Tenant和Namespace规划**
+**1. Tenant和Namespace规划**:
 
 ```bash
 # 创建Tenant
@@ -334,7 +559,7 @@ pulsar-admin namespaces set-replication-clusters \
   acme-corp/production --clusters us-west,us-east
 ```
 
-**2. 权限管理**
+**2. 权限管理**:
 
 ```bash
 # 授予Producer权限
@@ -352,7 +577,7 @@ pulsar-admin namespaces grant-permission acme-corp/production \
 
 ### 性能优化
 
-**1. Producer配置优化**
+**1. Producer配置优化**:
 
 ```java
 Producer<byte[]> producer = pulsarClient.newProducer()
@@ -365,7 +590,7 @@ Producer<byte[]> producer = pulsarClient.newProducer()
     .create();
 ```
 
-**2. Consumer配置优化**
+**2. Consumer配置优化**:
 
 ```java
 Consumer<byte[]> consumer = pulsarClient.newConsumer()
@@ -377,7 +602,7 @@ Consumer<byte[]> consumer = pulsarClient.newConsumer()
     .subscribe();
 ```
 
-**3. 订阅模式选择**
+**3. 订阅模式选择**:
 
 | 订阅模式 | 适用场景 | 特点 |
 |---------|---------|------|
@@ -392,7 +617,7 @@ Consumer<byte[]> consumer = pulsarClient.newConsumer()
 
 ### BookKeeper配置
 
-**1. BookKeeper性能优化**
+**1. BookKeeper性能优化**:
 
 ```properties
 # BookKeeper配置
@@ -402,7 +627,7 @@ bookieFlushEntrylogIntervalMillis=60000
 journalSyncData=false
 ```
 
-**2. Ledger配置**
+**2. Ledger配置**:
 
 ```bash
 # 设置Ledger保留策略
@@ -418,7 +643,7 @@ pulsar-admin namespaces set-backlog-quota tenant/ns \
 
 ---
 
-**1. Stream配置**
+**1. Stream配置**:
 
 ```go
 // 创建持久化Stream
@@ -434,7 +659,7 @@ js.AddStream(&nats.StreamConfig{
 })
 ```
 
-**2. Consumer配置**
+**2. Consumer配置**:
 
 ```go
 // 创建Consumer
@@ -453,7 +678,7 @@ js.AddConsumer("ORDERS", &nats.ConsumerConfig{
 
 ### Kafka常见陷阱
 
-**1. 分区数过多**
+**1. 分区数过多**:
 
 **问题**: 分区数过多导致：
 
@@ -468,7 +693,7 @@ js.AddConsumer("ORDERS", &nats.ConsumerConfig{
 
 **参考**: [Kafka Partitioning Best Practices](https://kafka.apache.org/documentation/#partitioning)
 
-**2. 自动提交导致消息丢失**
+**2. 自动提交导致消息丢失**:
 
 **问题**: `enable.auto.commit=true`时，Consumer崩溃可能导致消息丢失
 
@@ -480,7 +705,7 @@ enable.auto.commit=false
 consumer.commitSync();
 ```
 
-**3. 跨机房部署性能问题**
+**3. 跨机房部署性能问题**:
 
 **问题**: 跨机房部署时，ISR同步延迟高，影响吞吐量
 
@@ -492,7 +717,7 @@ consumer.commitSync();
 
 ### MQTT常见陷阱
 
-**1. QoS 2性能问题**
+**1. QoS 2性能问题**:
 
 **问题**: QoS 2四步握手导致延迟和吞吐量下降
 
@@ -502,7 +727,7 @@ consumer.commitSync();
 - 控制指令使用QoS 1
 - 仅在关键操作使用QoS 2
 
-**2. 主题泛滥**
+**2. 主题泛滥**:
 
 **问题**: 动态主题过多导致内存占用不可控
 
@@ -512,7 +737,7 @@ consumer.commitSync();
 - 限制主题层级深度（建议≤5层）
 - 定期清理过期订阅
 
-**3. 会话风暴**
+**3. 会话风暴**:
 
 **问题**: 设备批量重连时，Broker会话恢复压力大
 
@@ -524,7 +749,7 @@ consumer.commitSync();
 
 ### NATS常见陷阱
 
-**1. Subject命名不规范**
+**1. Subject命名不规范**:
 
 **问题**: Subject命名混乱导致路由效率低
 
@@ -534,7 +759,7 @@ consumer.commitSync();
 - 避免过长的Subject名称（建议<100字符）
 - 使用通配符订阅时注意性能影响
 
-**2. 内存泄漏**
+**2. 内存泄漏**:
 
 **问题**: Core模式无持久化，消息积压导致内存溢出
 
@@ -544,7 +769,7 @@ consumer.commitSync();
 - 设置消息大小限制
 - 使用JetStream进行持久化
 
-**3. 集群配置错误**
+**3. 集群配置错误**:
 
 **问题**: 集群配置错误导致消息路由失败
 
@@ -558,7 +783,7 @@ consumer.commitSync();
 
 ### Pulsar常见陷阱
 
-**1. BookKeeper配置错误**
+**1. BookKeeper配置错误**:
 
 **问题**: BookKeeper配置不当导致性能下降
 
@@ -568,7 +793,7 @@ consumer.commitSync();
 - 配置BookKeeper磁盘IO优化
 - 监控BookKeeper性能指标
 
-**2. 多租户权限配置错误**
+**2. 多租户权限配置错误**:
 
 **问题**: 权限配置错误导致安全漏洞
 
@@ -578,7 +803,7 @@ consumer.commitSync();
 - 定期审查权限配置
 - 使用角色和策略管理权限
 
-**3. 订阅模式选择错误**
+**3. 订阅模式选择错误**:
 
 **问题**: 选择错误的订阅模式导致消息丢失或重复
 

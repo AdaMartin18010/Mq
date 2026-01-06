@@ -1,0 +1,74 @@
+# Prometheus告警规则配置示例
+
+groups:
+  - name: kafka_alerts
+    interval: 30s
+    rules:
+      - alert: KafkaHighConsumerLag
+        expr: kafka_consumer_lag_sum > 100000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kafka Consumer Lag过高"
+          description: "Consumer Lag超过100,000，Topic: {{ $labels.topic }}"
+      
+      - alert: KafkaUnderReplicatedPartitions
+        expr: kafka_controller_offline_partitions_count > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka分区副本不足"
+          description: "有 {{ $value }} 个分区副本不足"
+      
+      - alert: KafkaBrokerDown
+        expr: up{job="kafka"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka Broker宕机"
+          description: "Broker {{ $labels.instance }} 已宕机"
+
+  - name: nats_alerts
+    interval: 30s
+    rules:
+      - alert: NATSHighConnections
+        expr: nats_connz_connections > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "NATS连接数过高"
+          description: "连接数: {{ $value }}"
+      
+      - alert: NATSHighMemory
+        expr: nats_varz_mem > 8589934592  # 8GB
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "NATS内存使用过高"
+          description: "内存使用: {{ $value }} bytes"
+
+  - name: rabbitmq_alerts
+    interval: 30s
+    rules:
+      - alert: RabbitMQHighQueueMessages
+        expr: rabbitmq_queue_messages > 100000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RabbitMQ队列消息积压"
+          description: "队列 {{ $labels.queue }} 消息数: {{ $value }}"
+      
+      - alert: RabbitMQNodeDown
+        expr: rabbitmq_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RabbitMQ节点宕机"
+          description: "节点 {{ $labels.node }} 已宕机"

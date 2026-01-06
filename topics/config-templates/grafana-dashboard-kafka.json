@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "title": "Kafka监控仪表板",
+    "panels": [
+      {
+        "title": "消息吞吐量",
+        "targets": [
+          {
+            "expr": "rate(kafka_server_brokertopicmetrics_messagesin_total[5m])"
+          }
+        ]
+      },
+      {
+        "title": "Consumer Lag",
+        "targets": [
+          {
+            "expr": "kafka_consumer_lag_sum"
+          }
+        ]
+      },
+      {
+        "title": "分区数",
+        "targets": [
+          {
+            "expr": "kafka_server_replicamanager_partitioncount"
+          }
+        ]
+      }
+    ]
+  }
+}

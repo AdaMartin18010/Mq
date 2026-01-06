@@ -1,0 +1,35 @@
+## RabbitMQ配置文件模板
+## 生产环境推荐配置
+
+# 网络配置
+listeners.tcp.default = 5672
+listeners.ssl.default = 5671
+
+# 管理界面
+management.tcp.port = 15672
+
+# 内存和磁盘限制
+vm_memory_high_watermark.relative = 0.4
+disk_free_limit.absolute = 2GB
+
+# 集群配置
+cluster_formation.peer_discovery_backend = classic_config
+cluster_formation.classic_config.nodes.1 = rabbit@node1
+cluster_formation.classic_config.nodes.2 = rabbit@node2
+cluster_formation.classic_config.nodes.3 = rabbit@node3
+
+# 日志配置
+log.console = true
+log.console.level = info
+log.file = false
+
+# 性能优化
+channel_max = 2047
+frame_max = 131072
+heartbeat = 60
+
+# 队列配置
+queue_master_locator = min-masters
+
+# 镜像队列策略（高可用）
+# rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}'

@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "title": "RabbitMQ监控仪表板",
+    "panels": [
+      {
+        "title": "队列消息数",
+        "targets": [
+          {
+            "expr": "rabbitmq_queue_messages"
+          }
+        ]
+      },
+      {
+        "title": "消息速率",
+        "targets": [
+          {
+            "expr": "rate(rabbitmq_queue_messages_published_total[5m])"
+          },
+          {
+            "expr": "rate(rabbitmq_queue_messages_delivered_total[5m])"
+          }
+        ]
+      },
+      {
+        "title": "连接数",
+        "targets": [
+          {
+            "expr": "rabbitmq_connections"
+          }
+        ]
+      },
+      {
+        "title": "通道数",
+        "targets": [
+          {
+            "expr": "rabbitmq_channels"
+          }
+        ]
+      }
+    ]
+  }
+}

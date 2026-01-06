@@ -1,0 +1,52 @@
+# Docker Compose RabbitMQ集群配置示例
+
+version: '3.8'
+
+services:
+  rabbitmq-1:
+    image: rabbitmq:3-management
+    hostname: rabbitmq-1
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq-1-data:/var/lib/rabbitmq
+
+  rabbitmq-2:
+    image: rabbitmq:3-management
+    hostname: rabbitmq-2
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq-2-data:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq-1
+
+  rabbitmq-3:
+    image: rabbitmq:3-management
+    hostname: rabbitmq-3
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq-3-data:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq-1
+
+volumes:
+  rabbitmq-1-data:
+  rabbitmq-2-data:
+  rabbitmq-3-data:
