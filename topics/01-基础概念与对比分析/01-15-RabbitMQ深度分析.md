@@ -40,6 +40,11 @@
     - [官方文档](#官方文档)
     - [技术博客](#技术博客)
     - [生产案例](#生产案例)
+  - [1.15.9 RabbitMQ 4.x 演进](#1159-rabbitmq-4x-演进)
+    - [版本时间线](#版本时间线)
+    - [4.0 关键变化](#40-关键变化)
+    - [升级注意事项](#升级注意事项)
+    - [参考来源](#参考来源)
 
 ---
 
@@ -678,5 +683,64 @@ rabbitmqctl set_policy ha-nodes "^" '{"ha-mode":"nodes","ha-params":["node1","no
 
 ---
 
-**最后更新**: 2025-12-31
-**适用版本**: RabbitMQ 3.8.0+
+## 1.15.9 RabbitMQ 4.x 演进
+
+### 版本时间线
+
+| 版本 | 发布时间 | 主要定位 |
+| ------ | ---------- | ---------- |
+| **RabbitMQ 3.13.x** | 2024 年 | 最后一个支持 classic queue mirroring 的主版本；Khepri 元数据存储可选 |
+| **RabbitMQ 4.0** | 2024-09-18 | 重大主版本，移除 classic queue mirroring，quorum queues 成为唯一可复制队列类型 |
+| **RabbitMQ 4.1** | 2025 年 | AMQP filter expressions、更快的 quorum queues、rabbitmqadmin v2 |
+| **RabbitMQ 4.2** | 2025 年 | 新集群默认使用 Khepri、SQL stream filters |
+| **RabbitMQ 4.3** | 2026 年 | 完全移除 Mnesia，quorum queue 延迟重试与消费者超时 |
+
+### 4.0 关键变化
+
+1. **Classic Queue Mirroring 彻底移除**
+   - 自 4.0 起，classic queues 不再支持镜像复制，仅保留单副本。
+   - Quorum queues 与 streams 成为高可用、可复制数据的唯一选择。
+   - 官方建议仍在使用 mirrored classic queues 的用户在升级到 4.0 前迁移到 quorum queues。
+
+2. **Quorum Queues 成为默认高可用方案**
+   - 基于 Raft 共识协议，提供比 classic mirrored queues 更高的数据安全性。
+   - 4.0 为 quorum queues 引入消息优先级（初始为两级：normal/high）。
+   - Single Active Consumer 与消费者优先级结合：高优先级消费者可抢占当前 active consumer。
+   - 默认 `delivery-limit` 从“无限重试”改为 **20**，未配置死信队列时超过 20 次投递的消息将被丢弃。
+
+3. **Khepri 元数据存储转正**
+   - Khepri 是 RabbitMQ 自研的 Raft-based 元数据存储，用于替代 Erlang Mnesia。
+   - 4.0 中 Khepri 已 fully supported，可解决 Mnesia 在 split-brain 场景下恢复困难的问题。
+
+4. **AMQP 1.0 成为核心协议**
+   - AMQP 1.0 插件变为始终启用，无需单独安装。
+   - 在部分工作负载下，AMQP 1.0 峰值吞吐较 3.13.x 提升超过一倍。
+   - AMQP 1.0 客户端现在可以像 AMQP 0-9-1 客户端一样管理拓扑。
+
+5. **Streams 插件持续增强**
+   - Streams 提供类 Kafka 的追加日志语义，支持百万级 msg/s 吞吐。
+   - 4.x 系列继续增强过滤、消费与监控能力。
+
+6. **队列恢复性能提升**
+   - Quorum queues 引入 checkpoint 文件，节点重启时无需回放完整 Raft log，长队列启动时间从数十秒降至毫秒级。
+
+### 升级注意事项
+
+- **必须先迁移 mirrored classic queues**：在 3.13.x 中使用官方迁移工具或策略将镜像 classic queues 转为 quorum queues，否则 4.0 启动会报错。
+- **检查 delivery-limit 默认值**：如果业务依赖消息无限重试，需显式设置 `x-delivery-limit` 或配置死信队列（DLX）。
+- **启用所有 feature flags**：升级前需启用所有 feature flags，否则无法滚动升级。
+- **Erlang/OTP 版本要求**：4.0 需要 Erlang 26.2 或更高版本。
+- **默认最大消息大小调整**：4.0 默认最大消息大小有所降低，发送大消息需评估并调整配置。
+- **生产环境建议**：先在测试环境完成滚动升级与队列类型迁移验证，再切换生产集群。
+
+### 参考来源
+
+- [RabbitMQ 4.0: New Quorum Queue Features](https://www.rabbitmq.com/blog/2024/08/28/quorum-queues-in-4.0)
+- [RabbitMQ Quorum Queues 官方文档](https://www.rabbitmq.com/docs/quorum-queues)
+- [Migrate Mirrored Classic Queues to Quorum Queues](https://www.rabbitmq.com/docs/3.13/migrate-mcq-to-qq)
+- [RabbitMQ 4.0.0 Release Notes (GitHub)](https://github.com/rabbitmq/rabbitmq-server/releases)
+
+---
+
+**最后更新**: 2026-01-06
+**适用版本**: RabbitMQ 3.8.0+ / 4.x 系列

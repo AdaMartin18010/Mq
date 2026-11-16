@@ -4,6 +4,8 @@
 
 ## 当前阶段：第六阶段 - 深度治理与前沿对齐（2026-01 启动）
 
+**进度**：P0 治理 ✅ · P1 时效 ✅ · P2 前沿 ✅ · 规范体系 ✅ → 剩 P3 严谨性、P4 机制（批次10/11）
+
 ## 波次任务清单
 
 ### P0 治理与修正
@@ -17,23 +19,24 @@
 | CHANGELOG按语义版本重排 | ✅ 完成 | 批次2 |
 | 03-11/03-28重复故障手册合并定位 | ✅ 完成 | 批次3 |
 | 02设计/03指南24对重叠差异化声明 | ✅ 完成 | 批次3 |
-| 03-39~62共23篇骨架文档充实 | ⬜ 待做 | 批次4 |
+| 03-39~62共23篇骨架文档充实 | ✅ 完成（24/24达标） | 批次4 |
 
 ### P1 时效性更新
 
 | 任务 | 状态 | 批次 |
 | ------ | ------ | ------ |
-| Kafka 4.0 / KIP-932 Share Groups 专章 + KRaft文档修订 | ⬜ 待做 | 批次5 |
-| Pulsar 4.x / Oxia、RabbitMQ 4.x、Redis 8、NATS 2.11 | ⬜ 待做 | 批次6 |
-| 新系统补章：RocketMQ 5.x、Redpanda、S3解耦（WarpStream/AutoMQ） | ⬜ 待做 | 批次7 |
+| Kafka 4.0 / KIP-932 Share Groups 专章 + KRaft文档修订 | ✅ 完成 | 批次5 |
+| Pulsar 4.x / Oxia、RabbitMQ 4.x、Redis 8、NATS 2.11 | ✅ 完成 | 批次6 |
+| 新系统补章：RocketMQ 5.x、Redpanda、S3解耦（WarpStream/AutoMQ） | ✅ 完成（01-27/28/29新建） | 批次7 |
 
 ### P2 前沿主题补章
 
 | 任务 | 状态 | 批次 |
 | ------ | ------ | ------ |
-| 事件标准：CloudEvents、AsyncAPI、OpenMessaging | ⬜ 待做 | 批次8 |
-| 数据集成：CDC/Debezium、Kafka Connect深入、流式湖仓（Iceberg/Tableflow）、流处理 | ⬜ 待做 | 批次8 |
-| 消息模式规范化：Outbox/Saga/Inbox、EIP目录对齐 | ⬜ 待做 | 批次9 |
+| 事件标准：CloudEvents、AsyncAPI、OpenMessaging | ✅ 完成（01-30新建） | 批次8 |
+| 数据集成：CDC/Debezium、Kafka Connect深入、流式湖仓（Iceberg/Tableflow）、流处理 | ✅ 完成（01-31新建） | 批次8 |
+| 消息模式规范化：Outbox/Saga/Inbox、EIP目录对齐 | ✅ 完成（02-47新建） | 批次9 |
+| 建立 AGENTS.md 协作宪法 + TEMPLATES.md 文档模板 | ✅ 完成 | 批次9.5 |
 
 ### P3 严谨性升级
 
@@ -55,7 +58,7 @@
 
 | 系统 | 项目文档基线 | 最新发布（截至2025年底） | 差距 |
 | ------ | ------------ | ------------------------ | ------ |
-| Kafka | KRaft过渡模式 | 4.0（2025-03，移除ZK）、4.1 | 需新增4.0专章 |
+| Kafka | KRaft过渡模式 | 4.0（2025-03，移除ZK）、4.1（2025-09，KIP-932 Preview） | ✅ 已补（01-25）；4.2 GA 后例行更新 |
 | Pulsar | 3.x 时代 | 4.x、Oxia | 需更新 |
 | RabbitMQ | 3.x | 4.x（streams/quorum增强） | 需更新 |
 | MQTT | 5.0 | 5.0（QUIC传输推进中） | 基本持平 |

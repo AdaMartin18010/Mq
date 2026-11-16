@@ -41,7 +41,13 @@
       - [Zero-Copy传输实现（详细代码）](#zero-copy传输实现详细代码)
       - [批量与压缩策略（详细对比）](#批量与压缩策略详细对比)
     - [1.12.7.7 开发架构论证总结](#11277-开发架构论证总结)
-  - [1.12.8 Pulsar参考资源](#1128-pulsar参考资源)
+  - [1.12.8 Pulsar 4.x 演进与 Oxia](#1128-pulsar-4x-演进与-oxia)
+    - [版本时间线](#版本时间线)
+    - [4.0 关键变化](#40-关键变化)
+    - [Oxia 的定位与架构意义](#oxia-的定位与架构意义)
+    - [升级注意事项](#升级注意事项)
+    - [参考来源链接](#参考来源链接)
+  - [1.12.9 Pulsar参考资源](#1129-pulsar参考资源)
     - [官方文档](#官方文档)
     - [生产案例](#生产案例)
     - [学术资源](#学术资源)
@@ -1301,7 +1307,92 @@ public class PulsarOrderProcessor {
 - **代码质量**：类型安全、Schema自动校验，运行时错误减少**70%**
 - **技术演进**：存算分离允许独立升级，技术演进成本降低**60%**
 
-## 1.12.8 Pulsar参考资源
+## 1.12.8 Pulsar 4.x 演进与 Oxia
+
+2024 年起，Apache Pulsar 进入 4.x 主线。该系列在保留 3.x 存算分离、多租户等核心设计的同时，把演进重点放在**可观测性、QoS、运行时安全**以及**元数据存储的去 ZooKeeper 化**上。本节梳理 3.x → 4.0 LTS → 4.1+ 的时间线，并说明 Oxia 作为新一代元数据存储的定位。
+
+### 版本时间线
+
+| 版本 | 发布时间 | 版本性质 | 关键定位 |
+| --- | --- | --- | --- |
+| **Pulsar 3.3.0** | 2024-06-06 | 特性版本 | 4.0 之前的最后一个重要特性窗口，为 4.0 铺路 |
+| **Pulsar 4.0.0** | 2024-10-21 | 第二个 LTS | 引入 Oxia 元数据插件、全量 OpenTelemetry 指标、Alpine/Java 21 容器镜像 |
+| **Pulsar 4.1.0** | 2025-09-09 | 特性版本 | 19 个 PIP；Java 客户端最低要求提升至 Java 17；Broker 缓存与限流增强 |
+| **Pulsar 4.1.x** | 2025 年 Q4 起持续发布 | 补丁版本 | CVE 修复、依赖升级（BookKeeper、Netty、ZooKeeper 等） |
+
+> 注：截至 2026 年 1 月，4.x 的最新可用主线为 4.1.x 补丁系列；后续 4.2/5.0 的功能计划以社区官方发布为准。
+
+### 4.0 关键变化
+
+Pulsar 4.0 是继 3.0 LTS 之后的第二个长期支持版本，核心变化包括：
+
+1. **Oxia 元数据存储插件（PIP-335）**
+   - 新增 `pulsar-metadatastore-oxia` 实现，允许仅依赖 Oxia 启动完整 Pulsar 集群，无需 ZooKeeper。
+   - 不改变现有默认行为，ZooKeeper 用户可继续运行。
+
+2. **全链路 OpenTelemetry 指标（PIP-264）**
+   - Broker 连接、复制、Consumer、Producer、Managed Ledger、Managed Cursor、Schema Registry、事务、Metadata Store 等均接入 OTel。
+   - 支持将 OTel resource attributes 复制为 Prometheus label。
+
+3. **Key_Shared 订阅增强（PIP-379）**
+   - 引入 Draining Hashes 机制，改善按 Key 有序投递在扩缩容、消费者重启时的阻塞问题。
+   - 提供可观测指标帮助定位有序消息卡住根因。
+
+4. **QoS 与限流重构（PIP-322）**
+   - 用统一令牌桶算法替换原先 default/precise 两套限流器，降低 CPU 与锁竞争。
+
+5. **容器镜像升级（PIP-324）**
+   - 官方 Docker 镜像从 Ubuntu 迁移到 Alpine，基础镜像 CVE 从 12 个降至 0。
+   - 默认携带 Java 21 与 Generational ZGC，进一步降低 GC 停顿。
+
+6. **Topic Policies Service 可插拔（PIP-376）**
+   - 允许替换默认的 system-topic 策略后端，为后续元数据存储统一化做准备。
+
+7. **其他重要特性**
+   - PIP-352：基于 Event time 的 Compaction。
+   - PIP-321：Namespace 级别 allowed-cluster 控制。
+   - PIP-368：基于 lookup properties 的 lookup 策略。
+   - PIP-374：Consumer receiverQueue 内消息可见性。
+
+8. **移除与破坏性变更**
+   - 默认不再自动创建分区的 DLQ/Retry Topic（#22705），需要显式创建。
+   - 移除 `DeviationShedder` 负载均衡策略。
+   - 清理 `PersistentSubscription.getStats` 等废弃接口。
+   - Functions 默认不再内置 Java serde 选项（#22832）。
+
+### Oxia 的定位与架构意义
+
+**Oxia** 是 Apache Pulsar 社区推动的元数据与协调系统，现为 CNCF Sandbox 项目。它的 API 模型与 ZooKeeper/Etcd/Chubby 类似（线性化键、会话、临时节点、通知、CAS），但采用**分片（sharded）架构**：每个分片拥有独立的 leader、WAL 与 LSM 状态，协调器（coordinator）负责分片分配与选主，不处于数据路径。
+
+对 Pulsar 而言，Oxia 的架构意义在于：
+
+- **消除单 RSM 瓶颈**：ZooKeeper 的写吞吐与容量受单一 leader 限制；Oxia 可通过增加节点水平扩展。
+- **统一元数据与游标**：在 ZooKeeper 架构中，cursor positions 因写量过大被放在 BookKeeper ledgers 中；Oxia 可直接承载 cursor positions，减少运维面。
+- **支撑超大规模 Topic**：官方文档明确 Oxia 是**新生产集群的推荐元数据存储**，ZooKeeper 仍完全兼容。
+- **保留协调语义**：仍提供会话、临时记录、有序通知、范围扫描、原子序列等分布式系统原语，因此无需在 BookKeeper 之外再维护一套协调服务。
+
+Pulsar 的元数据存储层通过 `MetadataStoreProvider` 抽象，已内置 ZooKeeper、Etcd、RocksDB、内存以及 Oxia 实现，后端切换对上层业务代码透明。
+
+### 升级注意事项
+
+- **4.0 升级路径**：官方建议先升级到 3.0.x 或 3.3.x，再升级到 4.0.0；从 2.x 出发需经 2.10.6/2.11.3 → 3.0.7 → 4.0.0。
+- **可回滚**：Pulsar 4.x 的设计允许升级后在出现问题时回滚到原版本，但必须在测试/预发环境验证具体配置后再上生产。
+- **客户端兼容性**：Pulsar 4.0/4.1 的 Java 客户端可兼容旧集群；4.1 起 **Java 客户端最低要求 Java 17**（PIP-421），升级前需确认应用 JVM 版本。
+- **Oxia 迁移**：4.0/4.1 中 Oxia 是可选后端，新建集群可直接使用；现有 ZooKeeper 集群若需迁移，可关注 PIP-454 迁移框架的后续版本支持。
+- **容器与 JDK**：若使用官方 Docker 镜像，4.0 起基础镜像为 Alpine + Java 21，需检查现有监控、日志、sidecar 镜像的兼容性。
+
+### 参考来源链接
+
+- [Apache Pulsar 4.0.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-4.0.0/)
+- [Announcing Apache Pulsar 4.0（官方博客）](https://pulsar.apache.org/blog/2024/10/24/announcing-apache-pulsar-4-0/)
+- [Apache Pulsar 4.1 发布博客](https://pulsar.apache.org/blog/2025/09/09/announcing-apache-pulsar-4-1/)
+- [Apache Pulsar 3.3.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-3.3.0/)
+- [PIP-335：Support Oxia metadata store plugin](https://github.com/apache/pulsar/blob/master/pip/pip-335.md)
+- [Configure metadata store - Oxia recommended](https://pulsar.apache.org/docs/next/administration-metadata-store/)
+- [Migrate metadata store from ZooKeeper to Oxia](https://pulsar.apache.org/docs/next/administration-metadata-store-migration/)
+- [What is Oxia?（Oxia 官方文档）](https://oxia-db.github.io/docs/what-is-oxia)
+
+## 1.12.9 Pulsar参考资源
 
 ### 官方文档
 
@@ -1331,4 +1422,4 @@ public class PulsarOrderProcessor {
 - **Pulsar开发架构与程序设计深度论证（concept06.md）**：存算分离的技术实现、API设计哲学、多语言支持、性能优化编程模式
 - **Pulsar动态系统论深度分析（concept05.md）**：系统动力学视角、时间维度演化、负载动态响应、故障传播、混沌工程
 
-**最后更新**: 2025-12-31
+**最后更新**: 2026-01-06

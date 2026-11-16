@@ -230,6 +230,12 @@
 - **Kafka**: Log文件按大小或时间切分
 - 便于管理和清理
 
+**Share Group** - 共享组
+
+- **Kafka**: KIP-932（Queues for Kafka）引入，多个消费者协作消费同一分区的不同记录，Broker 按记录跟踪获取/确认/重试状态（`__share_group_state` 内部主题），提供队列语义
+- **状态**: 4.0 Early Access → 4.1 Preview → 4.2 计划 GA
+- **限制**: 不保证分区顺序；需要顺序时仍用传统 Consumer Group + Key 路由
+
 **Subject** - 主题
 
 - **NATS**: 消息路由的主题名称

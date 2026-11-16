@@ -2,6 +2,28 @@
 
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
 
+## [3.2.0] - 2026-01-06
+
+### 前沿对齐与规范体系（第六阶段 · 批次5-9）
+
+**P1 时效性对齐**：
+- ✅ 新增 01-25 Kafka 4.0 专章（ZooKeeper 移除、KIP-848、KIP-932 Share Groups）；修正 01-13 KRaft 时间线事实错误
+- ✅ 01-12 Pulsar 新增 4.x/Oxia 章节；01-15 RabbitMQ 新增 4.x 章节（mirroring 移除、quorum 默认化）；01-17 Redis 扩充至 219 行（Redis 8/AGPLv3）
+- ✅ 新建 01-26 NATS 2.x 专章、01-27 RocketMQ 5.x 专章、01-28 Redpanda 专章、01-29 S3 解耦存储分析（WarpStream/AutoMQ/Tableflow）
+
+**P2 前沿主题补章**：
+- ✅ 新建 01-30 事件互操作标准（CloudEvents/AsyncAPI/OpenMessaging/AMQP 1.0）
+- ✅ 新建 01-31 数据集成与流处理生态（CDC/Debezium、Kafka Connect、Iceberg/Tableflow 湖仓、Flink/流数据库）
+- ✅ 新建 02-47 企业集成模式与事务消息模式（EIP 对齐、Outbox/Inbox/Saga）
+
+**P0 骨架充实**：
+- ✅ 03-39~03-62 共 24 篇骨架文档全部充实至中等密度（24/24 验收达标）
+
+**规范体系建立**：
+- ✅ 新建 AGENTS.md 协作宪法（密度标准、三级置信标注、治理规则、代理协作协议）
+- ✅ 新建 TEMPLATES.md 文档模板（专章/02 设计/03 运维三套模板 + 引用速查）
+- ✅ CONTRIBUTING.md 对齐规范体系；GLOSSARY 新增 Share Group 词条
+
 ## [3.1.0] - 2026-01-06
 
 ### 治理与对齐（第六阶段 · 批次1）
