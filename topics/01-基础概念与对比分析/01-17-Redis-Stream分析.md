@@ -54,7 +54,7 @@ XREADGROUP GROUP mygroup consumer1 STREAMS mystream >
 ## 1.17.3 Redis Stream与Kafka对比
 
 | 维度 | Redis Stream | Kafka |
-|------|-------------|-------|
+| ------ | ------------- | ------- |
 | **吞吐量** | 10-50万 TPS | 100万+ TPS |
 | **延迟** | < 1ms | 5-100ms |
 | **存储** | 内存（可持久化） | 磁盘 |

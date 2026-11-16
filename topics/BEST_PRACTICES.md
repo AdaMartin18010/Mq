@@ -605,7 +605,7 @@ Consumer<byte[]> consumer = pulsarClient.newConsumer()
 **3. 订阅模式选择**:
 
 | 订阅模式 | 适用场景 | 特点 |
-|---------|---------|------|
+| --------- | --------- | ------ |
 | **Exclusive** | 单Consumer场景 | 独占消费，顺序保证 |
 | **Shared** | 多Consumer负载均衡 | 负载均衡，无序 |
 | **Failover** | 高可用场景 | 主备切换，顺序保证 |

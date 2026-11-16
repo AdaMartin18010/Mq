@@ -8,11 +8,11 @@
 - **[总结报告 SUMMARY.md](./SUMMARY.md)** - 完整分析总结报告
 - **[实践指南 PRACTICE_GUIDE.md](./PRACTICE_GUIDE.md)** - 技术选型、架构设计、部署实施、运维管理实践指南
 - **[实施检查清单 IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)** - 从需求分析到运维优化的完整检查清单
-- **[项目状态 PROJECT_STATUS.md](./PROJECT_STATUS.md)** - 项目完成度报告和统计信息
+- **[项目状态 PROJECT_STATUS.md](./PROJECT_STATUS.md)** - 唯一权威状态与统计文档
+- **[演进路线 ROADMAP.md](./ROADMAP.md)** - 四波任务清单与版本追踪基线
 - **[代码示例 examples/](./examples/)** - Kafka/MQTT/NATS客户端代码示例
 - **[配置模板 config-templates/](./config-templates/)** - 生产环境配置模板
 - **[交叉引用 CROSS_REFERENCES.md](./CROSS_REFERENCES.md)** - 按概念、场景、技术、问题查找相关文档
-- **[最终总结 FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** - 项目完成情况总结和价值说明
 - **[更新日志 CHANGELOG.md](./CHANGELOG.md)** - 项目版本更新记录
 - **[首次阅读指南 README_FIRST.md](./README_FIRST.md)** - 新用户快速入门指南
 - **[贡献指南 CONTRIBUTING.md](./CONTRIBUTING.md)** - 如何为项目做贡献

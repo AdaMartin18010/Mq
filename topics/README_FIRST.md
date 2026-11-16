@@ -172,7 +172,7 @@
 
 - **查找内容**：使用 [INDEX.md](./INDEX.md) 或 [CROSS_REFERENCES.md](./CROSS_REFERENCES.md)
 - **查找术语**：使用 [GLOSSARY.md](./GLOSSARY.md)
-- **查看总结**：阅读 [SUMMARY.md](./SUMMARY.md) 或 [FINAL_SUMMARY.md](./FINAL_SUMMARY.md)
+- **查看总结**：阅读 [SUMMARY.md](./SUMMARY.md) 或 [PROJECT_STATUS.md](./PROJECT_STATUS.md)
 
 ## 🎓 下一步
 

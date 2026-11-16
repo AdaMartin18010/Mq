@@ -127,7 +127,7 @@ Consumer → Broker → ReadCache (内存) → EntryLog (顺序读) → Bookie�
 ### 2.1 Pulsar API设计哲学：统一模型 vs Kafka的分离模型
 
 | 维度 | Kafka API设计 | Pulsar API设计 | 论证 |
-|------|---------------|----------------|------|
+| ------ | --------------- | ---------------- | ------ |
 | **核心抽象** | Producer/Consumer分离 | **Producer-Consumer统一** | Pulsar通过`Message`接口统一读写，代码复用度更高 |
 | **订阅模式** | 仅Consumer Group | **Exclusive/Shared/Failover/Key_Shared** | Pulsar原生支持4种订阅，无需额外实现（如Kafka的KSQL） |
 | **消息确认** | Offset自动提交 | **单条Ack vs Cumulative Ack** | Pulsar支持选择性确认，适合重试场景（如死信队列） |
@@ -292,7 +292,7 @@ pulsar-client-java/
 ### 3.2 客户端语言支持矩阵
 
 | 语言 | Kafka客户端 | Pulsar客户端 | Pulsar优势 | 实现质量 |
-|------|-------------|--------------|------------|----------|
+| ------ | ------------- | -------------- | ------------ | ---------- |
 | **Java** | 官方，成熟 | **官方，原生Schema** | Schema自动注册 | ★★★★★ |
 | **Python** | confluent-kafka (C扩展) | **pulsar-client (C++绑定)** | 无GIL限制，性能高 | ★★★★☆ |
 | **Go** | sarama/segmentio | **pulsar-client-go (纯Go)** | 无CGO依赖，易交叉编译 | ★★★★★ |
@@ -500,7 +500,7 @@ producer = client.newProducer()
 **压缩效率对比**（基于）：
 
 | 算法 | Kafka压缩率 | Pulsar压缩率 | Pulsar优势 |
-|------|-------------|--------------|------------|
+| ------ | ------------- | -------------- | ------------ |
 | GZIP | 60% | 60% | 相同 |
 | LZ4 | 75% | **80%** | Pulsar批量更大，字典效果更好 |
 | ZSTD | 70% | **75%** | Pulsar支持训练字典 |
