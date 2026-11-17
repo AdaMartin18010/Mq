@@ -611,7 +611,7 @@ Consumer<byte[]> consumer = pulsarClient.newConsumer()
 | **Failover** | 高可用场景 | 主备切换，顺序保证 |
 | **Key_Shared** | 按Key有序 | Key有序，负载均衡 |
 
-**参考**: [Pulsar Performance Tuning](https://pulsar.apache.org/docs/performance-tuning/)
+**参考**: [Pulsar Performance Tuning](https://pulsar.apache.org/docs/)
 
 ---
 
@@ -639,7 +639,7 @@ pulsar-admin namespaces set-backlog-quota tenant/ns \
   --limit 10GB --policy producer_request_hold
 ```
 
-**参考**: [BookKeeper Configuration](https://bookkeeper.apache.org/docs/4.15.0/reference/config/)
+**参考**: [BookKeeper Configuration](https://bookkeeper.apache.org/docs/latest/)
 
 ---
 

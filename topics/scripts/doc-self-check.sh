@@ -130,6 +130,33 @@ if [ "$MODE" = "--skill-drift" ] || [ "$MODE" = "full" ]; then
   fi
 fi
 
+# ---------- 11. 外链健康巡检 (WARN, full 模式；403/超时跳过，仅 404/410 告警；并行 8) ----------
+if [ "$MODE" = "full" ]; then
+  echo "--- 外链巡检（仅 404/410 告警；403 与超时跳过；并行 8）"
+  grep -rhoE '\]\(https?://[^)[:space:]]+\)' --include='*.md' topics README.md 2>/dev/null | \
+    sed -E 's/^\]\(//; s/\)$//' | sort -u > _urls_tmp.txt
+  url_count=$(wc -l < _urls_tmp.txt)
+  echo "--- 共 $url_count 个唯一外链（检查上限 300）"
+  head -300 _urls_tmp.txt | xargs -P 8 -I {} bash -c '
+    url="{}"
+    code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 -L -I "$url" 2>/dev/null || echo "000")
+    if [ "$code" = "405" ] || [ "$code" = "501" ] || [ "$code" = "404" ]; then
+      # HEAD 404 可能是站点拒 HEAD（如 csrc.nist.gov）——GET 复核
+      get_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 -L "$url" 2>/dev/null || echo "000")
+      [ "$get_code" != "404" ] && [ "$get_code" != "410" ] && code="$get_code"
+    fi
+    case "$code" in
+      404|410) echo "BADCURL ${code} $url" ;;
+    esac
+  ' > _badurls_tmp.txt 2>/dev/null
+  while IFS= read -r line; do
+    warn "外链失效: $(echo "$line" | cut -d" " -f2-)（$(echo "$line" | cut -d" " -f1)）"
+  done < _badurls_tmp.txt
+  checked=$(( $(head -300 _urls_tmp.txt | wc -l) ))
+  rm -f _urls_tmp.txt _badurls_tmp.txt
+  echo "--- 外链巡检完成（检查 $checked 个）"
+fi
+
 # ---------- 汇总 ----------
 echo "============================="
 echo "ERROR=$ERRORS WARN=$WARNS"

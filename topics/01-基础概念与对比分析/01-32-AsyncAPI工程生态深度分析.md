@@ -244,7 +244,7 @@ Mock 的价值在测试体系中的位置：对应 TEST-03 的契约用例（TC-
 - [AsyncAPI Generator 官方页](https://asyncapi.com/tools/generator)
 - [AsyncAPI Modelina 官方页](https://asyncapi.com/tools/modelina)、[modelina.org](https://modelina.org/)
 - [AsyncAPI CLI 文档](https://www.asyncapi.com/docs/tools/cli)
-- [Spectral AsyncAPI 规则集](https://docs.stoplight.io/docs/spectral)
+- [Spectral AsyncAPI 规则集](https://github.com/stoplightio/spectral)
 - 项目内：[01-30 事件互操作标准分析](./01-30-事件互操作标准分析.md)、[02-48 契约设计工作流与事件 API 治理](../02-场景驱动架构设计/02-48-契约设计工作流与事件API治理.md)、[TEST-03 集成测试用例](../Testing/TEST-03-集成测试用例.md)
 
 ---

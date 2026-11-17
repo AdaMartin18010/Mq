@@ -144,7 +144,7 @@ Pulsar架构（分离）：
 **参考来源**：
 
 - [Pulsar Architecture](https://pulsar.apache.org/docs/concepts-architecture-overview/)
-- [BookKeeper Architecture](https://bookkeeper.apache.org/docs/4.15.0/overview/)
+- [BookKeeper Architecture](https://bookkeeper.apache.org/docs/latest/)
 
 ---
 
@@ -335,7 +335,7 @@ Topic → Consumer-1 (Key=A的消息)
 
 **参考来源**：
 
-- [BookKeeper Overview](https://bookkeeper.apache.org/docs/4.15.0/overview/)
+- [BookKeeper Overview](https://bookkeeper.apache.org/docs/latest/)
 
 ---
 
@@ -360,7 +360,7 @@ Topic → Consumer-1 (Key=A的消息)
 
 **参考来源**：
 
-- [Pulsar Performance Tuning](https://pulsar.apache.org/docs/performance-tuning/)
+- [Pulsar Performance Tuning](https://pulsar.apache.org/docs/)
 
 ---
 
@@ -1390,8 +1390,8 @@ Pulsar 的元数据存储层通过 `MetadataStoreProvider` 抽象，已内置 Zo
 - [Apache Pulsar 4.1 发布博客](https://pulsar.apache.org/blog/2025/09/09/announcing-apache-pulsar-4-1/)
 - [Apache Pulsar 3.3.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-3.3.0/)
 - [PIP-335：Support Oxia metadata store plugin](https://github.com/apache/pulsar/blob/master/pip/pip-335.md)
-- [Configure metadata store - Oxia recommended](https://pulsar.apache.org/docs/next/administration-metadata-store/)
-- [Migrate metadata store from ZooKeeper to Oxia](https://pulsar.apache.org/docs/next/administration-metadata-store-migration/)
+- [Configure metadata store - Oxia recommended](https://pulsar.apache.org/docs/)
+- [Migrate metadata store from ZooKeeper to Oxia](https://pulsar.apache.org/docs/)
 - [What is Oxia?（Oxia 官方文档）](https://oxia-db.github.io/docs/what-is-oxia)
 
 ## 1.12.9 Pulsar参考资源
@@ -1400,7 +1400,7 @@ Pulsar 的元数据存储层通过 `MetadataStoreProvider` 抽象，已内置 Zo
 
 - **Pulsar官方文档**: [Apache Pulsar Documentation](https://pulsar.apache.org/docs/)
 - **BookKeeper官方文档**: [Apache BookKeeper Documentation](https://bookkeeper.apache.org/docs/)
-- **Pulsar性能调优**: [Performance Tuning Guide](https://pulsar.apache.org/docs/performance-tuning/)
+- **Pulsar性能调优**: [Performance Tuning Guide](https://pulsar.apache.org/docs/)
 
 ### 生产案例
 
