@@ -11,6 +11,7 @@
   - [测试脚本](#测试脚本)
     - [性能测试](#性能测试)
     - [故障注入测试](#故障注入测试)
+    - [自我验证脚本](#自我验证脚本)
   - [运维脚本](#运维脚本)
     - [健康检查](#健康检查)
     - [故障诊断](#故障诊断)
@@ -148,6 +149,15 @@
 - **文件**: `chaos-test.sh`
 - **用法**: `./chaos-test.sh [kafka|nats|rabbitmq] [network|partition|disk]`
 - **说明**: 故障注入测试（混沌工程）
+
+### 自我验证脚本
+
+- **文件**: `doc-self-check.sh`
+- **用法**: `./doc-self-check.sh [quick|full|--skill-drift]`
+- **说明**: 知识库规范自检（TEST-06 配套）：禁用表述/归档引用/死链/定位声明/INDEX 登记/密度/技能漂移；ERROR≠0 时退出码 1
+- **文件**: `mq-smoke-test.sh`
+- **用法**: `./mq-smoke-test.sh [kafka|nats|rabbitmq|redis|mqtt|pulsar|all]`
+- **说明**: 容器冒烟测试（TEST-02 精简版）：起容器→生产消费往返→清理；无 Docker 自动 SKIP
 
 ## 运维脚本
 

@@ -1,0 +1,41 @@
+# Spectral AsyncAPI 治理规则集（项目模板）
+# 用法: spectral lint <文档>.yaml --ruleset topics/config-templates/spectral-asyncapi-ruleset.yaml
+extends: spectral:asyncapi
+rules:
+  message-payload-schema-required:
+    description: 每个 message 必须定义 payload schema
+    message: "message 缺少 payload schema"
+    severity: error
+    given: $.components.messages.*
+    then:
+      field: payload
+      function: truthy
+
+  channel-binding-required:
+    description: 每个 channel 必须声明协议绑定
+    message: "channel 缺少 bindings（kafka/mqtt/...）"
+    severity: error
+    given: $.channels.*
+    then:
+      field: bindings
+      function: truthy
+
+  kafka-replication-minimum:
+    description: Kafka 通道副本数不得低于 2（03-16 可用性基线）
+    message: "replicationFactor 应 >= 2"
+    severity: warn
+    given: $.channels.*.bindings.kafka
+    then:
+      field: replicationFactor
+      function: pattern
+      functionOptions:
+        match: "^[2-9]"
+
+  trace-header-recommended:
+    description: 消息 headers 建议包含 trace-id（02-23 追踪设计）
+    message: "建议声明 trace-id header"
+    severity: warn
+    given: $.components.messages.*
+    then:
+      field: headers.properties.trace-id
+      function: truthy

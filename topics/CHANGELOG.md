@@ -2,24 +2,66 @@
 
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
 
+## [3.4.0] - 2026-11-17
+
+### 批次13：首批 Agent Skills 制作 + 批次编排确认
+
+**首批技能（skills/ 目录，7 个，串行制作）**：
+- ✅ `mq-selection`（选型论证）：SKILL.md + 决策树/选型矩阵 references 切片（源 01-03/01-19/01-20）
+- ✅ `mq-doc-lint`（治理自检）：薄封装脚本挂接 topics/scripts/doc-self-check.sh
+- ✅ `mq-ops-kafka-upgrade`（升级操作）：含 version-facts 时效切片 + 预检脚本
+- ✅ `mq-pattern-dlq` / `mq-ops-dlq`（DLQ 论证/操作互链对）：含六系统对比切片与 redrive 骨架
+- ✅ `mq-mqtt-deep-dive` / `mq-nats-deep-dive`（系统顾问）：5.0 特性与 JetStream 事实切片
+- ✅ 验收：frontmatter/目录名/预算 7/7 过；`doc-self-check.sh --skill-drift` 对账通过（并修复其多行 source-doc 解析缺陷）；技能登记表入 AI_Skill/README
+
+**批次编排确认（写入 ROADMAP 批次13~19）**：技能 → AsyncAPI 专批 → 版本基线 → 严谨性两半 → 深度补齐 → 结构治理；WARN 随批顺手修。
+
+## [3.3.0] - 2026-11-17
+
+### AI 技能体系与测试验证体系（第六阶段 · 批次12）
+
+**AI_Skill 技能体系（对齐国际开放标准）**：
+
+- ✅ 新建 topics/AI_Skill/ 系列 5 篇 + README：国际 Agent Skills 标准与生态对齐（核实至 2026-11：2025-12-18 开放规范、2026-10-22 捐赠 AAIF、70+ 平台）、项目主题技能图谱（六技能域 + 国际子主题对齐矩阵）、技能制作规范（AGENTS.md 扩展 + 安全红线）、模板与模型（3 模板 + 3 成品样例）、用例与用法（6 标准用例 + 评估方法）
+
+**Testing 测试验证体系**：
+
+- ✅ 新建 topics/Testing/ 系列 6 篇 + README：五层测试策略与权威锚点（Jepsen/TLA+/Testcontainers/Toxiproxy/Chaos Mesh，引用而非自造）、部署用例 TC-DEP-01~16、集成用例 TC-INT-01~12、集群用例 TC-CLU-01~10、失败纠正与修正机制（P/T/E/D/B 分类学 + 隔离降级 + 文档-测试同步修正）、自我验证机制说明
+
+**自我验证机制（P4 提前落地）**：
+
+- ✅ 新建 topics/scripts/doc-self-check.sh：规范自检三模式（quick/full/--skill-drift），覆盖禁用表述/归档引用/死链/定位声明/INDEX 登记/密度/技能漂移；2026-11-17 自检 ERROR=0
+- ✅ 新建 topics/scripts/mq-smoke-test.sh：六系统容器冒烟（kafka/nats/rabbitmq/redis/mqtt/pulsar/all），trap 保证清理，无 Docker 自动 SKIP
+
+**存量合规修复**：
+
+- ✅ 02/03 系列存量 58 篇补齐"本文档定位"声明（硬性分工合规，自检强制）
+- ✅ 元数据四件套同步：INDEX（新增两系列登记 + 统计 410）、PROJECT_STATUS（156 主题文档 + 质量保证更新）、ROADMAP（P5 批次12 + P4 检查脚本勾记）
+
+**挂账（WARN，后续批次清偿）**：存量文档代码块语言标注约 120 处、部分文档"最后更新"日期缺失——见 doc-self-check.sh full 输出。
+
 ## [3.2.0] - 2026-01-06
 
 ### 前沿对齐与规范体系（第六阶段 · 批次5-9）
 
 **P1 时效性对齐**：
+
 - ✅ 新增 01-25 Kafka 4.0 专章（ZooKeeper 移除、KIP-848、KIP-932 Share Groups）；修正 01-13 KRaft 时间线事实错误
 - ✅ 01-12 Pulsar 新增 4.x/Oxia 章节；01-15 RabbitMQ 新增 4.x 章节（mirroring 移除、quorum 默认化）；01-17 Redis 扩充至 219 行（Redis 8/AGPLv3）
 - ✅ 新建 01-26 NATS 2.x 专章、01-27 RocketMQ 5.x 专章、01-28 Redpanda 专章、01-29 S3 解耦存储分析（WarpStream/AutoMQ/Tableflow）
 
 **P2 前沿主题补章**：
+
 - ✅ 新建 01-30 事件互操作标准（CloudEvents/AsyncAPI/OpenMessaging/AMQP 1.0）
 - ✅ 新建 01-31 数据集成与流处理生态（CDC/Debezium、Kafka Connect、Iceberg/Tableflow 湖仓、Flink/流数据库）
 - ✅ 新建 02-47 企业集成模式与事务消息模式（EIP 对齐、Outbox/Inbox/Saga）
 
 **P0 骨架充实**：
+
 - ✅ 03-39~03-62 共 24 篇骨架文档全部充实至中等密度（24/24 验收达标）
 
 **规范体系建立**：
+
 - ✅ 新建 AGENTS.md 协作宪法（密度标准、三级置信标注、治理规则、代理协作协议）
 - ✅ 新建 TEMPLATES.md 文档模板（专章/02 设计/03 运维三套模板 + 引用速查）
 - ✅ CONTRIBUTING.md 对齐规范体系；GLOSSARY 新增 Share Group 词条

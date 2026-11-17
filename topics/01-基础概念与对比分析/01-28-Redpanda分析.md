@@ -5,11 +5,29 @@
 ## 目录
 
 - [1.28 Redpanda 分析](#128-redpanda-分析)
+  - [目录](#目录)
   - [1.28.1 Redpanda 定位与架构](#1281-redpanda-定位与架构)
+    - [产品定位](#产品定位)
+    - [架构图](#架构图)
+    - [关键架构特性](#关键架构特性)
   - [1.28.2 版本演进与关键特性](#1282-版本演进与关键特性)
+    - [版本时间线](#版本时间线)
+    - [核心特性详解](#核心特性详解)
+      - [1. WASM 数据转换](#1-wasm-数据转换)
+      - [2. 分层存储（Tiered Storage）](#2-分层存储tiered-storage)
+      - [3. Iceberg / 湖仓集成](#3-iceberg--湖仓集成)
   - [1.28.3 Redpanda vs Kafka](#1283-redpanda-vs-kafka)
+    - [架构与运维对比](#架构与运维对比)
+    - [生态与许可证对比](#生态与许可证对比)
+    - [性能数据参考](#性能数据参考)
   - [1.28.4 部署与配置示例](#1284-部署与配置示例)
+    - [单节点快速启动](#单节点快速启动)
+    - [生产配置片段](#生产配置片段)
+    - [常用 rpk 运维命令](#常用-rpk-运维命令)
   - [1.28.5 适用场景与选型建议](#1285-适用场景与选型建议)
+    - [优先考虑 Redpanda 的场景](#优先考虑-redpanda-的场景)
+    - [建议继续选择 Kafka 的场景](#建议继续选择-kafka-的场景)
+    - [迁移提示](#迁移提示)
   - [1.28.6 参考来源](#1286-参考来源)
 
 ---
@@ -26,7 +44,7 @@
 - ✅ **无 JVM 与 GC**：C++ 实现，消除 JVM 堆调优和垃圾回收停顿带来的尾延迟
 - ✅ **无外部协调服务**：内置 Raft 共识，不需要 ZooKeeper 或独立的 KRaft controller quorum
 - ✅ **Kafka 协议兼容**：多数 Kafka 客户端、连接器、管理工具仅需修改 `bootstrap.servers`
-- ✅ ** thread-per-core**：基于 Seastar 框架，每 CPU 核心绑定一个线程，共享无状态设计
+- ✅ **thread-per-core**：基于 Seastar 框架，每 CPU 核心绑定一个线程，共享无状态设计
 
 ### 架构图
 
@@ -64,7 +82,7 @@
 | 2021 | 21.x | 早期 GA，单二进制、WASM Data Transforms Tech Preview、Tiered Storage Tech Preview |
 | 2022-2023 | 22.x-23.x | 分层存储逐步成熟、多 AZ 容灾、企业级安全特性 |
 | 2024 | 24.x | 性能持续优化、Redpanda Console 强化、云产品扩展 |
-| 2025 | 25.x | **Iceberg Topics GA**、Databricks Unity Catalog 集成、Redpanda Connect GA、Shadowing（跨集群 DR）|
+| 2025 | 25.x | **Iceberg Topics GA**、Databricks Unity Catalog 集成、Redpanda Connect GA、Shadowing（跨集群 DR） |
 | 2026 | 25.3+ | 新版 Admin API（ConnectRPC）、Topic UUID（KIP-516）、Iceberg REST catalog 扩展 |
 
 ### 核心特性详解
@@ -149,7 +167,7 @@ rpk cluster config get iceberg_catalog_config
 | **Kafka Connect** | 兼容多数 connector | 原生最完整 | Redpanda 需验证 broker-specific API |
 | **Kafka Streams/ksqlDB** | 可运行，但非原生 | 原生 | Redpanda 更适合作为后端 broker |
 | **KIP-848 新消费组协议** | 不支持/未声明 | Kafka 4.0 GA | 新协议带来增量再均衡 |
-| **KIP-932 Share Groups** | 不支持/未声明 | Kafka 4.1 Preview / 4.2 GA（路线图）| 队列语义差距显著 |
+| **KIP-932 Share Groups** | 不支持/未声明 | Kafka 4.1 Preview / 4.2 GA（路线图） | 队列语义差距显著 |
 | **云托管服务** | Redpanda Cloud | MSK、Confluent Cloud、Aiven 等 | Kafka 选择更多 |
 | **社区与生态成熟度** | 快速增长 | 10 年以上积累 | Kafka 生态仍最丰富 |
 

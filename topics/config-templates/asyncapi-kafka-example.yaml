@@ -1,0 +1,69 @@
+# AsyncAPI 3.x Kafka 契约模板（订单事件示例）
+# 用法: asyncapi validate asyncapi-kafka-example.yaml && spectral lint 本文件
+# 参考: topics/01-基础概念与对比分析/01-32-AsyncAPI工程生态深度分析.md
+asyncapi: '3.0.0'
+info:
+  title: 订单事件契约（示例）
+  version: 1.0.0
+  description: 订单域事件契约模板，演示 channel/operation/message/binding 的标准写法
+
+servers:
+  prod-kafka:
+    host: 'kafka:9092'
+    protocol: kafka
+    description: 生产集群（模板值，按环境替换）
+
+channels:
+  orders.order.created:
+    address: orders.order.created
+    messages:
+      OrderCreated:
+        $ref: '#/components/messages/OrderCreated'
+    bindings:
+      kafka:
+        partitions: 3        # 与 02-27 分区设计衔接
+        replicationFactor: 3 # 与 03-16 基线衔接
+  orders.order.dlq:
+    address: orders.order.dlq
+    messages:
+      OrderCreated:
+        $ref: '#/components/messages/OrderCreated'
+    bindings:
+      kafka: {}
+    description: 死信通道（02-17 DLQ 模式的契约表达）
+
+operations:
+  publishOrderCreated:
+    action: send
+    channel:
+      $ref: '#/channels/orders.order.created'
+  subscribeOrderCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/orders.order.created'
+
+components:
+  messages:
+    OrderCreated:
+      name: OrderCreated
+      title: 订单已创建
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string, description: 追踪 ID（02-23） }
+          idempotency-key: { type: string, description: 幂等键（02-25） }
+      payload:
+        $ref: '#/components/schemas/OrderCreatedEvent'
+      contentType: application/json
+
+  schemas:
+    OrderCreatedEvent:
+      type: object
+      required: [orderId, amount, occurredAt]
+      properties:
+        orderId: { type: string }
+        amount: { type: number }
+        currency: { type: string, default: CNY }
+        occurredAt: { type: string, format: date-time }
+        # 演进规则（02-35）：只加可选字段；删字段/改类型走 major 评审

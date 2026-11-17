@@ -112,7 +112,7 @@
 
 **存储与计算分离架构**：
 
-```
+```text
 传统架构（Kafka）：
 ┌─────────────────┐
 │   Broker-1      │
@@ -150,7 +150,7 @@ Pulsar架构（分离）：
 
 **多租户模型**：
 
-```
+```text
 Tenant（租户）
   └── Namespace（命名空间）
       └── Topic（主题）
@@ -270,7 +270,7 @@ pulsar-admin topics create-partitioned-topic \
 
 **订阅模式对比**：
 
-```
+```text
 Exclusive订阅：
 Topic → Consumer-1 (独占)
       → Consumer-2 (等待)
@@ -300,7 +300,7 @@ Topic → Consumer-1 (Key=A的消息)
 
 **BookKeeper架构**：
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │         BookKeeper集群                  │
 │    ┌──────────┐  ┌──────────┐          │

@@ -1,0 +1,56 @@
+# AsyncAPI 3.x MQTT 契约模板（设备遥测示例）
+# 用法: asyncapi validate asyncapi-mqtt-example.yaml
+asyncapi: '3.0.0'
+info:
+  title: 设备遥测契约（示例）
+  version: 1.0.0
+  description: IoT 设备遥测契约模板，演示 MQTT 绑定与 QoS/保留消息声明
+
+servers:
+  prod-mqtt:
+    host: 'broker:1883'
+    protocol: mqtt
+    description: 生产 broker（模板值）
+
+channels:
+  sensors.temperature:
+    address: sensors/{siteId}/{deviceId}/temperature
+    parameters:
+      siteId: { description: 站点 ID }
+      deviceId: { description: 设备 ID }
+    messages:
+      TemperatureReading:
+        $ref: '#/components/messages/TemperatureReading'
+    bindings:
+      mqtt:
+        qos: 1              # 至少一次（01-16 QoS 语义）
+        retain: false
+        expiryInterval: 300 # 消息过期秒数（MQTT 5.0 Message Expiry）
+
+operations:
+  publishTelemetry:
+    action: send
+    channel:
+      $ref: '#/channels/sensors.temperature'
+
+components:
+  messages:
+    TemperatureReading:
+      name: TemperatureReading
+      headers:
+        type: object
+        properties:
+          trace-id: { type: string }
+      payload:
+        $ref: '#/components/schemas/TelemetryPayload'
+      contentType: application/json
+
+  schemas:
+    TelemetryPayload:
+      type: object
+      required: [value, unit, collectedAt]
+      properties:
+        value: { type: number }
+        unit: { type: string, enum: [C, F] }
+        collectedAt: { type: string, format: date-time }
+        battery: { type: number, description: 可选：设备电量 }
