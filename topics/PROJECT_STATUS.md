@@ -13,15 +13,15 @@
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 192 | 01系列52篇 + 02系列58篇 + 03系列65篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列7篇 |
+| **主题文档** | 195 | 01系列52篇 + 02系列58篇 + 03系列65篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列10篇 |
 | **主题README** | 7 | 6个主题目录说明 + topics/README.md（含 concept 映射表） |
 | **元文档** | 18 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
-| **运维脚本** | 111 | 含 scripts/README；部署、监控、巡检、告警质量周检、演练、自检（含外链巡检） |
+| **运维脚本** | 112 | 含 scripts/README；部署、监控、巡检、告警质量周检、演练、自检（含外链巡检）+ test-harness 执行框架、test-registry 注册表、doc-coverage-check 覆盖检查 |
 | **Agent Skills** | 17 文件 | skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **476** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
+| **总计** | **482** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
 
 ### 各系列主题文件分布
 
@@ -30,7 +30,7 @@
 - **03-架构与运维实践（65篇）**：部署/成本/故障/可观测性/SRE/集群/K8s（03-01~03-14）+ 专项运维指南（03-15~03-38）+ 专项与消息运维实践指南（03-39~03-62，与02系列一一对应）+ 03-63 可观测与自治运维、03-64 跨地域运维、03-65 成本归集（盲区批次）
 - **04-动态系统论与演化分析（5篇）**：系统动力学、时间演化、负载响应与故障传播、混沌工程、动态选型决策
 - **AI_Skill-AI技能体系与国际标准对齐（5篇，2026-11 新增）**：Agent Skills 开放标准对齐、项目技能图谱、制作规范、模板与模型、用例与用法（对齐 agentskills.io，AAIF 治理）
-- **Testing-测试验证与修正（6篇，2026-11 新增）**：测试分层策略、部署/集成/集群用例库、纠正与修正机制、自我验证脚本说明
+- **Testing-测试验证与修正（10篇，2026-11-18 扩编）**：测试分层策略、部署/集成/集群用例库、纠正与修正机制、自我验证脚本说明、可观测用例库（TC-OBS）+ 文档用例脚本映射矩阵与覆盖规划（TEST-08）、执行计划与环境矩阵（TEST-09，E0-E3 环境移交 hermes 执行）、用例编写与执行规范（TEST-10）
 
 ### 元文档清单（25个）
 
@@ -70,6 +70,7 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次27-33 国际标准对齐（2026-11-18：AsyncAPI 组织级应用/EIP 全目录/云模式目录/应用层流协议/设计方法论与契约模板/工作流编排/JMS-AMQP，8 文档 + 3 模板，全部 WebSearch 核实）
 - ✅ 批次34-39 DSL 契约体系（2026-11-18：设计→DSL 转换/表达力边界与等价转换/Spec-Driven 体系/IT 通用契约模式库/产业域标准/IoT 互联网域标准，6 文档 + 3 模板）
 - ✅ 批次40-46 深度主题补全（2026-11-18：事件溯源+CQRS/Serverless/平台工程/零信任安全/OTel 语义/多云边缘联邦/客户端生态，8 文档）
+- ✅ 测试体系规划化（2026-11-18：TEST-08 映射矩阵/TEST-09 执行计划 E0-E3/TEST-10 规范 + test-registry.tsv 注册表 127 条 + test-harness.sh 执行框架 + doc-coverage-check.sh 覆盖检查；执行移交本地 hermes，文档族覆盖 61/64=95.3%）
 
 ---
 

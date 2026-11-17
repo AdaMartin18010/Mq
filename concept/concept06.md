@@ -511,7 +511,7 @@ producer = client.newProducer()
 
 ### 6.1 技术选型决策树（开发者视角）
 
-```
+```text
 需求：构建消息中台，支持多业务线，团队50人，Java为主
     ↓
 ┌─ 选择Kafka？

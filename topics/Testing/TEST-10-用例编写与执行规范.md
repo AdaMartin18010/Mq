@@ -60,7 +60,7 @@ ID 分配示例：
 - **失败处置**: 按 TEST-05 分类预设（P/T/E/D/B）
 - **环境标签**: E0/E1/E2/E3
 - **对应脚本**: ./topics/scripts/xxx.sh
-- **对应文档**: [XX-XX-名称](../XX-系列/XX-XX-名称.md)
+- **对应文档**: `XX-XX-名称.md`（填写实际被验证的文档路径，如 `../02-场景驱动架构设计/02-14-消息去重策略.md`）
 ````
 
 字段说明：
@@ -201,7 +201,7 @@ SKIP 清单: TC-CLU-07(E3 缺失), TC-OBS-08(KEDA 未安装)
 
 ## T.10.7 参考来源
 
-- 项目内：[TEST-05](TEST-05-测试纠正与修正机制.md)、[TEST-06](TEST-06-自我验证机制与脚本说明.md)、[TEST-08](TEST-08-测试覆盖矩阵.md)、[TEST-09](TEST-09-测试执行计划与环境矩阵.md)、[AGENTS.md](../../AGENTS.md) §3.2
+- 项目内：[TEST-05](TEST-05-测试纠正与修正机制.md)、[TEST-06](TEST-06-自我验证机制与脚本说明.md)、[TEST-08](TEST-08-文档用例脚本映射矩阵与覆盖规划.md)、[TEST-09](TEST-09-测试执行计划与环境矩阵.md)、[AGENTS.md](../../AGENTS.md) §3.2
 - 外部：[ShellCheck Bash 严格模式指南](https://www.shellcheck.net/)、[POSIX 退出码约定](https://tldp.org/LDP/abs/html/exitcodes.html)
 
 ---

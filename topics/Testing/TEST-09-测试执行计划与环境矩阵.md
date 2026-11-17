@@ -193,7 +193,7 @@ results/
 
 ## T.09.7 参考来源
 
-- 项目内：[TEST-01](TEST-01-测试体系总览与分层策略.md)、[TEST-02](TEST-02-运维部署测试用例.md)、[TEST-04](TEST-04-集群测试验证.md)、[TEST-06](TEST-06-自我验证机制与脚本说明.md)、[TEST-08](TEST-08-测试覆盖矩阵.md)、[TEST-10](TEST-10-用例编写与执行规范.md)、[config-templates/](../config-templates/)
+- 项目内：[TEST-01](TEST-01-测试体系总览与分层策略.md)、[TEST-02](TEST-02-运维部署测试用例.md)、[TEST-04](TEST-04-集群测试验证.md)、[TEST-06](TEST-06-自我验证机制与脚本说明.md)、[TEST-08](TEST-08-文档用例脚本映射矩阵与覆盖规划.md)、[TEST-10](TEST-10-用例编写与执行规范.md)、[config-templates/](../config-templates/)
 - 外部：[Podman 官方文档](https://docs.podman.io/)、[Docker Compose 规范](https://docs.docker.com/compose/)、[kind 快速开始](https://kind.sigs.k8s.io/docs/user/quick-start/)
 
 ---

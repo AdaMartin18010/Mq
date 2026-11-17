@@ -5,7 +5,7 @@
 ## 对比矩阵
 
 | 系统 | 内建死信 | 触发方式 | 典型实现 | 运维负担 |
-|------|:---:|----------|----------|:---:|
+| ------ | :---: | ---------- | ---------- | :---: |
 | Kafka | ❌ | 消费失败计数超限 | 重试 topic 分层（biz→biz.retry→biz.dlq）+ 应用侧转移 | 高 |
 | NATS JetStream | ⚠️ | `MaxDeliver` 用尽 | Nak 触发重投；用尽后依赖 `advisories` 捕获转存 | 中 |
 | RabbitMQ | ✅ | 拒绝/TTL 过期/队列超限 | `x-dead-letter-exchange` + `x-message-ttl` | 低 |
@@ -16,19 +16,23 @@
 ## 关键机制要点
 
 ### Kafka（02-17.2）
+
 - 处理失败 → 转发 `dlq-<topic>` 并提交位点（防阻塞主流程）。
 - 分层重试：`biz.retry.10s/30s/5m` 带延迟转发；顶层 `biz.dlq` 长期保留。
 - 死信 topic 同样受保留策略约束，监控其深度与最老消息年龄。
 
 ### RabbitMQ（02-17.4）
+
 - 声明队列时加参数：`x-dead-letter-exchange`、`x-dead-letter-routing-key`、`x-message-ttl`、`x-max-length`。
 - 死信触发三路径：消费者 nack/reject（requeue=false）、消息 TTL 过期、队列长度超限。
 
 ### NATS JetStream（02-17.3）
+
 - `MaxDeliver` 控制最大投递次数；消费者 Nak 触发重投，用尽后消息停留并被 advisory 通知。
 - 需自行消费 `$JS.EVENT.ADVISORY.CONSUMER.MAX_DELIVERIES.<stream>.<consumer>` 转存死信。
 
 ### Pulsar（源文档 01-12/02-17 口径）
+
 - 订阅级重试策略：自动重试 topic（间隔可配）→ 耗尽进死信 topic；死信可被独立消费。
 
 ## 重试上限取值参考【估算】

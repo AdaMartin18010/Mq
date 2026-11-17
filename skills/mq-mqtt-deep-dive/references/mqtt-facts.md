@@ -5,7 +5,7 @@
 ## 核心特性（5.0 vs 3.1.1）
 
 | 特性 | 语义 | 典型用途 |
-|------|------|----------|
+| ------ | ------ | ---------- |
 | Reason Code | 细粒度 ACK/错误码（CONNACK/PUBACK/SUBACK 等） | 可诊断的错误处理 |
 | User Properties | 自定义键值对元数据 | trace-id、业务元数据、路由标签 |
 | Shared Subscription | `$share/{group}/{filter}` 组内负载均衡 | 消费者水平扩展 |

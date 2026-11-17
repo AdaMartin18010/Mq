@@ -93,11 +93,15 @@ while IFS=$'\t' read -r -a cols; do
 
   fam="${cols[4]}"
   [[ -z "$fam" ]] && continue
+  row_status="${cols[5]:-}"
 
   if [[ -z "${FAMILY_COV[$fam]+x}" ]]; then
     FAMILIES+=("$fam")
     FAMILY_COV[$fam]=0
   fi
+
+  # pending（待补缺口）行不纳入覆盖统计：族被登记为已知，但保持未覆盖状态
+  [[ "$row_status" == "pending" ]] && continue
 
   IFS=',' read -r -a tokens <<< "$fam"
   for tok in "${tokens[@]}"; do

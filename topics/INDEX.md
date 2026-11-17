@@ -549,6 +549,9 @@
 - [TEST-06-自我验证机制与脚本说明](./Testing/TEST-06-自我验证机制与脚本说明.md)
   - doc-self-check.sh / mq-smoke-test.sh 用法、CI 集成、处置流程
 - [TEST-07-可观测与自治能力测试用例](./Testing/TEST-07-可观测与自治能力测试用例.md)
+- [TEST-08-文档用例脚本映射矩阵与覆盖规划](./Testing/TEST-08-文档用例脚本映射矩阵与覆盖规划.md) - 文档→用例→脚本三层映射、验证方式分类、覆盖统计口径、缺口清单
+- [TEST-09-测试执行计划与环境矩阵](./Testing/TEST-09-测试执行计划与环境矩阵.md) - E0-E3 四级环境矩阵（Git Bash/Podman/Docker/K8s）、执行频率、hermes 任务包格式、结果归档
+- [TEST-10-用例编写与执行规范](./Testing/TEST-10-用例编写与执行规范.md) - TC 编号规范、用例模板、脚本退出码与输出规范、PASS/FAIL/SKIP 判定、统计口径
   - 监测/告警/自动伸缩/自愈用例（TC-OBS-01~12）、SLO 燃尽校准、护栏负向用例
 
 ## 按场景查找
@@ -661,13 +664,13 @@
 
 ---
 
-**最后更新**: 2026-11-17
-**文件总数**: 433个（已核实：158个主题文档 + 7个主题README + 18个元文档 + 53个代码示例 + 61个配置模板 + 110个运维脚本文件 + skills/ 17个技能文件等，另有根目录 README/AGENTS.md/LICENSE 与 concept/ 6篇）
-**项目完成度**: 约85%（广度与前沿覆盖完整；AI 技能与测试验证体系已建；严谨性升级与机制建设进行中，见 [ROADMAP.md](./ROADMAP.md)）
+**最后更新**: 2026-11-18
+**文件总数**: 482个（已核实：195个主题文档 + 7个主题README + 18个元文档 + 53个代码示例 + 69个配置模板 + 112个运维脚本文件 + skills/ 17个技能文件等，另有根目录 README/AGENTS.md/LICENSE 与 concept/ 6篇）
+**项目完成度**: 约90%（广度与前沿覆盖完整；契约 DSL 体系与国际标准已对齐；测试体系已规划化并移交 hermes 执行，见 [ROADMAP.md](./ROADMAP.md)）
 
-- 158个主题文件（01系列32篇 + 02系列48篇 + 03系列62篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列6篇）
+- 195个主题文件（01系列52篇 + 02系列58篇 + 03系列65篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列10篇）
 - 7个README文件（各主题和总目录说明）
 - 18个元文档（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等）
 - 53个代码示例文件（Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例，覆盖六大系统）
-- 61个配置模板文件（服务器/客户端 + Prometheus/Grafana + Docker Compose + AsyncAPI 契约与治理规则集）
-- 110个运维脚本文件（含脚本目录 README；部署、监控、巡检、演练、治理、自检等）
+- 69个配置模板文件（服务器/客户端 + Prometheus/Grafana + Docker Compose + AsyncAPI 契约与事件契约模板）
+- 112个运维脚本文件（含脚本目录 README；部署、监控、巡检、演练、治理、自检、test-harness 执行框架与 test-registry 注册表）

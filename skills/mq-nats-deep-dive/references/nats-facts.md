@@ -28,7 +28,7 @@ JetStream：Stream/Consumer/KV/ObjectStore，at-least-once，Raft 复制
 ## 版本演进（项目文档基线）
 
 | 版本 | 发布 | 关键特性 |
-|------|------|----------|
+| ------ | ------ | ---------- |
 | 2.10.0 | 2023-09 | subject transforms、S2 压缩、Auth Callout、consumer 多 subject 过滤 |
 | 2.10.26 | 2025-03 | 2.10 长期维护终点（官方称史上最稳 2.10） |
 | 2.11.0 | 2025-03-20 | 单消息 TTL、consumer priority groups、consumer pause、分布式消息追踪、stream multi-get |
