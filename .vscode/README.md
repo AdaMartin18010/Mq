@@ -1,3 +1,19 @@
+---
+标题: "README"
+定位: ".vscode"
+版本: "v2026.05.20"
+空间: "project/"
+LSIP:
+  S: "VSCode/Cursor 配置说明"
+    O: "O1操作层"
+    V: "V1视角层"
+  因果序: 线性
+    I: "统计不变量层"
+七层模型: "L2-L3"
+关联空间:
+- "./.vscode/"
+---
+
 # VSCode/Cursor 配置说明
 
 ## 自动 Markdown 格式化配置
@@ -61,7 +77,7 @@ Markdownlint 规则配置（项目根目录）：
 ## 🎯 快捷键
 
 | 功能 | Windows/Linux | Mac |
-|------|--------------|-----|
+| ------ | -------------- | ----- |
 | 保存并格式化 | `Ctrl+S` | `Cmd+S` |
 | 格式化文档 | `Shift+Alt+F` | `Shift+Option+F` |
 | 修复所有错误 | `Ctrl+Shift+P` → "Fix all" | `Cmd+Shift+P` → "Fix all" |
@@ -85,7 +101,7 @@ Markdownlint 规则配置（项目根目录）：
 
 <!-- ✅ 允许长行（代码块、链接等） -->
 这是一个很长很长很长的行...
-```
+```markdown
 
 ### 自动修复的问题
 
@@ -117,7 +133,7 @@ Markdownlint 规则配置（项目根目录）：
 {
   "MD规则编号": false
 }
-```
+```markdown
 
 ### 某个文件想要跳过检查
 
@@ -135,9 +151,11 @@ Markdownlint 规则配置（项目根目录）：
 <!-- markdownlint-disable MD033 -->
 <details>内容</details>
 <!-- markdownlint-enable MD033 -->
-```
+```markdown
 
 ## 📚 参考文档
 
 - [Markdownlint 规则列表](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
 - [VSCode Markdown 支持](https://code.visualstudio.com/docs/languages/markdown)
+
+---

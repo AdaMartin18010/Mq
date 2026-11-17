@@ -10,17 +10,35 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.22.0] - 2026-11-18
+
+### 批次77-86：国际对齐深化（ODCS/Microcks/Jepsen/混沌/AI契约）+ 抽象层与存储解耦专章
+
+**批次77 欠账补齐**：TEST-13 用例漂移与更新机制（状态机 pending→mapped→verified/quarantined、三类漂移触发链、基准回灌流程）；TEST-14 skill 触发回放 21 用例（7 技能×正/边界/反例，registry SKL 域）
+**批次79 ODCS v3.1.0 对齐**（Linux Foundation AI & Data 单一收敛标准，竞对 DCS 已弃用——已核实）：odcs-alignment.md 字段映射表（消息语义 vs 数据 SLA 边界【论证】）；01-order-lifecycle 增 quality/sla 范例段；contract-to-odcs.py 导出器（8 场景 --check 全过）
+**批次80 Conformance 矩阵**：协议 TCK 清单（MQTT OASIS/AMQP ISO 19464/CloudEvents/Kafka）；**Jepsen 证据表（核实：Bufstream 0.1.0~0.1.3 于 2024-11，3 safety+2 liveness 全修复；核心发现 Kafka 事务协议 unsound 影响全 Kafka 兼容系统；Redpanda 2022-05 官方报告）**；自证资产证据等级规则
+**批次85 安全与可观测**：sec-baseline-scan.sh（8 PASS/0 HIGH/6 WARN 真实缺口：redis TLS/kafka ACL 等）；SEC 域 20 用例注册；assertions.tsv 增至 17 条（+CloudEvents 信封/OTel trace 贯穿）
+**批次86 AI 契约与治理**：ai-agent-contracts.md（A2A 任务生命周期/MCP 幂等/会话恢复 6 用例）；governance-tools.md（EventCatalog/asyncapi-diff/Spectral 三件套与漂移链合成）
+**批次78 Microcks 集成**：docker-compose-microcks.yml + 06-行为验证/ 层（断言能力边界表：结构契约✅时序语义回退自研）；TC-CON-01/02 注册；dry-run 通过
+**批次83 专章**：**01-67 存储解耦与队列化收敛**（四路线对比：KIP-405 内建分层/AutoMQ/Bufstream[Jepsen 证据]/WarpStream[Confluent 收购]；语义变化矩阵；share groups KIP-932 GA@4.2/KIP-1191 DLQ@4.4 已核实；12 维对照）
+**批次84 专章**：**01-68 云原生抽象消息层评测**（Dapr pub/sub/Knative Eventing/Argo Events 十二维对照；Dapr 上游 conformance 复用方案；Microcks-Dapr 协作国际先例已核实）
+**批次81/82 静态部**：Testing/06-混沌与故障注入/（三场景注入矩阵+game-day.sh dry-run）；TEST-15 动态系统论测试视角（04-03 方程可测化 DYN-A1~A3、回路→优先级映射、RTO 趋势表）
+**注册表**：212 行（新增 SKL 21/SEC 20/AIG 6/CHA 3/DYN 4/CON 3/ABS 2）；registry 状态机首应用（TC-INT-09/10b/10c pending）
+**治理同步**：STATUS（主题 235、01 系 68 篇、Testing 15 篇、契约语义测试 17 文档、总计 596 实地核实）；ROADMAP 批次 77-86 勾记 + 待办挂账（真实执行批：Microcks 首启/MQTT TCK/GAME DAY/TC-SEM 补全）
+
 ## [3.21.0] - 2026-11-18
 
 ### 批次64-76：hermes 执行底座 + 契约语义测试体系（顶层新系列，六层模型全链落地）
 
 **批次64-65 hermes 执行底座（TEST-11 示意脚本实化 + E0 首跑）**：
+
 - ✅ 五脚本落地：hermes-env-precheck（E0-E3 降级决策，实测本机 E0/E1/E2 可用 E3 缺 kubectl）/ hermes-diagnose（Git Bash netstat 回退）/ hermes-fix-l1（白名单+进程 Guard+七字段审计）/ hermes-collect-failbundle（T.11.5 结构）/ hermes-self-heal（L0-L3 分级，L3 只出审批单绝不自动修复）
 - ✅ hermes-task-gen 任务包生成器（T.09.3 四项校验，违规退出码 2 实测）+ nightly/weekly/pre-release 三真实任务包
 - ✅ hermes-e0-run E0 静态入口（产物五字段+日志尾三行正则严格满足 T.09.5）+ self-check-history.log + warn-ledger.tsv + .gitignore（results/ 不入库）
 - ✅ E0 首跑 5/5 PASS（103 脚本 bash -n 全过）
 
 **顶层主题文件夹 契约语义测试/（六层模型：DSL→AsyncAPI→绑定→语义→场景→用例）**：
+
 - ✅ TEST-13 总纲：背景证据（registry 无 SEM/BUS 域）、六层定义、命名编号规范（TC-SEM/TC-BUS）、批次 71-76 映射、人在回路边界
 - **批次71 契约静态层**：六系统 spec 集齐（新建 nats/amqp/pulsar/redis 四 spec；bindings 官方仓库逐一 WebSearch 核实——kafka 0.5.0/mqtt 0.2.0/amqp 0.3.0/nats·pulsar·redis 0.1.0）；contract-spec-check.sh（6/6 PASS）；contract-drift-check.sh（YAML 感知+绑定/x- 排除规则，DRIFT=0）；E0 增第 6 步
 - **批次72 绑定矩阵**：bindings-matrix.md（四级字段覆盖矩阵+x- 扩展登记簿 x-jetstream/x-prefetch/x-pulsar-subscription/x-redis/x-semantics）；contract-binding-check.sh 22/22 PASS；**修正 mqtt 绑定层级违规 2 处**（qos/retain/expiryInterval 属 operation 级 per binding 0.2.0，config-templates 示例与 05-iot-telemetry 场景同步修正）

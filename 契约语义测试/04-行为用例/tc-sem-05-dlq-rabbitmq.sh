@@ -20,7 +20,7 @@ PLAN
 [[ $LIVE -eq 0 ]] && { echo "DRY-RUN 完成；--live 需用户在场"; exit 0; }
 
 echo "LIVE 模式：前置预检"
-if ! bash "$(dirname "$0")/hermes-env-precheck.sh" --quiet 2>/dev/null | grep -q "E0=AVAIL"; then
+if ! bash "$(dirname "$0")/../../topics/scripts/hermes-env-precheck.sh" --quiet 2>/dev/null | grep -q "E0=AVAIL"; then
   echo "FAIL: 环境预检未过"; exit 1
 fi
 command -v docker >/dev/null 2>&1 || { echo "FAIL: E2 docker 不可用（TEST-09 降级口径：记 SKIP）"; exit 2; }

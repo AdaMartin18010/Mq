@@ -40,3 +40,15 @@ invariants:
   - 同一 orderId 的 OrderCreatedEvent 至多一次（幂等去重）
   - 同一 orderId 事件按 occurredAt 单调有序（顺序性）
   - PAID 不可回退（状态机断言）
+# ODCS v3.1.0 对齐段（odcs-alignment.md §三范例；quality/sla 为治理维度，与消息语义互补）
+quality:
+  - column: OrderCreatedEvent.orderId
+    type: not_null
+    severity: error
+  - column: OrderCreatedEvent.occurredAt
+    type: freshness
+    maximum: PT5M
+sla:
+  freshness: PT1M
+  availability: 99.95%
+  retention: P30D

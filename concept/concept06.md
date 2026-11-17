@@ -223,7 +223,7 @@ class Key_SharedSubscription {
 
 ### 2.3 消息确认模式的动态设计
 
-**累积确认（Cumulative Ack） vs 单条确认（Individual Ack）**
+**累积确认（Cumulative Ack） vs 单条确认（Individual Ack）**:
 
 ```java
 // 场景：批量处理后选择性重试

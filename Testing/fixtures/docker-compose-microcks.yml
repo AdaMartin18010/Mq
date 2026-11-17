@@ -1,0 +1,45 @@
+# Microcks 契约行为验证环境（批次 78）
+# 用途：对 契约语义测试/03-业务场景/ 的 8 个 AsyncAPI spec 提供 mock + contract test（CNCF Incubating）
+# 启动：docker compose -f Testing/fixtures/docker-compose-microcks.yml up -d
+# 注意：镜像 tag 首次实跑时以 quay.io/microcks/microcks 官方最新为准（时效纪律）
+name: mq-microcks
+
+services:
+  microcks:
+    image: quay.io/microcks/microcks:latest
+    container_name: mq-microcks
+    ports:
+      - "8580:8080"            # Web UI + API
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/microcks
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      # 只读挂载场景包 spec 目录，供导入/校验
+      - ../..:/workspace:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    labels:
+      - "hermes.run=microcks"
+      - "mq-test=contract"
+
+  mongo:
+    image: mongo:4.4
+    container_name: mq-microcks-mongo
+    volumes:
+      - microcks-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "hermes.run=microcks"
+
+volumes:
+  microcks-mongo-data:

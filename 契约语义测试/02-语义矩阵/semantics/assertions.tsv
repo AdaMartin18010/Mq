@@ -15,3 +15,6 @@ ASE-011	背压	RabbitMQ	消费者 prefetch=50 且不 ack	生产端持续投递	�
 ASE-012	TTL过期	MQTT	v5 消息带 message expiry interval=2s、订阅者会话过期=0	订阅者 5 秒后重连	过期消息不投递	接收计数=0【定理】
 ASE-013	延迟消息	Pulsar	生产者 send(msg).deliverAfter(3s)	立即查询订阅 backlog	3 秒前不可见、3 秒后按序可见	时间窗可见性断言
 ASE-014	持久化	Redis	AOF everysec+Stream key 已有 100 条	重启 Redis 实例	Stream 长度与 ID 单调性保持	长度=100 且 last-ID 不回落
+ASE-015	持久化	RabbitMQ	durable queue + persistent 消息投递	broker 重启	消息与拓扑均存活	重启后队列深度+消息完整性断言
+ASE-016	交付语义	CloudEvents	信封含 specversion/type/source/id 四必需属性（02-57 已核实）	任意传输绑定（HTTP/Kafka/MQTT）	四属性缺失即拒绝解析	信封静态断言（tc-assert-check 扩展项）
+ASE-017	流控	OTel	trace-id 消息头贯穿 producer→broker→consumer	端到端一次业务流	全链 span 关联不断（messaging.* 属性按 semconv）	trace 完整性断言（E2 真实执行挂账）

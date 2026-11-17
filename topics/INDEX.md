@@ -152,6 +152,8 @@
 - [01-64-MQTT-5.0协议全解析](./01-基础概念与对比分析/01-64-MQTT-5.0协议全解析.md) - **深度旗舰**（607 行）：报文格式/会话状态机/QoS 时序/Reason Code 全表/增强认证/broker 对照
 - [01-65-死信队列完整工程解析](./01-基础概念与对比分析/01-65-死信队列完整工程解析.md) - **深度旗舰**（733 行）：DLQ 全生命周期工程解析
 - [01-66-背压机制全谱系](./01-基础概念与对比分析/01-66-背压机制全谱系.md) - **深度旗舰**（582 行）：传输层/应用层/broker 内置/系统级背压全谱系 + 观测指标 + 决策树
+- [01-67-存储解耦与队列化收敛深度解析](./01-基础概念与对比分析/01-67-存储解耦与队列化收敛深度解析.md) - **深度旗舰**（批次83）：Kafka-on-S3 四路线（KIP-405/AutoMQ/Bufstream/WarpStream，Jepsen 证据）；share groups（KIP-932@4.2/KIP-1191@4.4）与 RabbitMQ Streams 队列化收敛；语义变化矩阵与分层存储测试维度
+- [01-68-云原生抽象消息层评测](./01-基础概念与对比分析/01-68-云原生抽象消息层评测.md) - **深度旗舰**（批次84）：Dapr pub/sub、Knative Eventing、Argo Events 十二维对照；Dapr conformance 复用方案；抽象层选型决策树
 
 ### [02-场景驱动架构设计](./02-场景驱动架构设计/)
 
@@ -547,6 +549,11 @@
 - [bindings-matrix](../契约语义测试/01-契约规格/bindings-matrix.md) - **L3**：六系统绑定四级字段矩阵（kafka 0.5.0/mqtt 0.2.0/amqp 0.3.0/nats·pulsar·redis 0.1.0 核实）+ x- 扩展登记簿
 - [03-业务场景契约库](../契约语义测试/03-业务场景/README.md) - **L5**：8 场景×（contract.yaml + asyncapi.yaml + SEMANTICS.md）
 - [traceability-六层追溯表](../契约语义测试/05-追溯覆盖/traceability.md) - **覆盖闭环**：六层链路追溯（登记口径 95%）
+- [odcs-alignment](../契约语义测试/00-模型与规划/odcs-alignment.md) - ODCS v3.1.0（LF AI & Data）字段映射 + contract-to-odcs.py 导出器（批次79）
+- [conformance-matrix](../契约语义测试/02-语义矩阵/conformance-matrix.md) - 协议 TCK 清单 + Jepsen 第三方证据表（批次80）
+- [ai-agent-contracts](../契约语义测试/00-模型与规划/ai-agent-contracts.md) - A2A/MCP 消息契约测试用例 TC-AIG-01~06（批次86）
+- [governance-tools](../契约语义测试/00-模型与规划/governance-tools.md) - EventCatalog/asyncapi-diff/Spectral 治理三件套（批次86）
+- [06-行为验证](../契约语义测试/06-行为验证/README.md) - Microcks（CNCF Incubating）契约行为验证层 + 编排脚本（批次78）
 
 ### [AI_Skills-AI技能体系与国际标准对齐](../AI_Skills/)
 
@@ -587,6 +594,9 @@
 - `05-体系与机制/`
   - [TEST-05-测试纠正与修正机制](../Testing/05-体系与机制/TEST-05-测试纠正与修正机制.md) - 失败分类学 P/T/E/D/B、隔离降级、根因五步法、文档-测试同步修正
   - [TEST-06-自我验证机制与脚本说明](../Testing/05-体系与机制/TEST-06-自我验证机制与脚本说明.md) - doc-self-check.sh / mq-smoke-test.sh 用法、CI 集成、处置流程
+  - [TEST-13-用例漂移与更新机制](../Testing/05-体系与机制/TEST-13-用例漂移与更新机制.md) - 状态机（pending→mapped→verified/quarantined）、三类漂移触发链、基准回灌流程（批次77）
+  - [TEST-14-skill触发回放测试](../Testing/05-体系与机制/TEST-14-skill触发回放测试.md) - 7 技能×正/边界/反例 21 用例（TC-SKL-01~21，批次70/77）
+  - [TEST-15-动态系统论测试视角](../Testing/05-体系与机制/TEST-15-动态系统论测试视角.md) - 04-03 方程可测化 DYN-A1~A3、回路→测试优先级映射、RTO 趋势表（批次82，项目特色）
 
 ## 按场景查找
 

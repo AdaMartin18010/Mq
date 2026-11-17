@@ -123,6 +123,23 @@
 
 **待办挂账**：TC-SEM 真实容器首跑（2 样例已就绪，--live 需用户在场）；TC-SEM-01~04/06/08~12 脚本补全；TC-INT-09/10b/10c 脚本绑定；Pulsar deliverAfter 绑定挂账（traceability §L3→L4）。
 
+**追加批次三（2026-11-18 国际对齐深化批次，用户确认"全部 77-86/专章级"）**：
+
+| 批次 | 内容 | 状态 |
+| ------ | ------ | ------ |
+| 77 欠账补齐 | TEST-13 漂移机制 + TEST-14 skill 回放 21 用例 | ✅ 完成（2026-11-18） |
+| 78 Microcks 集成 | docker-compose + 06-行为验证层 + TC-CON-01/02（CNCF Incubating 工具，国际先例核实） | ✅ 静态就绪（真实首启挂账用户在场批次） |
+| 79 ODCS v3.1.0 对齐 | 映射表 + quality/sla 范例 + contract-to-odcs.py（8 场景 check 全过） | ✅ 完成（2026-11-18） |
+| 80 Conformance 矩阵 | 协议 TCK 清单 + Jepsen 证据表（Bufstream/Redpanda 核实） | ✅ 完成（2026-11-18） |
+| 81 混沌工具链 | Testing/06-混沌与故障注入 + game-day.sh（三注入矩阵，dry-run） | ✅ 静态就绪（真实注入挂账） |
+| 82 动态系统测试 | TEST-15：04-03 方程可测化 DYN-A1~A3 + 回路优先级映射 + RTO 趋势表 | ✅ 静态就绪（2026-11-18） |
+| 83 存储解耦与队列化 | 01-67 专章（四路线对比/Jepsen 证据/share groups KIP-932@4.2、KIP-1191@4.4 核实） | ✅ 完成（2026-11-18） |
+| 84 抽象消息层 | 01-68 专章（Dapr/Knative/Argo 十二维对照 + conformance 复用方案） | ✅ 完成（2026-11-18） |
+| 85 安全与可观测 | sec-baseline-scan.sh（8 PASS/6 WARN）+ SEC 域 20 + 断言 17 条 | ✅ 完成（2026-11-18） |
+| 86 AI 契约与治理 | A2A/MCP 用例 6 + EventCatalog/asyncapi-diff 治理链 | ✅ 完成（2026-11-18） |
+
+**待办挂账二（真实执行集中批）**：Microcks 首启 + MQTT/AMQP TCK 子集 + GAME DAY 三轮真实注入 + TC-SEM-05/07 --live + OpenMessaging 基准首跑（回灌审批）；统一约用户在场时段执行，产物按 T.09.5 归档。
+
 **新登记批次（2026-11-18 用户编排确认：批次18 先行 + 允许并行子代理）**：
 
 | 批次 | 内容 | 状态 |
