@@ -1,6 +1,41 @@
 # 更新日志（Changelog）
 
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
+>
+> **归档规则**:
+> - 触发条件：CHANGELOG.md 单文件行数超过 400 行。
+> - 归档对象：起始月份在 6 个月前的版本条目（按条目日期计算）。
+> - 归档路径：`topics/archive/changelog/YYYY-MM.md`，YYYY-MM 为被归档条目的起始月份。
+> - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
+> - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
+
+## [3.20.0] - 2026-11-18
+
+### 批次59-63：批判修正 + 前沿瞭望 + 深度旗舰六篇 + 实证能力 + 机制可持续化（上个会话中断批次原规格恢复执行）
+
+**批次59 批判修正轮**：
+- ✅ 59-A 概念一致性对账：01-58 概念卡片反例抽检深化（+275 行六元组反例）+ 01-19/20/21 与 01-59 决策总树口径对账修正
+- ✅ 59-B 案例一手来源化：02-07/08/09 五处 factorhouse 二手综述改引官方一手工程博客（Robinhood/DoorDash/Netflix/LinkedIn 共 9 条一手 URL，核实可达）；1 处无一手来源（滴滴）保留并标注【二手综述】；04 动态系统论系列互链织补 15 节点/11 文件（每篇 04 被 ≥3 处回链）
+
+**批次60 前沿瞭望**：01-60 前沿瞭望：2026-11 技术扫描（332 行六域扫描备忘录）
+
+**批次61 深度旗舰工程（500-700 行旗舰六篇，全部 WebSearch 核实）**：
+- ✅ 01-61 Kafka 存储与复制内幕（587 行：segment 格式/复制协议/Leader Epoch/KRaft 元数据日志/分层存储 KIP-405/调优/故障推演）
+- ✅ 01-62 Pulsar 存算分离架构深度解析（656 行：Broker 无状态/BookKeeper 内幕/读写路径/Offload/Oxia/扩容再平衡；核实 Pulsar 5.0 GA 2026-10-05 为 LTS、Oxia 为推荐元数据）
+- ✅ 01-63 Exactly-once 语义全论证（572 行：幂等生产者/Kafka 事务/KIP-98/129/447/890/流处理 EOS/语义边界/六系统对照）
+- ✅ 01-64 MQTT-5.0 协议全解析（607 行：报文格式/会话状态机/QoS 时序/订阅选项/Reason Code 全表/增强认证/EMQX-Mosquitto-HiveMQ 现状）
+- ✅ 01-65 死信队列完整工程解析（733 行）
+- ✅ 01-66 背压机制全谱系（582 行：M/M/1 形式化/TCP-HTTP2-QUIC/Reactive Streams/六系统 broker 背压/Flink 反压/观测指标/决策树）
+
+**批次62 实证能力**：03-66 性能基准实测指南（318 行：OpenMessaging Benchmark 实操/避免 Coordinated Omission/置信区间/六系统矩阵模板/结果回灌规范）+ Testing/fixtures/benchmark-result-template.md（114 行，SAMPLE 占位防误用）
+
+**批次63 机制可持续化**：
+- ✅ decision-registry.tsv 扩容 20→60（dec-021~060 覆盖前沿瞭望/Kafka 存储/Pulsar/EOS/MQTT/DLQ/背压/基准/决策树补全九域；doc-decision-check CONFLICTS=0 WARN=0）
+- ✅ CHANGELOG 归档规则立规（超 400 行归档 6 个月前条目至 topics/archive/changelog/）+ topics/archive/README.md
+- ✅ doc-semantic-spotcheck.sh 语义抽检机制（月度种子确定性抽样 6 篇：置信标注/时效/互链/章节一致性四查，只读）
+
+**顺手修**：01-12 Pulsar 深度分析补互链段（语义抽检首跑唯一 FAIL 项闭环）；STATUS AI_Skills 分布行 5→6 篇口径修正
+**治理同步**：INDEX 登记 8 新条目；STATUS 主题 205→213、01 系 59→66 篇、03 系 65→66 篇、脚本 114→115；ROADMAP 批次59-63 勾记
 
 ## [3.19.0] - 2026-11-18
 

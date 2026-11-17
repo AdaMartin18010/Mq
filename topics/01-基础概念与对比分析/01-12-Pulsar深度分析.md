@@ -335,6 +335,12 @@ Pulsar 的 `MetadataStoreProvider` 抽象使后端切换对上层透明，已内
 - [Apache Pulsar: A cloud-native, distributed messaging and streaming platform](https://arxiv.org/abs/1904.01163)
 - [BookKeeper: A Distributed Log Service](https://bookkeeper.apache.org/docs/)
 
+**关联阅读**：
+
+- [1.62 Pulsar 存算分离架构深度解析](./01-62-Pulsar存算分离架构深度解析.md)——Broker 无状态化与 BookKeeper 存储内幕的存算分离深化
+- [1.29 S3 解耦存储消息系统分析](./01-29-S3解耦存储消息系统分析.md)——分层存储/S3 offload 架构对照
+- [3.10 Kubernetes 部署实践](../03-架构与运维实践/03-10-Kubernetes部署实践.md)——Pulsar 集群 K8s 落地运维
+
 ---
 
 **参考来源**：

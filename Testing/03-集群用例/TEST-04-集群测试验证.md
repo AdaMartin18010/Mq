@@ -263,6 +263,10 @@ spec:
 - [ ] RTO/RPO 实测值写入批次报告
 - [ ] 失败项按 TEST-05 建档并回链 04 系列理论参数
 
+> **动态系统论视角**：集群测试中的混沌编排用例不仅验证恢复指标，更是对消息系统韧性的动态演化实验。若需从混沌工程、系统韧性、韧性缺陷反馈回路等角度理解测试设计，参见 [04-04 混沌工程与系统韧性](../../topics/04-动态系统论与演化分析/04-04-混沌工程与系统韧性.md)。
+
+---
+
 ## T.04.8 参考来源
 
 - [Jepsen Redpanda 分析（版本锚定引用）](https://jepsen.io/analyses/redpanda-21.10.1)、[jepsen-io/redpanda 仓库](https://github.com/jepsen-io/redpanda)

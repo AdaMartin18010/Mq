@@ -22,3 +22,44 @@ dec-017	iot-edge-lightweight	NATS JetStream 首选；MQTT-SN 次选；边缘 NAT
 dec-018	realtime-notification-ultra-low-latency	NATS Core 首选；Redis Stream Pub/Sub 次选；在线 NATS + 离线 Redis Stream	01-59#1.59.6	topics/02-场景驱动架构设计/02-14-消息去重策略.md
 dec-019	data-integration-cdc	Kafka + Debezium 首选；Pulsar IO 次选	01-59#1.59.6	topics/02-场景驱动架构设计/02-28-消息存储设计.md
 dec-020	event-sourcing	Kafka / Pulsar 首选；NATS JetStream 次选；Kafka 事件存储 + 投影到 Redis/CQRS	01-59#1.59.6	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+# 批次63：新文档判定扩容（dec-021~dec-060）
+dec-021	wasm-data-transform	Redpanda Data Transforms 首选；Pulsar Functions WASM 与 Envoy 二进制消息协议支持仍处于实验/定制阶段	01-60#1.60.1	-
+dec-022	ebpf-observability	OBI v1.0.0 / Cilium Kafka-aware policy / DeepFlow 为消息系统无插桩观测首选技术栈	01-60#1.60.2	-
+dec-023	confidential-computing-mq	TEE 硬件已 GA，但 Apache Kafka/Pulsar 无 broker 原生 TEE 支持；仅可在机密 VM/容器内运行	01-60#1.60.3	-
+dec-024	green-software-mq	GSF SCI 框架可用，但消息 broker 专项能效基准稀缺；暂作 01-08/01-18 小节而非独立大篇	01-60#1.60.4	-
+dec-025	mqtt-over-quic	MQTT over QUIC：EMQX 已实现，OASIS 草案推进中，车联网/移动 IoT 优先关注	01-60#1.60.5	topics/02-场景驱动架构设计/02-12-消息路由策略.md
+dec-026	eu-data-act-mq	Data Act 已适用；消息架构须评估数据驻留、可携带性与 SaaS 切换成本	01-60#1.60.6	topics/02-场景驱动架构设计/02-50-消息数据合规设计.md
+dec-027	kafka-log-storage	Kafka 分区日志采用 segment + 稀疏 index/timeindex 的日志结构存储	01-61#1.61.1	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-028	kafka-zero-copy	Kafka 高吞吐依赖 sendfile 零拷贝；TLS/压缩转换会打断零拷贝	01-61#1.61.1	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-029	kafka-replication-safety	生产环境关闭 unclean leader election，配合 acks=all 与 min.insync.replicas=2 保证持久性	01-61#1.61.2	topics/02-场景驱动架构设计/02-11-数据一致性保障.md
+dec-030	kafka-leader-epoch	Leader Epoch + OffsetForLeaderEpoch 已替代 HW 截断，避免 KIP-101 前数据丢失场景	01-61#1.61.3	topics/02-场景驱动架构设计/02-13-消息顺序保证.md
+dec-031	kafka-tiered-storage	KIP-405 已 production-ready；长期保留场景启用 remote storage，但 compact topic 与 JBOD 不兼容	01-61#1.61.5	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-032	pulsar-stateless-broker	Pulsar Broker 无状态，元数据/计算/存储三层分离；扩容 Broker 不迁移消息数据	01-62#1.62.1	topics/02-场景驱动架构设计/02-10-高可用架构设计.md
+dec-033	pulsar-bookkeeper-quorum	Pulsar 默认 E=3 WQ=3 AQ=2，AQ 屏蔽慢节点长尾但存在短暂不一致窗口	01-62#1.62.2	topics/02-场景驱动架构设计/02-11-数据一致性保障.md
+dec-034	pulsar-tiered-offload	Pulsar 按 ledger 粒度 offload 到 S3/GCS/Azure Blob；依赖对象存储强一致性假设	01-62#1.62.4	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-035	pulsar-oxia-default	Pulsar 5.0 新生产集群推荐 Oxia 作为元数据存储；Etcd 在 5.0 已移除	01-62#1.62.5	topics/03-架构与运维实践/03-27-版本升级指南.md
+dec-036	exactly-once-boundary	端到端 exactly-once = Kafka/Pulsar Broker EOS ∧ 幂等消费 ∧ 幂等/可去重副作用	01-63#1.63.1	topics/02-场景驱动架构设计/02-25-消息幂等性设计.md
+dec-037	kafka-exactly-once	Kafka 幂等生产者 + KIP-98 事务 + EOS v2 为高吞吐流处理 exactly-once 首选	01-63#1.63.3	topics/02-场景驱动架构设计/02-25-消息幂等性设计.md
+dec-038	outbox-inbox-eos	跨外部 DB/API 时，Outbox + Inbox + at-least-once 投递是实现端到端 exactly-once 的工程标准路径	01-63#1.63.5	topics/02-场景驱动架构设计/02-47-企业集成模式与事务消息模式.md
+dec-039	saga-long-transaction	微服务长流程优先 Saga 补偿模式；强一致短事务场景方可评估 2PC	01-63#1.63.5	topics/02-场景驱动架构设计/02-47-企业集成模式与事务消息模式.md
+dec-040	mqtt-qos-selection	遥测心跳用 MQTT QoS 0，命令下发用 MQTT QoS 1，协议级 exactly-once 用 MQTT QoS 2	01-64#1.64.3	topics/02-场景驱动架构设计/02-14-消息去重策略.md
+dec-041	mqtt-shared-subscription	MQTT 5.0 共享订阅实现消费者组负载均衡，但不保证顺序	01-64#1.64.4	topics/02-场景驱动架构设计/02-31-消息路由与负载均衡设计.md
+dec-042	mqtt-request-response	MQTT 5.0 Response Topic + Correlation Data 支持无服务器地址的请求-响应模式	01-64#1.64.5	topics/02-场景驱动架构设计/02-12-消息路由策略.md
+dec-043	mqtt-broker-selection	大规模分布式选 EMQX，轻量嵌入式选 Mosquitto，企业级合规选 HiveMQ	01-64#1.64.8	topics/01-基础概念与对比分析/01-16-MQTT-5.0新特性深度分析.md
+dec-044	kafka-dlq	Kafka 4.4+ Share Groups DLQ 为 broker 级首选；4.4 前用 Spring Kafka ErrorHandler 或自定义 DLQ topic	01-65#1.65.2	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-045	rabbitmq-dlq	RabbitMQ DLX 机制原生最强；注意 First Death 头与队首 TTL 阻塞陷阱	01-65#1.65.3	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-046	pulsar-dlq	Pulsar DeadLetterPolicy 仅对 Shared 订阅生效；与 retry letter topic 天然联动	01-65#1.65.4	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-047	nats-dlq	NATS JetStream 无原生 DLQ；用 MaxDeliver + advisory 事件 + 应用自建死信 stream 补偿	01-65#1.65.5	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-048	redis-dlq	Redis Stream 无原生 DLQ；依赖 PEL 巡检 + XAUTOCLAIM + 应用侧幂等死信 stream 补偿	01-65#1.65.7	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-049	backpressure-layered	背压须分层防御：传输层兜底网络，Broker 层兜底持久化吞吐，应用层兜底业务处理能力	01-66#1.66.8	topics/02-场景驱动架构设计/02-22-消息流控设计.md
+dec-050	kafka-backpressure	Kafka 背压依赖 producer buffer / max.block.ms 与 consumer fetch.max.bytes/max.poll.records	01-66#1.66.4.1	topics/02-场景驱动架构设计/02-22-消息流控设计.md
+dec-051	rabbitmq-backpressure	RabbitMQ push 消费者必须设置 prefetch/QoS；AMQP 1.0 新应用可用 credit-based 流控	01-66#1.66.4.2	topics/02-场景驱动架构设计/02-22-消息流控设计.md
+dec-052	redis-backpressure	Redis Stream 无原生背压；须用 COUNT/XPENDING/应用层令牌桶补偿	01-66#1.66.4.5	topics/02-场景驱动架构设计/02-22-消息流控设计.md
+dec-053	cross-system-benchmark	六系统横向性能对比首选 OpenMessaging Benchmark 统一 workload 与驱动	03-66#3.66.2	topics/01-基础概念与对比分析/01-18-性能基准测试对比.md
+dec-054	benchmark-reporting	实测结果回灌须给出 commit/workload/环境/日期四元组与 95% CI，禁止跨环境泛化	03-66#3.66.5	topics/01-基础概念与对比分析/01-18-性能基准测试对比.md
+dec-055	large-message-claim-check	消息体 >100 KB 或 MB 级时启用 Claim Check，Kafka/Pulsar/S3 优于 RabbitMQ	01-59#1.59.3	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-056	multi-consumer-groups	独立消费组 >3 时优先 Kafka/Pulsar 的 pub/sub 日志模型	01-59#1.59.3	topics/02-场景驱动架构设计/02-13-消息顺序保证.md
+dec-057	slow-consumer-cutoff	需要慢消费者切断时优先 NATS Core	01-59#1.59.4	topics/02-场景驱动架构设计/02-22-消息流控设计.md
+dec-058	no-sre-constraint	无专职 SRE 时排除老 Kafka ZooKeeper，优先 Kafka KRaft/NATS/Redis Stream/托管云服务	01-59#1.59.5	topics/02-场景驱动架构设计/02-10-高可用架构设计.md
+dec-059	apache-only-license	许可证仅接受 Apache 2.0 时须排除 SSPL/BSL 风险组件；具体核对 01-34	01-59#1.59.5	topics/02-场景驱动架构设计/02-50-消息数据合规设计.md
+dec-060	rpc-stream-choice	RPC 流场景首选 NATS Core Request-Reply；MQTT 5.0 Response Topic 为次选	01-59#1.59.6	topics/02-场景驱动架构设计/02-12-消息路由策略.md
