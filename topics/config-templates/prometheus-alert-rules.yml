@@ -1,0 +1,76 @@
+# Prometheus 告警规则集模板（按系统预置分级）
+# 用法: 复制到 prometheus 配置目录并在 prometheus.yml rule_files 引用
+# 置信口径: 阈值为项目基线【估算】，按业务 SLO 调参；每条告警必须有 runbook 链接
+groups:
+- name: kafka-critical
+  rules:
+  - alert: KafkaOfflinePartitions
+    expr: sum(kafka_controller_offlinepartitionscount) > 0
+    for: 1m
+    labels: {severity: p0, system: kafka}
+    annotations:
+      summary: "Kafka 存在离线分区（数据不可读写）"
+      runbook: "runbooks/kafka-offline-partitions.md"
+  - alert: KafkaUnderReplicated
+    expr: sum(kafka_server_replicamanager_underreplicatedpartitions) > 0
+    for: 10m
+    labels: {severity: p1, system: kafka}
+    annotations:
+      summary: "URP 持续 10 分钟未恢复"
+      runbook: "runbooks/kafka-urp.md"
+
+- name: kafka-warning
+  rules:
+  - alert: KafkaConsumerLagHigh
+    expr: max by (consumergroup, topic) (kafka_consumergroup_lag) > 100000
+    for: 15m
+    labels: {severity: p2, system: kafka}
+    annotations:
+      summary: "消费组 lag 超 10 万持续 15 分钟"
+      runbook: "runbooks/kafka-consumer-lag.md"
+  - alert: KafkaDiskPressure
+    expr: max by (instance) (1 - node_filesystem_avail_bytes{mountpoint="/var/lib/kafka"}/node_filesystem_size_bytes) > 0.75
+    for: 10m
+    labels: {severity: p2, system: kafka}
+    annotations:
+      summary: "Kafka 磁盘使用率超 75%"
+      runbook: "runbooks/kafka-disk-pressure.md"
+
+- name: rabbitmq
+  rules:
+  - alert: RabbitMQNodeDown
+    expr: max by (instance) (rabbitmq_up) == 0
+    for: 2m
+    labels: {severity: p0, system: rabbitmq}
+    annotations: {summary: "RabbitMQ 节点不可达", runbook: "runbooks/rmq-node-down.md"}
+  - alert: RabbitMQQueueBacklog
+    expr: max by (queue) (rabbitmq_queue_messages_ready) > 50000
+    for: 15m
+    labels: {severity: p2, system: rabbitmq}
+    annotations: {summary: "队列积压超 5 万", runbook: "runbooks/rmq-backlog.md"}
+
+- name: nats
+  rules:
+  - alert: NATSServerDown
+    expr: max by (server_id) (gnatsd_varz_up) == 0
+    for: 2m
+    labels: {severity: p0, system: nats}
+    annotations: {summary: "NATS 节点不可达", runbook: "runbooks/nats-node-down.md"}
+  - alert: NATSJetStreamConsumerStalled
+    expr: max by (stream, consumer) (nats_jetstream_consumer_num_pending) > 10000
+    for: 15m
+    labels: {severity: p2, system: nats}
+    annotations: {summary: "JetStream consumer pending 超 1 万", runbook: "runbooks/nats-pending.md"}
+
+- name: redis-pulsar
+  rules:
+  - alert: RedisMemoryHigh
+    expr: max by (instance) (redis_memory_used_bytes/redis_memory_max_bytes) > 0.8
+    for: 10m
+    labels: {severity: p1, system: redis}
+    annotations: {summary: "Redis 内存超 80%", runbook: "runbooks/redis-memory.md"}
+  - alert: PulsarBacklogGrowth
+    expr: max by (topic, subscription) (pulsar_subscription_back_log) > 100000
+    for: 15m
+    labels: {severity: p2, system: pulsar}
+    annotations: {summary: "Pulsar subscription backlog 超 10 万", runbook: "runbooks/pulsar-backlog.md"}

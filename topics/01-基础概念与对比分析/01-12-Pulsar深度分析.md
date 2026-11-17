@@ -539,7 +539,7 @@ try {
 
 **架构优势对比**：
 
-```
+```text
 Kafka架构：
 - 优点：简单，成熟稳定
 - 缺点：存储与计算耦合，扩展复杂
@@ -581,7 +581,7 @@ Pulsar架构：
 
 **运维优势对比**：
 
-```
+```text
 Kafka运维：
 - 优点：成熟稳定，社区支持好
 - 缺点：扩展复杂，需要重新分配分区
@@ -608,7 +608,7 @@ Pulsar运维：
 
 **架构示例**：
 
-```
+```text
 Tenant: acme-corp
   └── Namespace: production
       └── Topic: orders
@@ -689,7 +689,7 @@ public class WordCountFunction implements Function<String, String> {
 
 **Pulsar技术栈全景**：
 
-```
+```text
 Pulsar技术栈全景
 ┌─────────────────────────────────────────────────────────────┐
 │                      API层 (多语言Client)                      │
@@ -831,7 +831,7 @@ mvn clean package -Pnative-image
 
 **代码结构**（基于模块划分）：
 
-```
+```text
 pulsar-broker/
 ├── protocol/          # Netty协议处理
 ├── service/           # Broker核心逻辑

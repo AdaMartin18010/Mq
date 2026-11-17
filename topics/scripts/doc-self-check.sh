@@ -57,9 +57,10 @@ for f in topics/0[23]-*/*.md; do
 done
 
 # ---------- 5. 代码块语言标注 (WARN) ----------
+# 注意：FNR==1 重置 fence 状态（多文件 awk 状态不跨文件泄漏）
 while IFS= read -r line; do
   warn "代码块缺语言标注: $line"
-done < <(find topics -type f -name '*.md' -exec awk '/^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
+done < <(find topics -type f -name '*.md' -exec awk 'FNR==1{infence=0} /^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
 
 # ---------- 6. 最后更新日期 (WARN) ----------
 for f in topics/0[1-4]-*/*.md topics/AI_Skill/*.md topics/Testing/*.md; do
@@ -77,9 +78,10 @@ if [ -f topics/INDEX.md ]; then
   done
 fi
 
-# ---------- 8. 密度抽样 (WARN, full 模式) ----------
+# ---------- 8. 密度抽样 (WARN, full 模式；README 除外) ----------
 if [ "$MODE" = "full" ]; then
   for f in topics/0[1-4]-*/*.md; do
+    case "$f" in */README.md) continue ;; esac
     [ -f "$f" ] || continue
     lines=$(wc -l < "$f")
     [ "$lines" -lt 80 ] && warn "骨架风险(${lines}行<80): $f"

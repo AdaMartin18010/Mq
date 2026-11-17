@@ -34,6 +34,7 @@
     - [官方文档](#官方文档)
     - [技术博客](#技术博客)
     - [生产案例](#生产案例)
+    - [形式化验证资产（引用而非自造）](#形式化验证资产引用而非自造)
 
 ---
 
@@ -555,6 +556,11 @@ metadata.log.max.snapshot.interval.ms=3600000  # 1小时快照
 - **LinkedIn**: 大规模Kafka集群迁移到KRaft模式
 - **Netflix**: KRaft模式性能提升案例
 - **Uber**: KRaft模式运维简化案例
+
+### 形式化验证资产（引用而非自造）
+
+- Kafka KRaft TLA+ 规范：apache/kafka 仓库 `metadata/src/main/resources/common/metadata/`【定理：模型检验资产】
+- Jepsen 评测：[jepsen.io/analyses](https://jepsen.io/analyses)（含版本锚定的公开报告）
 
 ---
 

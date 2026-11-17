@@ -9,19 +9,19 @@
 **最近核实**: 2026-11-17
 **项目状态**: 🔄 深度治理与前沿对齐中（第六阶段）
 
-## 文档统计（2026-11-17 实地核实 · 批次14 后）
+## 文档统计（2026-11-17 实地核实 · 批次20 后）
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 158 | 01系列32篇 + 02系列48篇 + 03系列62篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列6篇 |
+| **主题文档** | 162 | 01系列33篇 + 02系列49篇 + 03系列63篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列7篇 |
 | **主题README** | 7 | 6个主题目录说明 + topics/README.md |
 | **元文档** | 18 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
-| **配置模板** | 61 | 服务器/客户端配置、Prometheus/Grafana、Docker Compose、AsyncAPI 契约模板与 Spectral 规则集 |
-| **运维脚本** | 110 | 含 scripts/README；部署、监控、巡检、演练、安全审计、治理检查、自我验证 |
-| **Agent Skills** | 17 文件 | skills/：mq-selection、mq-doc-lint、mq-ops-kafka-upgrade、mq-pattern-dlq、mq-ops-dlq、mq-mqtt/mq-nats-deep-dive（各含 SKILL.md 与 references/scripts） |
+| **配置模板** | 63 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集 |
+| **运维脚本** | 111 | 含 scripts/README；部署、监控、巡检、告警质量周检、演练、自检等 |
+| **Agent Skills** | 17 文件 | skills/ 七个技能（SKILL.md + references/scripts） |
 | **原始概念** | 6 | concept/concept01~06（历史资产） |
-| **总计** | **433** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
+| **总计** | **440** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
 
 ### 各系列主题文件分布
 
@@ -48,7 +48,7 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 | 内容深度（核心文档） | ⭐⭐⭐⭐ 80% | 01系列/03-01~14/04系列充实；02-07~09、03-15~38 偏薄 |
 | 内容深度（骨架文档） | ⭐⭐⭐⭐ 85% | 03-39~62 共24篇已由并行代理充实至中等密度（180-289行、含代码块与表格） |
 | 技术时效性 | ⭐⭐⭐⭐⭐ 92% | Kafka 4.0/KIP-932、Pulsar 4.x/Oxia、RabbitMQ 4.x、Redis 8、NATS 2.x 已对齐；RocketMQ/Redpanda/S3解耦、CloudEvents/AsyncAPI、CDC/Debezium/湖仓已补章 |
-| 论证严谨性 | ⭐⭐ 40% | "形式化证明"为符号化论证，定量参数缺来源标注；待引入三级置信标注 |
+| 论证严谨性 | ⭐⭐⭐ 55% | 三级置信标注已完成全库基线覆盖（批次16）；逐条行内化与引用规范化随 17 批推进 |
 | 结构健康度 | ⭐⭐⭐ 60% | 索引已同步；仍有重复文件、冗余元文档待治理 |
 
 ## 剩余工作（详见 ROADMAP.md）
@@ -64,8 +64,9 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 六大系统表述已统一（README/INDEX/本文档）
 - ✅ 02/03 系列定位声明补齐（58 篇存量，2026-11-17，doc-self-check.sh 强制）
 - ✅ 完整性自动检查（doc-self-check.sh quick/full/--skill-drift 三模式落地）
-- 🔄 引用来源标注体系（P3 引入）
-- 🔄 存量 WARN 挂账（代码块语言标注/最后更新日期，见 doc-self-check.sh full 输出）
+- ✅ 全面一致性治理完成（2026-11-17 批次19：WARN 100→4，仅历史档案知情保留项）
+- 🔄 引用来源标注体系（P3 已达标基线；行内化随文档触及滚动升级）
+- 🔄 批次18 深度补齐（02-07~09、03-15~38 加厚）滚动进行
 
 ---
 

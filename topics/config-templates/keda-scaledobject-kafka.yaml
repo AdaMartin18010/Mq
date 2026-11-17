@@ -1,0 +1,32 @@
+# KEDA ScaledObject 模板：Kafka 消费者按 lag 伸缩
+# 参考: topics/02-场景驱动架构设计/02-49-自动伸缩与自愈架构设计.md
+# 用法: kubectl apply -f keda-scaledobject-kafka.yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: orders-consumer
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: orders-consumer          # 目标 Deployment/StatefulSet
+  pollingInterval: 30              # lag 指标轮询秒数（30s 起步调参）
+  cooldownPeriod: 300              # 缩容冷却：必须 > 一次 rebalance 时长
+  minReplicaCount: 2               # 缩容下限（HA 基线）
+  maxReplicaCount: 30              # 扩容上限（≤ 分区数才有意义）
+  advanced:
+    restoreToOriginalReplicaCount: false
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 60    # 扩容快
+        scaleDown:
+          stabilizationWindowSeconds: 900   # 缩容慢（3× 不对称原则）
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: orders-processor
+      topic: orders.order.created
+      lagThreshold: "1000"         # 每副本目标 lag：可容忍积压时长×消费速率【估算】
+      offsetResetPolicy: latest
+      # allowIdleConsumers: "false"  # 分区数 < 副本数时禁止空转消费者

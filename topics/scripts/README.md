@@ -108,6 +108,7 @@
     - [消息测试](#消息测试)
     - [成本优化](#成本优化)
     - [自动化运维检查](#自动化运维检查)
+    - [数据治理检查](#数据治理检查-1)
   - [使用说明](#使用说明)
     - [权限设置](#权限设置)
     - [执行脚本](#执行脚本)
@@ -158,6 +159,9 @@
 - **文件**: `mq-smoke-test.sh`
 - **用法**: `./mq-smoke-test.sh [kafka|nats|rabbitmq|redis|mqtt|pulsar|all]`
 - **说明**: 容器冒烟测试（TEST-02 精简版）：起容器→生产消费往返→清理；无 Docker 自动 SKIP
+- **文件**: `alert-quality-check.sh`
+- **用法**: `./alert-quality-check.sh [--week]`（RULES_DIR/AM_URL 环境变量可选）
+- **说明**: 告警质量周检（TEST-07 TC-OBS-07）：规则 runbook 覆盖检查 + Alertmanager 静默超期检查
 
 ## 运维脚本
 
