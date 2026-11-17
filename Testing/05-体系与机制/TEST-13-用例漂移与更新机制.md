@@ -37,7 +37,7 @@ blocked：  外部依赖长期不可用（如 E3 集群缺席），恢复后回 
 | 漂移类型 | 检测器 | 链路 | 影响面 |
 | ---- | ---- | ---- | ---- |
 | **文档漂移** | `hermes-task-gen.sh --drift <文件>` | 文档变更 → doc_refs 命中的用例 ID 列表 → 加入下次 nightly/weekly 任务包 | topics/ 任意 md |
-| **契约漂移** | `contract-drift-check.sh --format=ids` | spec/模板参数不一致 → spec 文件名列表 → Microcks test 重跑 + TC-BUS 父用例重检 | 契约语义测试/01-契约规格/ |
+| **契约漂移** | `contract-drift-check.sh --format=ids` | spec/模板参数不一致 → spec 文件名列表 → Microcks test 重跑 + TC-BUS 父用例重检 | Testing/06-契约语义测试/01-契约规格/ |
 | **版本漂移** | ROADMAP 版本追踪清单人工变更 → `hermes-task-gen.sh --drift 01-XX,03-XX` | 大版本 GA（如 Kafka 4.5）→ 30 天内更新对应专章（ROADMAP 例行规则）→ 该专章 doc_refs 用例全量重跑 | 八系统专章 |
 
 触发器执行频率：文档/契约漂移 = 每次提交（E0 内嵌静态层）；版本漂移 = 季度复核（TEST-06 月度回顾时扫描一次版本清单）。

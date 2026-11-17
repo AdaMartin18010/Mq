@@ -9,7 +9,7 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SERIES_DIR="$PROJECT_ROOT/契约语义测试"
+SERIES_DIR="$PROJECT_ROOT/Testing/06-契约语义测试"
 ONLY_SPEC=""; JSON_OUT=0
 
 while [[ $# -gt 0 ]]; do
@@ -90,7 +90,7 @@ print("OK" if not errs else "VIOLATION: " + "; ".join(errs))
 collect() {
   if [[ -n "$ONLY_SPEC" ]]; then echo "$ONLY_SPEC"; return; fi
   for f in "$SERIES_DIR"/01-契约规格/specs/*.yaml "$SERIES_DIR"/03-业务场景/*/*.yaml; do
-    [[ -f "$f" ]] && echo "$f"
+    [[ -f "$f" && "$(basename "$f")" != "contract.yaml" ]] && echo "$f"
   done
   echo "$PROJECT_ROOT/topics/config-templates/asyncapi-kafka-example.yaml"
   echo "$PROJECT_ROOT/topics/config-templates/asyncapi-mqtt-example.yaml"

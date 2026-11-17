@@ -1,5 +1,5 @@
 # Microcks 契约行为验证环境（批次 78）
-# 用途：对 契约语义测试/03-业务场景/ 的 8 个 AsyncAPI spec 提供 mock + contract test（CNCF Incubating）
+# 用途：对 Testing/06-契约语义测试/03-业务场景/ 的 8 个 AsyncAPI spec 提供 mock + contract test（CNCF Incubating）
 # 启动：docker compose -f Testing/fixtures/docker-compose-microcks.yml up -d
 # 注意：镜像 tag 首次实跑时以 quay.io/microcks/microcks 官方最新为准（时效纪律）
 name: mq-microcks

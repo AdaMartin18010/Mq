@@ -1,6 +1,6 @@
 # 测试数据工厂（fixtures/generators/）
 
-> 批次 93。为 8 业务场景包生成配套测试数据（含边界值）。字段对齐 契约语义测试/03-业务场景/*/contract.yaml。
+> 批次 93。为 8 业务场景包生成配套测试数据（含边界值）。字段对齐 Testing/06-契约语义测试/03-业务场景/*/contract.yaml。
 > 用法：`python3 gen-<domain>.py [N]`（默认 100 条，JSONL 输出到 stdout）；`python3 gen-<domain>.py --validate` 自检边界值覆盖。
 
 ## 生成器清单

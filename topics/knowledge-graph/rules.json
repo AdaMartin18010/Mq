@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "id": "implication-closure",
+      "description": "判定需求概念时须展开其 implies 闭包（恰好一次 → 幂等生产者+至少一次）",
+      "type": "closure",
+      "relation": "implies",
+      "transitive": true
+    },
+    {
+      "id": "mutex-conflict",
+      "description": "场景需求闭包内出现 mutuallyExclusiveWith 对即为 CONFLICT",
+      "type": "mutex-check",
+      "relation": "mutuallyExclusiveWith"
+    },
+    {
+      "id": "capability-lookup",
+      "description": "系统能力按 degree 判定：native/config=SUPPORTED，app-level=MISSING(标注需应用层实现)，none/缺边=MISSING",
+      "type": "capability",
+      "degrees": { "native": "SUPPORTED", "config": "SUPPORTED", "app-level": "SUPPORTED_WITH_APP_EFFORT" }
+    }
+  ]
+}

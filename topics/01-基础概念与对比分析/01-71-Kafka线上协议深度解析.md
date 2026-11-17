@@ -28,6 +28,8 @@
   - [1.71.6 Kafka 与 MQTT 报文模型对照](#1716-kafka-与-mqtt-报文模型对照)
   - [1.71.7 抓包分析示例](#1717-抓包分析示例)
   - [1.71.8 参考来源](#1718-参考来源)
+    - [项目内互链](#项目内互链)
+    - [官方参考来源](#官方参考来源)
 
 ---
 
@@ -233,7 +235,7 @@ type:    int16 (0=ABORT, 1=COMMIT)
 
 ### Jepsen 2024-11 对事务协议 unsound 的协议层解读
 
-Jepsen 2024-11 对 Bufstream 0.1.0~0.1.3 的评测不仅发现了 Bufstream 自身的实现缺陷，更指出 **Kafka 事务协议本身存在 unsound 设计**。本项目的第三方证据层已在 [conformance-matrix.md](../../契约语义测试/02-语义矩阵/conformance-matrix.md) 中登记该结论；下面从协议层做解读。
+Jepsen 2024-11 对 Bufstream 0.1.0~0.1.3 的评测不仅发现了 Bufstream 自身的实现缺陷，更指出 **Kafka 事务协议本身存在 unsound 设计**。本项目的第三方证据层已在 [conformance-matrix.md](../../Testing/06-契约语义测试/02-语义矩阵/conformance-matrix.md) 中登记该结论；下面从协议层做解读。
 
 核心问题：协议缺少**客户端请求的顺序约束**和**事务编号**。具体表现为：
 
@@ -288,7 +290,7 @@ franz-go 等较新的纯 Go 客户端通过主动跟进 KIP-890/KIP-896 已支�
 | 拉取/推送 | 消费者通过 `Fetch` 主动拉 | broker 通过 `PUBLISH` 主动推 |
 | 连接状态 | 无会话拉取，offset 由消费者/协调者保存 | CONNECT 建立会话，SUBSCRIBE 维护订阅状态 |
 | 报文边界 | 长度前缀二进制帧 | 变长 MQTT 控制报文 |
-|  QoS 语义 | acks + ISR 复制，幂等/事务可选 | QoS 0/1/2 在客户端-broker 间定义 |
+| QoS 语义 | acks + ISR 复制，幂等/事务可选 | QoS 0/1/2 在客户端-broker 间定义 |
 | 分区/主题 | 分区是物理顺序日志，可并行 | 主题通配符订阅，无天然分区 |
 
 Kafka 的“无会话拉取”使得消费者可以任意重放 offset，而 MQTT 的会话状态绑定在连接上，断连重连需通过 clean start / session expiry 管理。
@@ -324,7 +326,7 @@ tcpdump -i lo -nn -s0 -w kafka.pcap 'tcp port 9092'
 
 - 存储与复制内幕：[1.61 Kafka 存储与复制内幕深度解析](./01-61-Kafka存储与复制内幕深度解析.md)
 - MQTT 协议全解析：[1.64 MQTT 协议全解析](./01-64-MQTT-5.0协议全解析.md)
-- Jepsen 证据登记：[契约语义测试/02-语义矩阵/conformance-matrix.md](../../契约语义测试/02-语义矩阵/conformance-matrix.md)
+- Jepsen 证据登记：[Testing/06-契约语义测试/02-语义矩阵/conformance-matrix.md](../../Testing/06-契约语义测试/02-语义矩阵/conformance-matrix.md)
 
 ### 官方参考来源
 

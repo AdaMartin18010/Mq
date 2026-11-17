@@ -11,7 +11,7 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SERIES_DIR="$PROJECT_ROOT/契约语义测试"
+SERIES_DIR="$PROJECT_ROOT/Testing/06-契约语义测试"
 FORMAT="full"; ONLY_SPEC=""
 
 while [[ $# -gt 0 ]]; do

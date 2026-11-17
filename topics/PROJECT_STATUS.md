@@ -13,7 +13,7 @@
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 238 | 01系列70篇 + 02系列58篇 + 03系列66篇 + 04系列6篇 + AI_Skills系列6篇 + Testing系列15篇 + 契约语义测试系列17篇 |
+| **主题文档** | 253 | 01系列79篇 + 02系列59篇 + 03系列68篇 + 04系列7篇 + AI_Skills系列6篇 + Testing系列34篇（含 06-契约语义测试 21 篇；口径对账细化列入批次 108） |
 | **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
 | **元文档** | 20 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
@@ -21,7 +21,7 @@
 | **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **607** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
+| **总计** | **630** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；计数口径对账细化列入批次 108） |
 
 ### 各系列主题文件分布
 
@@ -75,9 +75,10 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次48-52 一致性+深度+前沿（2026-11-18：README/术语表 50 术语回灌/GLOSSARY/用例库豁免条款；02 系列 28 篇+01-01 旗舰+03 早期加厚；01-53~57 流处理/流库/数据契约/AIOps/Agent 五新篇）
 - ✅ 批次53-58 重组+思维表征一致性+自治体系（2026-11-18：Testing/AI_Skills 顶层化；01-58 概念卡片 108 概念/01-59 决策总树 28 节点+14 项一致性核对[01-19 已对齐]；01-02 导图/01-03 图网重绘；decision-registry+check 机制化；7 技能审计修订漂移清零；TEST-11 hermes 自治/TEST-12 企业用例/fixtures 夹具层）
 - ✅ 批次59-63 批判修正+深度旗舰+实证能力+机制可持续化（2026-11-18：01-58 反例深化+275 行/01-19 等对账；02-07/08/09 二手→一手来源 9 条+04 织补 15 节点；01-60~01-66 前沿瞭望与深度旗舰七篇 500-700 行；03-66 基准实测指南+fixtures 结果模板；registry 20→60 CONFLICTS=0；CHANGELOG 归档规则+archive/README；语义抽检脚本首跑 FAIL 1 项[01-12 互链]已闭环）
-- ✅ 批次64-76 hermes 执行底座+契约语义测试体系（2026-11-18：hermes 七件套[预检/诊断/L1修复/failbundle/自愈/任务包生成/E0入口]；E0 五步→七步全绿；顶层 契约语义测试/ 六层模型系列[TEST-13/14/15+六系统 spec+bindings 矩阵+8 场景契约包+14 GWT 断言+SEM/BUS 注册 20 条+追溯表 95%]；修正 mqtt 绑定层级违规 2 处；registry 151 行）
+- ✅ 批次64-76 hermes 执行底座+契约语义测试体系（2026-11-18：hermes 七件套[预检/诊断/L1修复/failbundle/自愈/任务包生成/E0入口]；E0 五步→七步全绿；顶层 Testing/06-契约语义测试/ 六层模型系列[TEST-13/14/15+六系统 spec+bindings 矩阵+8 场景契约包+14 GWT 断言+SEM/BUS 注册 20 条+追溯表 95%]；修正 mqtt 绑定层级违规 2 处；registry 151 行）
 - ✅ 批次77-86 国际对齐深化（2026-11-18：ODCS v3.1.0 对齐+导出器、Jepsen 证据矩阵[Bufstream 事务 unsound 发现]、Microcks 06-行为验证层、SEC 基线扫描 6 WARN 缺口、A2A/MCP 契约 6 用例、01-67 存储解耦与队列化/01-68 抽象消息层双旗舰专章、混沌 GAME DAY+动态系统测试静态部、registry 212 行）
 - ✅ 批次87-93 行业格局与前沿（2026-11-18：IBM 收购 Confluent 影响落地 4 文档、01-70 流表一体（15 来源核实，Kafka 4.x 无原生 Iceberg 结论）、01-71 wire protocol（Jepsen KAFKA-17754 解读）、pre-commit+CI workflow、04-06 演化动力学、LEARNING_PATH+MCP 评估、测试数据工厂三生成器）
+- ✅ 批次94-105 五方向旗舰群+测试体系统一（2026-11-18：03-67/68 运维画像、01-72 编码矩阵、02-60 演化策略、04-07 控制回路、01-73~77 五语言深耕+跨语言集成、01-78/79/80 概念三表征、knowledge-graph JSON-LD 图谱+kg-query 三态判定（E0 第 8 步）、Testing/06-契约语义测试 重组+TEST-C 重编号+TEST-00 总规划；批次 106-110 进行中）
 
 ---
 

@@ -220,15 +220,15 @@ done
 
 ## T.12.8 通用业务场景契约库（L5 互链）
 
-本文档三场景（电商订单/金融转账/IoT 遥测）的**契约视角**落在顶层 [契约语义测试/03-业务场景/](../../契约语义测试/03-业务场景/README.md)（批次74，TEST-15 规范）：
+本文档三场景（电商订单/金融转账/IoT 遥测）的**契约视角**落在顶层 [Testing/06-契约语义测试/03-业务场景/](../../Testing/06-契约语义测试/03-业务场景/README.md)（批次74，TEST-15 规范）：
 
 | 本文档场景 | 契约包 | 输入断言源 |
 | ---- | ---- | ---- |
-| 电商订单全链路 | [01-order-lifecycle](../../契约语义测试/03-业务场景/01-order-lifecycle/contract.yaml) | invariants（幂等/有序/状态机） |
-| 金融转账 | [02-payment-reconciliation](../../契约语义测试/03-业务场景/02-payment-reconciliation/contract.yaml) | invariants（资损级幂等/证据指纹） |
-| IoT 遥测 | [05-iot-telemetry](../../契约语义测试/03-业务场景/05-iot-telemetry/contract.yaml) | invariants（QoS 分级/stale 丢弃） |
+| 电商订单全链路 | [01-order-lifecycle](../../Testing/06-契约语义测试/03-业务场景/01-order-lifecycle/contract.yaml) | invariants（幂等/有序/状态机） |
+| 金融转账 | [02-payment-reconciliation](../../Testing/06-契约语义测试/03-业务场景/02-payment-reconciliation/contract.yaml) | invariants（资损级幂等/证据指纹） |
+| IoT 遥测 | [05-iot-telemetry](../../Testing/06-契约语义测试/03-业务场景/05-iot-telemetry/contract.yaml) | invariants（QoS 分级/stale 丢弃） |
 
-用例执行以契约包 contract.yaml 的 invariants 为断言输入；契约变更经 contract-drift-check.sh 触发本文档用例 drift 重跑（见 [TEST-15](../../契约语义测试/00-模型与规划/TEST-15-业务场景契约库与用例规范.md) §T.15.5）。
+用例执行以契约包 contract.yaml 的 invariants 为断言输入；契约变更经 contract-drift-check.sh 触发本文档用例 drift 重跑（见 [TEST-15](../../Testing/06-契约语义测试/00-模型与规划/TEST-C3-业务场景契约库与用例规范.md) §T.15.5）。
 
 ---
 

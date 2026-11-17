@@ -10,7 +10,7 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SERIES_DIR="$PROJECT_ROOT/契约语义测试"
+SERIES_DIR="$PROJECT_ROOT/Testing/06-契约语义测试"
 DIMS="交付语义 顺序性 幂等去重 重试退避 死信 事务 背压 TTL过期 延迟消息 消息过滤 流控 持久化"
 SYSTEMS="Kafka RabbitMQ NATS Pulsar Redis MQTT CloudEvents OTel"
 

@@ -3,7 +3,7 @@
 # 用法: contract-to-odcs.py <contract.yaml> [--check]
 #   默认：输出 ODCS YAML 到 stdout
 #   --check：反向校验 contract 含必备段（scenario/version/messages/invariants），缺段列清单退出 1
-# 映射规则见 契约语义测试/00-模型与规划/odcs-alignment.md §二
+# 映射规则见 Testing/06-契约语义测试/00-模型与规划/odcs-alignment.md §二
 import sys, yaml
 
 def fail(msg):
@@ -63,7 +63,7 @@ def main():
             for q in (c.get("quality") or [])
         ],
         "customProperties": {
-            "x-semantics-source": "契约语义测试/02-语义矩阵/TEST-14",
+            "x-semantics-source": "Testing/06-契约语义测试/02-语义矩阵/TEST-14",
             "x-invariants": [str(i) for i in (c.get("invariants") or [])],
             **({"x-stateMachine": c["stateMachine"]} if "stateMachine" in c else {}),
         },

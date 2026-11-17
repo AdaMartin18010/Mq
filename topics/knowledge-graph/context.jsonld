@@ -1,0 +1,21 @@
+{
+  "@context": {
+    "mq": "https://example.org/mq-kb#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "schema": "https://schema.org/",
+    "name": "skos:prefLabel",
+    "definition": "skos:definition",
+    "source": "schema:citation",
+    "type": "@type",
+    "id": "@id",
+    "specializes": { "@id": "mq:specializes", "@type": "@id" },
+    "mutuallyExclusiveWith": { "@id": "mq:mutuallyExclusiveWith", "@type": "@id" },
+    "partOf": { "@id": "mq:partOf", "@type": "@id" },
+    "implies": { "@id": "mq:implies", "@type": "@id" },
+    "supportedBy": { "@id": "mq:supportedBy", "@type": "@id" },
+    "requires": { "@id": "mq:requires", "@type": "@id" },
+    "evaluatedBy": { "@id": "mq:evaluatedBy", "@type": "@id" },
+    "degree": "mq:degree",
+    "note": "skos:note"
+  }
+}

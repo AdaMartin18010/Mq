@@ -1,0 +1,2702 @@
+{
+  "@context": "context.jsonld",
+  "graph": [
+    {
+      "id": "mq:concept-topic",
+      "type": "skos:Concept",
+      "name": "Topic",
+      "definition": "消息逻辑分类标识，发布者按主题投递、订阅者按主题过滤【定理】",
+      "source": "01-58",
+      "partOf": [
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-exchange",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-queue",
+      "type": "skos:Concept",
+      "name": "Queue",
+      "definition": "点对点模型中的消息容器，每条消息通常只被一个消费者处理【定理】",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-classic-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-quorum-queue",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-partition",
+      "type": "skos:Concept",
+      "name": "Partition",
+      "definition": "Topic 的物理分片，分区是顺序性与并行性的基本单元",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-broker",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-offset",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-consumer-group",
+      "type": "skos:Concept",
+      "name": "Consumer Group",
+      "definition": "一组协同消费者，共同消费 Topic/Stream 并实现负载均衡",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-consumer",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-share-group",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-offset",
+      "type": "skos:Concept",
+      "name": "Offset",
+      "definition": "消息在分区/流内的单调递增位置标识【定理：Kafka/NATS 协议语义】",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-producer",
+      "type": "skos:Concept",
+      "name": "Producer",
+      "definition": "向消息系统发送消息的客户端",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-consumer",
+      "type": "skos:Concept",
+      "name": "Consumer",
+      "definition": "从消息系统接收并处理消息的客户端",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-offset",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-poison-message",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-broker",
+      "type": "skos:Concept",
+      "name": "Broker",
+      "definition": "消息中间件服务端节点，负责接收、路由、存储消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-at-most-once",
+      "type": "skos:Concept",
+      "name": "at-most-once",
+      "definition": "消息最多被投递一次，可能丢失但不重复【定理】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-qos-0",
+          "source": "01-58"
+        }
+      ],
+      "mutuallyExclusiveWith": [
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-78"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-at-least-once",
+      "type": "skos:Concept",
+      "name": "at-least-once",
+      "definition": "消息至少被投递一次，可能重复但不丢失【定理】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-qos-1",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-exactly-once",
+      "type": "skos:Concept",
+      "name": "exactly-once",
+      "definition": "消息在系统语义内恰好被处理一次【论证：需端到端幂等+事务】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-idempotency",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-at-least-once",
+          "source": "01-78"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-qos-0",
+      "type": "skos:Concept",
+      "name": "QoS 0",
+      "definition": "MQTT 最多一次投递，无确认",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-at-most-once",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-qos-1",
+      "type": "skos:Concept",
+      "name": "QoS 1",
+      "definition": "MQTT 至少一次投递，PUBACK 确认",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-at-least-once",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-qos-2",
+      "type": "skos:Concept",
+      "name": "QoS 2",
+      "definition": "MQTT 恰好一次协议语义，四次握手【定理：OASIS 规范】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-dead-letter",
+      "type": "skos:Concept",
+      "name": "Dead Letter",
+      "definition": "超过重试上限仍无法处理的消息被转储到专门队列/主题",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-message",
+          "source": "01-78"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-dead-letter-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-poison-message",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-idempotency",
+      "type": "skos:Concept",
+      "name": "Idempotency",
+      "definition": "同一操作执行多次结果与一次相同【定理：数学定义】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-producer",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-consumer",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-transaction",
+      "type": "skos:Concept",
+      "name": "Transaction",
+      "definition": "一组消息操作的原子提交或回滚",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-outbox",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-78"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-backpressure",
+      "type": "skos:Concept",
+      "name": "Backpressure",
+      "definition": "消费端向生产端反馈流控信号，防止过载",
+      "source": "01-58",
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-ordering",
+      "type": "skos:Concept",
+      "name": "Ordering",
+      "definition": "消息按发送顺序被投递和处理的保证",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-persistence",
+      "type": "skos:Concept",
+      "name": "Persistence",
+      "definition": "消息写入非易失性存储，重启后可恢复",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-retention",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-retention",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-retention",
+      "type": "skos:Concept",
+      "name": "Retention",
+      "definition": "消息在系统中的保留策略（时间/大小/消息数）",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-persistence",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-compaction",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-tiered-storage",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-compaction",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-compaction",
+      "type": "skos:Concept",
+      "name": "Compaction",
+      "definition": "按 Key 保留最新值，删除旧记录以节省空间",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-retention",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-schema",
+      "type": "skos:Concept",
+      "name": "Schema",
+      "definition": "消息 payload 的结构化契约定义",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-cloudevents",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-binding",
+      "type": "skos:Concept",
+      "name": "Binding",
+      "definition": "消息路由规则中 Channel 与具体协议/传输的绑定",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-operation",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-exchange",
+      "type": "skos:Concept",
+      "name": "Exchange",
+      "definition": "RabbitMQ 中接收消息并按规则路由到 Queue 的路由器",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-broker",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-stream",
+      "type": "skos:Concept",
+      "name": "Stream",
+      "definition": "持久化的追加式消息序列，可重放、可分片",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-jetstream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-share-group",
+      "type": "skos:Concept",
+      "name": "Share Group",
+      "definition": "Kafka KIP-932 引入的共享消费组，允许多消费者并发读同一分区",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        }
+      ],
+      "specializes": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-tiered-storage",
+      "type": "skos:Concept",
+      "name": "Tiered Storage",
+      "definition": "热数据本地盘、冷数据卸载对象存储的分层架构",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-retention",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-compaction",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-dead-letter-queue",
+      "type": "skos:Concept",
+      "name": "DLQ",
+      "definition": "Dead Letter Queue/Topic，集中存放处理失败消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-poison-message",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-reliability-semantics",
+          "source": "concept-reliability-semantics"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-poison-message",
+      "type": "skos:Concept",
+      "name": "Poison Message",
+      "definition": "因内容/状态错误导致反复处理失败的消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-dead-letter",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-idempotency",
+          "source": "01-58"
+        }
+      ],
+      "specializes": [
+        {
+          "id": "mq:concept-message",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-backlog",
+      "type": "skos:Concept",
+      "name": "Backlog",
+      "definition": "已发布但尚未被消费者处理的消息累积量",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-kraft",
+      "type": "skos:Concept",
+      "name": "KRaft",
+      "definition": "Kafka 基于 Raft 的内置元数据管理，替代 ZooKeeper【定理：KRaft 协议】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-controller",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-controller",
+      "type": "skos:Concept",
+      "name": "Controller",
+      "definition": "Kafka 集群中负责分区状态机与副本管理的特殊 Broker",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-broker",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-kraft",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-leader-election",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-kip-932",
+      "type": "skos:Concept",
+      "name": "KIP-932",
+      "definition": "Kafka 共享消费组协议提案，引入 Share Group 语义",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-share-group",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-idempotent-producer",
+      "type": "skos:Concept",
+      "name": "Producer Idempotence",
+      "definition": "Kafka Producer 通过 PID+Sequence Number 去重【定理】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exactly-once",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-isr",
+      "type": "skos:Concept",
+      "name": "ISR",
+      "definition": "In-Sync Replicas，与 Leader 保持同步的副本集合【定理：Kafka 协议语义】",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-leader",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-follower",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-high-watermark",
+      "type": "skos:Concept",
+      "name": "High Watermark",
+      "definition": "已提交到 ISR 的最大 offset，消费者只能读到 HW 之前",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-isr",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-offset",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-log-segment",
+      "type": "skos:Concept",
+      "name": "Log Segment",
+      "definition": "Kafka 分区日志的物理分段文件（.log + .index + .timeindex）",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-retention",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-compaction",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-rebalance-protocol",
+      "type": "skos:Concept",
+      "name": "Rebalance Protocol",
+      "definition": "消费者组成员变化时重新分配分区的协议",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-partition",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-leader",
+      "type": "skos:Concept",
+      "name": "Leader",
+      "definition": "分区的读写主副本",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-follower",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-isr",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-controller",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-follower",
+      "type": "skos:Concept",
+      "name": "Follower",
+      "definition": "从 Leader 拉取数据并同步的副本",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-leader",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-isr",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-consumer-group-coordinator",
+      "type": "skos:Concept",
+      "name": "Consumer Group Coordinator",
+      "definition": "负责消费者组位点与成员管理的事务协调器",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-offset",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-record-batch",
+      "type": "skos:Concept",
+      "name": "Record Batch",
+      "definition": "Kafka 生产端批量发送的消息集合，压缩与高效网络单元",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-producer",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-broker-pulsar",
+      "type": "skos:Concept",
+      "name": "Broker (Pulsar)",
+      "definition": "Pulsar 无状态计算层节点，处理协议与路由",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-bookie",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-namespace",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-bookie",
+      "type": "skos:Concept",
+      "name": "Bookie",
+      "definition": "Apache BookKeeper 存储节点，以 Ledger 模型持久化消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-broker",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-ledger",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-oxia",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-oxia",
+      "type": "skos:Concept",
+      "name": "Oxia",
+      "definition": "Pulsar 新一代元数据存储，替代 ZooKeeper",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-controller",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-kraft",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-tenant",
+      "type": "skos:Concept",
+      "name": "Tenant",
+      "definition": "Pulsar 多租户一级隔离单元",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-namespace",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-namespace",
+      "type": "skos:Concept",
+      "name": "Namespace",
+      "definition": "Pulsar 租户下的二级隔离与策略单元",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-tenant",
+          "source": "01-58"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-subscription-type",
+      "type": "skos:Concept",
+      "name": "Subscription Type",
+      "definition": "消费者订阅模式：Exclusive/Shared/Failover/Key_Shared",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-ordering",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-geo-replication",
+      "type": "skos:Concept",
+      "name": "Geo-Replication",
+      "definition": "跨地域数据中心异步复制 Topic 数据",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-ledger",
+      "type": "skos:Concept",
+      "name": "Ledger",
+      "definition": "BookKeeper 中追加写的最小存储单元",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-bookie",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-exchange-types",
+      "type": "skos:Concept",
+      "name": "Exchange Types",
+      "definition": "Exchange 路由算法类型：direct/topic/fanout/headers",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-exchange",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-exchange",
+          "source": "01-78"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-quorum-queue",
+      "type": "skos:Concept",
+      "name": "Quorum Queue",
+      "definition": "RabbitMQ 4.x 默认的 Raft 复制队列",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-78"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-classic-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-classic-queue",
+      "type": "skos:Concept",
+      "name": "Classic Queue",
+      "definition": "RabbitMQ 传统队列类型",
+      "source": "01-58",
+      "specializes": [
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-78"
+        }
+      ],
+      "implies": [
+        {
+          "id": "mq:concept-quorum-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-federation",
+      "type": "skos:Concept",
+      "name": "Federation",
+      "definition": "跨 RabbitMQ 集群/节点按需拉取消息复制",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-geo-replication",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-vhost",
+      "type": "skos:Concept",
+      "name": "vhost",
+      "definition": "Virtual Host，RabbitMQ 逻辑隔离单元",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-tenant",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-namespace",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-confirm",
+      "type": "skos:Concept",
+      "name": "Confirm",
+      "definition": "Publisher Confirm 机制，Broker 异步 ack 消息入队",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-binding-rabbitmq",
+      "type": "skos:Concept",
+      "name": "Binding (RabbitMQ)",
+      "definition": "Exchange 到 Queue 的路由绑定关系",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exchange",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-exchange-types",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-dead-letter-exchange",
+      "type": "skos:Concept",
+      "name": "Dead Letter Exchange",
+      "definition": "接收被拒绝/过期/超限消息的特殊 Exchange",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-dead-letter",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-jetstream",
+      "type": "skos:Concept",
+      "name": "JetStream",
+      "definition": "NATS 持久化消息层，提供流存储与 exactly-once 语义",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-consumer",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-stream-nats",
+      "type": "skos:Concept",
+      "name": "Stream (NATS)",
+      "definition": "JetStream 中按 subject 集合持久化存储的消息序列",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-consumer-nats",
+      "type": "skos:Concept",
+      "name": "Consumer (NATS)",
+      "definition": "JetStream 中从 Stream 读取消息的视图",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-leafnode",
+      "type": "skos:Concept",
+      "name": "Leafnode",
+      "definition": "NATS 边缘 leaf 节点，与上游 hub 建立单向/双向联邦",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-supercluster",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-supercluster",
+      "type": "skos:Concept",
+      "name": "Supercluster",
+      "definition": "多个 NATS 集群通过 Gateway 互联形成更大联邦",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-leafnode",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-kv",
+      "type": "skos:Concept",
+      "name": "KV",
+      "definition": "JetStream Key-Value 存储抽象",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-object-store",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-object-store",
+      "type": "skos:Concept",
+      "name": "Object Store",
+      "definition": "JetStream 对象存储抽象，用于大文件/二进制",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-kv",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-session",
+      "type": "skos:Concept",
+      "name": "Session",
+      "definition": "MQTT 客户端与 Broker 之间的持久化状态关联",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-will",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-will",
+      "type": "skos:Concept",
+      "name": "Will",
+      "definition": "客户端异常断开时由 Broker 代发的遗嘱消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-session",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-retain",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-retain",
+      "type": "skos:Concept",
+      "name": "Retain",
+      "definition": "主题上保留的最后一条消息，新订阅者立即收到",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-session",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-shared-subscription",
+      "type": "skos:Concept",
+      "name": "Shared Subscription",
+      "definition": "MQTT 5.0 共享订阅，组内多个订阅者负载均衡",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-enhanced-auth",
+      "type": "skos:Concept",
+      "name": "Enhanced Auth",
+      "definition": "MQTT 5.0 增强认证，支持 Challenge-Response",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-user-properties",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-user-properties",
+      "type": "skos:Concept",
+      "name": "User Properties",
+      "definition": "MQTT 5.0 用户自定义键值对报文属性",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-topic-alias",
+      "type": "skos:Concept",
+      "name": "Topic Alias",
+      "definition": "MQTT 5.0 用短整数映射长主题名以减少报文大小",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-session",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-stream-redis",
+      "type": "skos:Concept",
+      "name": "Stream (Redis)",
+      "definition": "Redis 追加式日志结构，消息按 ID 顺序存储",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-xack",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-consumer-group-redis",
+      "type": "skos:Concept",
+      "name": "Consumer Group (Redis)",
+      "definition": "Redis Stream 消费组，组内成员分摊消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-consumer",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-pending-entries",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-xack",
+      "type": "skos:Concept",
+      "name": "XACK",
+      "definition": "消费者确认已处理 Stream 消息的命令",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-pending-entries",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-pending-entries",
+      "type": "skos:Concept",
+      "name": "Pending Entries",
+      "definition": "已投递但未 ACK 的消息集合（PEL）",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-xack",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-stream-id",
+      "type": "skos:Concept",
+      "name": "Stream ID",
+      "definition": "消息在 Stream 中的唯一时间序列 ID",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-offset",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-asyncapi",
+      "type": "skos:Concept",
+      "name": "AsyncAPI",
+      "definition": "异步 API 描述规范（OpenAPI 的异步对应物）",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-schema",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-cloudevents",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-cloudevents",
+      "type": "skos:Concept",
+      "name": "CloudEvents",
+      "definition": "CNCF 事件数据标准，统一事件元数据",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-schema",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-schema-dsl",
+      "type": "skos:Concept",
+      "name": "Schema (DSL)",
+      "definition": "消息 payload 的结构化契约",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-cloudevents",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-binding-dsl",
+      "type": "skos:Concept",
+      "name": "Binding (DSL)",
+      "definition": "AsyncAPI 中 Channel/Operation 到具体协议/传输的绑定",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-operation",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-server",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-channel",
+      "type": "skos:Concept",
+      "name": "Channel",
+      "definition": "AsyncAPI 3.x 中消息传输的抽象地址",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-operation",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-operation",
+      "type": "skos:Concept",
+      "name": "Operation",
+      "definition": "AsyncAPI 3.x 中发送或接收消息的动作",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        }
+      ],
+      "partOf": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-correlationid",
+      "type": "skos:Concept",
+      "name": "correlationId",
+      "definition": "用于关联请求与响应/因果链的标识",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-operation",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-specification-extensions",
+      "type": "skos:Concept",
+      "name": "Specification Extensions",
+      "definition": "AsyncAPI/OpenAPI 中 `x-` 前缀的自定义扩展字段",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-asyncapi",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-message",
+      "type": "skos:Concept",
+      "name": "Message",
+      "definition": "AsyncAPI 中描述一次传输的数据单元",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-schema",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-operation",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-server",
+      "type": "skos:Concept",
+      "name": "Server",
+      "definition": "AsyncAPI 中消息中间件/代理的端点定义",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-command-message",
+      "type": "skos:Concept",
+      "name": "Command Message",
+      "definition": "EIP 消息构造族：封装调用/指令的消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-message",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-publish-subscribe-channel",
+      "type": "skos:Concept",
+      "name": "Publish-Subscribe Channel",
+      "definition": "EIP 消息通道族：一条消息广播给多个接收者",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-topic",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-content-based-router",
+      "type": "skos:Concept",
+      "name": "Content-Based Router",
+      "definition": "EIP 路由族：按消息内容选择目标通道",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-exchange",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-binding",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-message-translator",
+      "type": "skos:Concept",
+      "name": "Message Translator",
+      "definition": "EIP 转换族：转换消息格式/协议",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-schema",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-competing-consumers",
+      "type": "skos:Concept",
+      "name": "Competing Consumers",
+      "definition": "EIP 端点族：多个消费者竞争同队列消息",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-consumer-group",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-queue",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-wire-tap",
+      "type": "skos:Concept",
+      "name": "Wire Tap",
+      "definition": "EIP 管理族：在通道上旁路复制消息用于监控",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-channel",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-outbox",
+      "type": "skos:Concept",
+      "name": "Outbox",
+      "definition": "事务内写业务表+Outbox 表，由 relay 异步投递 MQ",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-saga",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-saga",
+      "type": "skos:Concept",
+      "name": "Saga",
+      "definition": "长事务拆分为本地事务+补偿，通过事件协调",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-event-sourcing",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-outbox",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-transaction",
+          "source": "01-78"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-cqrs",
+      "type": "skos:Concept",
+      "name": "CQRS",
+      "definition": "命令查询职责分离，读写模型独立",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-event-sourcing",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-event-sourcing",
+      "type": "skos:Concept",
+      "name": "Event Sourcing",
+      "definition": "以事件流为真相源持久化状态变更",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-cqrs",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-stream",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-keda",
+      "type": "skos:Concept",
+      "name": "KEDA",
+      "definition": "Kubernetes Event-driven Autoscaler，按事件指标扩缩容",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-otel-span",
+      "type": "skos:Concept",
+      "name": "OTel Span",
+      "definition": "OpenTelemetry 追踪中的一个工作单元",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-semconv",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-semconv",
+      "type": "skos:Concept",
+      "name": "SemConv",
+      "definition": "OpenTelemetry 语义约定，标准化属性命名",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-otel-span",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-zero-trust",
+      "type": "skos:Concept",
+      "name": "Zero Trust",
+      "definition": "永不信任、持续验证的安全架构",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-spiffe",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-spiffe",
+      "type": "skos:Concept",
+      "name": "SPIFFE",
+      "definition": "安全身份框架，为工作负载发放可验证身份",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-zero-trust",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-mirrormaker-2",
+      "type": "skos:Concept",
+      "name": "MirrorMaker 2",
+      "definition": "Kafka 集群间数据镜像与元数据同步工具",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-cluster-linking",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-geo-replication",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-cluster-linking",
+      "type": "skos:Concept",
+      "name": "Cluster Linking",
+      "definition": "Confluent Kafka 集群间 topic 级联邦复制",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-mirrormaker-2",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-federation",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-leader-election",
+      "type": "skos:Concept",
+      "name": "Leader Election",
+      "definition": "分布式系统中选出唯一协调者/主节点的过程",
+      "source": "01-58",
+      "implies": [
+        {
+          "id": "mq:concept-kraft",
+          "source": "01-58"
+        },
+        {
+          "id": "mq:concept-controller",
+          "source": "01-58"
+        }
+      ]
+    },
+    {
+      "id": "mq:concept-prometheus",
+      "type": "skos:Concept",
+      "name": "Prometheus",
+      "definition": "指标收集与告警系统，广泛用于 MQ 监控",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-health-check",
+      "type": "skos:Concept",
+      "name": "Health Check",
+      "definition": "探针机制判断服务是否存活/就绪",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:concept-flow-control",
+      "type": "skos:Concept",
+      "name": "流控",
+      "definition": "传输/协议层的速率与窗口控制",
+      "source": "TEST-14"
+    },
+    {
+      "id": "mq:concept-reliability-semantics",
+      "type": "skos:Concept",
+      "name": "可靠性语义族",
+      "definition": "交付语义/死信/重试/幂等的概念聚合",
+      "source": "01-58"
+    },
+    {
+      "id": "mq:dim-delivery",
+      "type": "mq:SemanticDimension",
+      "name": "交付语义",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-001",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-002",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-016",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-ordering",
+      "type": "mq:SemanticDimension",
+      "name": "顺序性",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-003",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-dedup",
+      "type": "mq:SemanticDimension",
+      "name": "幂等去重",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-004",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-005",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-retry",
+      "type": "mq:SemanticDimension",
+      "name": "重试退避",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-006",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-dlq",
+      "type": "mq:SemanticDimension",
+      "name": "死信",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-007",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-008",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-transaction",
+      "type": "mq:SemanticDimension",
+      "name": "事务",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-009",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-backpressure",
+      "type": "mq:SemanticDimension",
+      "name": "背压",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-010",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-011",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-ttl",
+      "type": "mq:SemanticDimension",
+      "name": "TTL过期",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-012",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-delayed",
+      "type": "mq:SemanticDimension",
+      "name": "延迟消息",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-013",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-filtering",
+      "type": "mq:SemanticDimension",
+      "name": "消息过滤",
+      "source": "TEST-C2",
+      "evaluatedBy": []
+    },
+    {
+      "id": "mq:dim-flow-control",
+      "type": "mq:SemanticDimension",
+      "name": "流控",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-017",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:dim-persistence",
+      "type": "mq:SemanticDimension",
+      "name": "持久化",
+      "source": "TEST-C2",
+      "evaluatedBy": [
+        {
+          "id": "mq:ase-014",
+          "source": "assertions.tsv"
+        },
+        {
+          "id": "mq:ase-015",
+          "source": "assertions.tsv"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-kafka",
+      "type": "mq:System",
+      "name": "Kafka",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "native",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-rabbitmq",
+      "type": "mq:System",
+      "name": "RabbitMQ",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "native",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-nats",
+      "type": "mq:System",
+      "name": "NATS",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "none",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "config",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-pulsar",
+      "type": "mq:System",
+      "name": "Pulsar",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "native",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-redis-stream",
+      "type": "mq:System",
+      "name": "Redis Stream",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "none",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "none",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "none",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "native",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-mqtt",
+      "type": "mq:System",
+      "name": "MQTT",
+      "source": "TEST-C2",
+      "supportedBy": [
+        {
+          "id": "mq:dim-delivery",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ordering",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dedup",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-retry",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-dlq",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-transaction",
+          "degree": "none",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-backpressure",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-ttl",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-delayed",
+          "degree": "app-level",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-filtering",
+          "degree": "native",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-flow-control",
+          "degree": "config",
+          "source": "TEST-C2"
+        },
+        {
+          "id": "mq:dim-persistence",
+          "degree": "config",
+          "source": "TEST-C2"
+        }
+      ]
+    },
+    {
+      "id": "mq:system-rocketmq",
+      "type": "mq:System",
+      "name": "RocketMQ",
+      "source": "项目知识库",
+      "note": "TEST-C2 矩阵未覆盖，未建立能力边"
+    },
+    {
+      "id": "mq:system-redis",
+      "type": "mq:System",
+      "name": "Redis",
+      "source": "项目知识库",
+      "note": "TEST-C2 矩阵未覆盖，未建立能力边"
+    },
+    {
+      "id": "mq:ase-001",
+      "type": "mq:Assertion",
+      "name": "ASE-001",
+      "definition": "交付语义/Kafka: 生产者 acks=all、min.insync.replicas=2 的三 broker 集群; 消息获 ISR 内两副本确认后其中一副本宕机; 已确认消息不丢、消费者可见重复计数<=1; 存在性断言+重复计数",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-002",
+      "type": "mq:Assertion",
+      "name": "ASE-002",
+      "definition": "交付语义/NATS: Core（非 JetStream）subject 上生产后 broker 重启; 消费者未在线期间 broker 重启; 重启前未投递消息丢失不违反语义; 反向用例：确认不承诺",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-003",
+      "type": "mq:Assertion",
+      "name": "ASE-003",
+      "definition": "顺序性/Kafka: 单分区 topic、并发生产者 3 个; 持续生产 1000 条; 单分区内消费顺序与生产偏移单调一致; 全序比对",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-004",
+      "type": "mq:Assertion",
+      "name": "ASE-004",
+      "definition": "幂等去重/Kafka: 幂等生产者开启（enable.idempotence=true）; broker 故障转移触发重试; 单分区日志无重复序列号消息; broker 日志审计",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-005",
+      "type": "mq:Assertion",
+      "name": "ASE-005",
+      "definition": "幂等去重/NATS: JetStream 开启 dedup window、Msg-Id 重复发布; 同 Msg-Id 在窗口内发布两次; 仅第一条持久化; 服务端去重计数",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-006",
+      "type": "mq:Assertion",
+      "name": "ASE-006",
+      "definition": "重试退避/NATS: 消费者 nak 且配置 backoff 序列; 连续投递失败; 重投间隔符合 backoff 序列直至 maxDeliver; 重投时间戳序列断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-007",
+      "type": "mq:Assertion",
+      "name": "ASE-007",
+      "definition": "死信/RabbitMQ: 队列绑定 DLX、消费者 nack(requeue=false); 消息处理持续异常; 消息进入 DLQ、原队列清空、DLQ 可再消费; DLQ 深度=1 且原队列=0",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-008",
+      "type": "mq:Assertion",
+      "name": "ASE-008",
+      "definition": "死信/Pulsar: namespace 级 DLQ policy 配置、共享订阅; nack 超过 maxRedeliverCount; 消息进入 DLQ topic 且原订阅游标推进; DLQ topic 深度断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-009",
+      "type": "mq:Assertion",
+      "name": "ASE-009",
+      "definition": "事务/Kafka: 事务生产者 initTransactions+send 两分区+commitOffsets; 提交后消费隔离级别 read_committed; 仅已提交消息对下游可见; read_committed 消费断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-010",
+      "type": "mq:Assertion",
+      "name": "ASE-010",
+      "definition": "背压/NATS: pull consumer maxAckPending=100 且消费端不 ack; 生产端持续投递; broker 在 100 条未确认处停推新批、进程无 OOM; 未确认数平台期=100",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-011",
+      "type": "mq:Assertion",
+      "name": "ASE-011",
+      "definition": "背压/RabbitMQ: 消费者 prefetch=50 且不 ack; 生产端持续投递; 未确认消息数停于 50、内存曲线平稳; QoS 未确认数断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-012",
+      "type": "mq:Assertion",
+      "name": "ASE-012",
+      "definition": "TTL过期/MQTT: v5 消息带 message expiry interval=2s、订阅者会话过期=0; 订阅者 5 秒后重连; 过期消息不投递; 接收计数=0【定理】",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-013",
+      "type": "mq:Assertion",
+      "name": "ASE-013",
+      "definition": "延迟消息/Pulsar: 生产者 send(msg).deliverAfter(3s); 立即查询订阅 backlog; 3 秒前不可见、3 秒后按序可见; 时间窗可见性断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-014",
+      "type": "mq:Assertion",
+      "name": "ASE-014",
+      "definition": "持久化/Redis: AOF everysec+Stream key 已有 100 条; 重启 Redis 实例; Stream 长度与 ID 单调性保持; 长度=100 且 last-ID 不回落",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-015",
+      "type": "mq:Assertion",
+      "name": "ASE-015",
+      "definition": "持久化/RabbitMQ: durable queue + persistent 消息投递; broker 重启; 消息与拓扑均存活; 重启后队列深度+消息完整性断言",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-016",
+      "type": "mq:Assertion",
+      "name": "ASE-016",
+      "definition": "交付语义/CloudEvents: 信封含 specversion/type/source/id 四必需属性（02-57 已核实）; 任意传输绑定（HTTP/Kafka/MQTT）; 四属性缺失即拒绝解析; 信封静态断言（tc-assert-check 扩展项）",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:ase-017",
+      "type": "mq:Assertion",
+      "name": "ASE-017",
+      "definition": "流控/OTel: trace-id 消息头贯穿 producer→broker→consumer; 端到端一次业务流; 全链 span 关联不断（messaging.* 属性按 semconv）; trace 完整性断言（E2 真实执行挂账）",
+      "source": "assertions.tsv"
+    },
+    {
+      "id": "mq:scenario-01-order-lifecycle",
+      "type": "mq:Scenario",
+      "name": "订单全链路",
+      "source": "契约语义测试/03-业务场景/01-order-lifecycle/SEMANTICS.md",
+      "requires": [
+        "mq:concept-exactly-once",
+        "mq:concept-partition",
+        "mq:concept-idempotency",
+        "mq:concept-dead-letter-queue",
+        "mq:concept-transaction"
+      ]
+    },
+    {
+      "id": "mq:scenario-02-payment-reconciliation",
+      "type": "mq:Scenario",
+      "name": "支付对账",
+      "source": "契约语义测试/03-业务场景/02-payment-reconciliation/SEMANTICS.md",
+      "requires": [
+        "mq:concept-exactly-once",
+        "mq:concept-idempotency",
+        "mq:concept-persistence",
+        "mq:concept-partition"
+      ]
+    },
+    {
+      "id": "mq:scenario-03-inventory",
+      "type": "mq:Scenario",
+      "name": "库存预留",
+      "source": "契约语义测试/03-业务场景/03-inventory/SEMANTICS.md",
+      "requires": [
+        "mq:concept-transaction",
+        "mq:concept-idempotency",
+        "mq:concept-partition",
+        "mq:concept-backpressure",
+        "mq:concept-retention"
+      ]
+    },
+    {
+      "id": "mq:scenario-04-notification",
+      "type": "mq:Scenario",
+      "name": "通知推送",
+      "source": "契约语义测试/03-业务场景/04-notification/SEMANTICS.md",
+      "requires": [
+        "mq:concept-exchange",
+        "mq:concept-persistence",
+        "mq:concept-dead-letter-queue"
+      ]
+    },
+    {
+      "id": "mq:scenario-05-iot-telemetry",
+      "type": "mq:Scenario",
+      "name": "IoT 遥测",
+      "source": "契约语义测试/03-业务场景/05-iot-telemetry/SEMANTICS.md",
+      "requires": [
+        "mq:concept-exactly-once",
+        "mq:concept-retention",
+        "mq:concept-flow-control",
+        "mq:concept-backpressure"
+      ]
+    },
+    {
+      "id": "mq:scenario-06-cdc-sync",
+      "type": "mq:Scenario",
+      "name": "CDC 同步",
+      "source": "契约语义测试/03-业务场景/06-cdc-sync/SEMANTICS.md",
+      "requires": [
+        "mq:concept-partition",
+        "mq:concept-persistence",
+        "mq:concept-idempotency",
+        "mq:concept-backpressure"
+      ]
+    },
+    {
+      "id": "mq:scenario-07-audit-trail",
+      "type": "mq:Scenario",
+      "name": "审计追踪",
+      "source": "契约语义测试/03-业务场景/07-audit-trail/SEMANTICS.md",
+      "requires": [
+        "mq:concept-persistence",
+        "mq:concept-partition",
+        "mq:concept-exactly-once"
+      ]
+    },
+    {
+      "id": "mq:scenario-08-task-queue",
+      "type": "mq:Scenario",
+      "name": "异步任务队列",
+      "source": "契约语义测试/03-业务场景/08-task-queue/SEMANTICS.md",
+      "requires": [
+        "mq:concept-dead-letter-queue",
+        "mq:concept-retention",
+        "mq:concept-idempotency"
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 # 契约 spec 静态校验器（Testing 06 子系列 L1-L2 层，批次71）
 # 用途：校验六系统 AsyncAPI spec 的结构合法性，实现 spectral-asyncapi-ruleset.yaml 核心规则
 # 用法：contract-spec-check.sh [--json] [--dir 路径]
-#   默认校验：契约语义测试/01-契约规格/specs/*.yaml
+#   默认校验：Testing/06-契约语义测试/01-契约规格/specs/*.yaml
 #             + topics/config-templates/asyncapi-kafka-example.yaml
 #             + topics/config-templates/asyncapi-mqtt-example.yaml
 # 退出码：0=全 PASS；1=存在 FAIL；2=参数/解析异常
@@ -11,7 +11,7 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SERIES_DIR="$PROJECT_ROOT/契约语义测试"
+SERIES_DIR="$PROJECT_ROOT/Testing/06-契约语义测试"
 JSON_OUT=0
 
 usage() { echo "用法: contract-spec-check.sh [--json] [--dir 路径]"; exit 2; }
@@ -25,7 +25,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 SPECS=()
-for f in "$SERIES_DIR"/01-契约规格/specs/*.yaml; do [[ -f "$f" ]] && SPECS+=("$f"); done
+for f in "$SERIES_DIR"/01-契约规格/specs/*.yaml; do
+  [[ -f "$f" && "$(basename "$f")" != "contract.yaml" ]] && SPECS+=("$f")
+done
+for f in "$SERIES_DIR"/03-业务场景/*/asyncapi.yaml; do
+  [[ -f "$f" ]] && SPECS+=("$f")
+done
 SPECS+=("$PROJECT_ROOT/topics/config-templates/asyncapi-kafka-example.yaml")
 SPECS+=("$PROJECT_ROOT/topics/config-templates/asyncapi-mqtt-example.yaml")
 [[ ${#SPECS[@]} -eq 0 ]] && { echo "ERROR: 未找到任何 spec"; exit 2; }
