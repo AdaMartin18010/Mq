@@ -1,0 +1,28 @@
+{
+  "_comment": "CloudEvents 1.0 structured envelope for Kafka (transport-agnostic metadata)",
+  "_comment_ref": "topics/02-场景驱动架构设计/02-54-事件契约模板库与命名规范.md",
+  "_comment_spec": "https://cloudevents.io/ and https://github.com/cloudevents/spec/blob/main/cloudevents/bindings/kafka-protocol-binding.md",
+  "specversion": "1.0",
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "source": "/acme/order-service",
+  "type": "dev.acme.order.order.created.v1",
+  "subject": "order/ORDER-20261118-001",
+  "time": "2026-11-18T09:30:00.000Z",
+  "datacontenttype": "application/json",
+  "data": {
+    "_comment": "业务 payload，与 event-contract-template.yaml 的 payload 对齐",
+    "orderId": "ORDER-20261118-001",
+    "amount": 199.50,
+    "currency": "CNY",
+    "occurredAt": "2026-11-18T09:29:58.000Z",
+    "items": [
+      {
+        "sku": "SKU-001",
+        "quantity": 2
+      }
+    ]
+  },
+  "_comment_kafka_mapping": "In structured mode, this entire JSON object is the Kafka record value. In binary mode, specversion/type/source/id/time would move to Kafka record headers.",
+  "_comment_idempotency": "The 'id' attribute SHOULD equal the producer's idempotency key when retry semantics are required.",
+  "_comment_versioning": "The 'type' attribute encodes major version (v1); minor changes do not alter the type URI."
+}

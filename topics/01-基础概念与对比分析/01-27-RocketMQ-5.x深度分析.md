@@ -1,8 +1,7 @@
 # 1.27 RocketMQ 5.x 深度分析
 
 > **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
-
-> **时效声明**: 本文事实基于 Apache RocketMQ 官方发布信息，核实至 2026-01。关键版本：5.0（2022-10）、5.4.0（2025-12-24，当前最新稳定版）、5.5.0（路线图 2026-04）。
+> **时效声明**: 本文事实基于 Apache RocketMQ 官方发布信息，核实至 2026-11。关键版本：5.0（2022-10）、5.4.0（2025-12-24）、5.5.0（2026-04-10）、5.5.1（2026-08-20，当前最新稳定版）。
 
 ## 目录
 
@@ -15,7 +14,8 @@
     - [1. 存算分离架构](#1-存算分离架构)
     - [2. 无状态 Proxy 组件](#2-无状态-proxy-组件)
     - [3. Pop 消费模式](#3-pop-消费模式)
-    - [4. 版本时间线（截至 2026-01）](#4-版本时间线截至-2026-01)
+    - [4. 版本时间线（截至 2026-11）](#4-版本时间线截至-2026-11)
+      - [5.5.x LiteTopic 轻量订阅机制](#55x-litetopic-轻量订阅机制)
   - [1.27.3 核心特性深度分析](#1273-核心特性深度分析)
     - [1. 延迟消息等级](#1-延迟消息等级)
     - [2. 事务消息](#2-事务消息)
@@ -78,13 +78,11 @@ Apache RocketMQ 是 Apache 软件基金会顶级项目，起源于阿里巴巴�
 
 ### NameServer 的角色定位
 
-NameServer 是 RocketMQ 相比 Kafka ZooKeeper/KRaft 元数据方案最大的架构差异点之一：
+NameServer 是 RocketMQ 相比 Kafka KRaft 元数据方案最大的架构差异点之一：
 
 - **无状态设计**：NameServer 节点之间互不通信，每个节点独立保存一份全量的 Broker 路由表；Broker 启动时向所有 NameServer 注册，下线时通过心跳超时自动剔除。
 - **轻量协调**：不处理选主、不存储消费位点、不参与事务状态机，仅提供「Topic → Queue → Broker」的路由查询。
-- **可用性模型**：单个 NameServer 故障不影响其他节点；客户端通常配置多个 NameServer 地址，故障时自动切换。
-
-> 📌 这种设计使 RocketMQ 在中小规模集群下具有极低的外部依赖，但也意味着元数据一致性为最终一致性，不适合需要强一致全局协调的复杂场景。
+- **可用性模型**：单个 NameServer 故障不影响其他节点；客户端通常配置多个 NameServer 地址，故障时自动切换。元数据一致性为最终一致性，不适合需要强一致全局协调的复杂场景。
 
 ---
 
@@ -96,8 +94,7 @@ RocketMQ 5.0 于 2022 年 10 月正式发布，核心定位从“消息中间件
 
 5.x 推荐将计算能力（Proxy）与存储能力（Broker）分离：
 
-- **Broker 专注存储**：保留 CommitLog、ConsumeQueue、索引等状态数据。
-- **Proxy 专注协议与接入**：无状态部署，可独立扩缩容，降低客户端复杂度。
+- **Broker 专注存储**：保留 CommitLog、ConsumeQueue、索引等状态数据；Proxy 无状态部署，可独立扩缩容。
 - **弹性收益**：Proxy 层可按流量水平扩展，存储层可按容量独立扩展，更适合 Kubernetes 与 Serverless 形态。
 
 ### 2. 无状态 Proxy 组件
@@ -122,7 +119,7 @@ Pop（Population）消费是 5.x 最重要的消费侧改进，对应 RIP-19 / R
 
 Pop 模式把“哪个消费者消费哪条消息”的决策从客户端移到服务端，解决了经典 Consumer Rebalance 导致的消费抖动、客户端升级困难、非 Java SDK 门槛高等问题。
 
-### 4. 版本时间线（截至 2026-01）
+### 4. 版本时间线（截至 2026-11）
 
 | 版本 | 发布时间 | 关键变化 |
 | ------ | -------- | -------- |
@@ -131,9 +128,21 @@ Pop 模式把“哪个消费者消费哪条消息”的决策从客户端移到�
 | **RocketMQ 5.2.x** | 2024 | 分级存储、批量消息、流场景存储优化 |
 | **RocketMQ 5.3.x** | 2025 | Controller 模式成熟，RocksDB 存储后端引入 |
 | **RocketMQ 5.4.0** | 2025-12-24 | 优先级消息（RIP-80）、RocksDB 存储（RIP-82）、Pop 顺序消费优化 |
-| **RocketMQ 5.5.0** | 2026-04（路线图） | LiteTopic 轻量订阅机制，面向 AI Agent / MCP 长会话场景 |
+| **RocketMQ 5.5.0** | 2026-04-10 | LiteTopic（RIP-83）进入开源版，面向 AI Agent / 长会话的轻量订阅机制 [[Release Notes 5.5.0](https://rocketmq.apache.org/zh/release-notes/2026/04/10/5.5.0/)] |
+| **RocketMQ 5.5.1** | 2026-08-20 | 当前最新稳定版；移除 fastjson 1.x、升级 fastjson2 至 2.0.63、原生 RocksDB CqCompactionFilter、废弃 Broker DLedger 模式、大量 LiteTopic/Proxy/分级存储稳定性修复 [[Release Notes 5.5.1](https://rocketmq.apache.org/zh/release-notes/2026/08/20/5.5.1/)] |
 
-**当前建议**：新建集群优先选择 5.4.0；4.9.x 仍会长期维护，但新特性集中在 5.x。
+**当前建议**：新建集群优先选择 5.5.1；4.9.x 仍会长期维护，但新特性集中在 5.x。
+
+#### 5.5.x LiteTopic 轻量订阅机制
+
+LiteTopic（社区也称 Lite Mode / LMQ）是 5.5.0 引入的新消息模型，由 RIP-83 定义并在开源版本落地：
+
+- **定位**：面向 AI Agent 异步通信、长会话状态通道、海量轻量任务队列等场景，支持集群内百万级轻量 Topic/LiteTopic 共存，按需自动创建并基于 TTL 自动过期回收 [[RIP-83](https://github.com/apache/rocketmq/wiki/RIP%E2%80%9083-Lite-Topic:-A-New-Message-Model)]。
+- **关键能力**：
+  - 服务端侧维护订阅关系与消费位点，客户端可轻量化；
+  - 支持通配符订阅、服务端长轮询通知、消费位点持久化；
+  - 5.5.1 继续补全 Lite Simple Consumer 服务端实现，并修复 reset offset、FIFO 阻塞、内存泄漏等缺陷 [[Release Notes 5.5.1](https://rocketmq.apache.org/zh/release-notes/2026/08/20/5.5.1/)]。
+- **启用条件**（开源 5.5.0+）：Broker 需开启 `enableLmq=true` 并配合 RocksDB ConsumeQueue（`storeType=defaultRocksDB` 等）。
 
 ---
 
@@ -369,4 +378,4 @@ consumer.registerMessageListener((MessageListenerOrderly) (msgs, context) -> {
 
 ---
 
-**最后更新**: 2026-01-06
+**最后更新**: 2026-11-18

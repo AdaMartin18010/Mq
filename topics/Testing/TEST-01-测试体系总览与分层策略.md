@@ -72,10 +72,10 @@
 | Pulsar | ● | ○ | ○ | ● | ● | ○ | ○ |
 | Redis Stream | ● | ○ | ● | ● | ● | ○ | ○ |
 | MQTT(Broker) | ● | ○ | ○ | ● | ● | ○ | ○ |
-| RocketMQ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Redpanda | ○ | ○ | ○ | ○ | ○ | ○ | ●(Jepsen 公开报告锚点) |
+| RocketMQ | ● | ● | ● | ● | ● | ● | ● |
+| Redpanda | ● | ● | ● | ● | ● | ● | ●(Jepsen 公开报告锚点) |
 
-矩阵说明：RocketMQ/Redpanda 在本项目以专章知识为主（01-27/01-28），运行时用例标 ○ 为诚实口径；Redpanda 一致性列标 ● 是引用其官方 Jepsen 报告作为外部锚点（T.01.4），非本项目自测。
+矩阵说明：RocketMQ/Redpanda 用例已在 TEST-02/03/04 中补齐（TC-DEP-04c/04d/08c/08d/11b/11c/15b/15c、TC-INT-08b/08c/10b/10c/11d/11e、TC-CLU-06b/06c/07b/07c）。上述用例基于官方 Docker 镜像设计，均标注"未在本项目 CI 实际运行"的诚实口径；Redpanda 一致性列标 ● 是引用其官方 Jepsen 报告作为外部锚点（T.01.4），非本项目自测。
 
 补充覆盖口径：测试类型维度（功能/性能/可靠性）与场景维度正交——同一格 ● 的用例应至少覆盖其中两类（如 Kafka 部署格含 TC-DEP-01 功能验证与 TC-DEP-05 静态校验）。
 
@@ -178,8 +178,8 @@
 - [Kafka KRaft TLA+ 规范目录](https://github.com/apache/kafka/tree/trunk/metadata/src/main/resources/common/metadata)
 - [Testcontainers Kafka 模块文档](https://testcontainers-python.readthedocs.io/en/testcontainers-v4.3.0/modules/kafka/README.html)
 - [Toxiproxy 故障注入指南（QASkills）](https://qaskills.sh/blog/toxiproxy-fault-injection-testing-guide-2026)
-- 项目内：[02-43 消息测试设计](../02-场景驱动架构设计/02-43-消息测试设计.md)、[03-59 消息测试实践指南](../03-架构与运维实践/03-59-消息测试实践指南.md)、[04-04 混沌工程与系统韧性](../04-动态系统论与演化分析/04-04-混沌工程与系统韧性.md)、[AGENTS.md](../../AGENTS.md) §4.2
+- 项目内：[02-43 消息测试设计](../02-场景驱动架构设计/02-43-消息测试设计.md)、[03-59 消息测试实践指南](../03-架构与运维实践/03-59-消息测试实践指南.md)、[04-04 混沌工程与系统韧性](../04-动态系统论与演化分析/04-04-混沌工程与系统韧性.md)、[AGENTS.md](../../AGENTS.md) §4.2、[TEST-02](TEST-02-运维部署测试用例.md)、[TEST-03](TEST-03-集成测试用例.md)、[TEST-04](TEST-04-集群测试验证.md)
 
 ---
 
-**最后更新**: 2026-11-17
+**最后更新**: 2026-11-18

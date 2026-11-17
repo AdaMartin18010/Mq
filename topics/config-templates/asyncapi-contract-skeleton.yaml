@@ -1,0 +1,91 @@
+# 最小可用 AsyncAPI 3.x 契约骨架
+# 用途: 作为组织级事件契约的 starting point，对应 topics/02-54 与 topics/01-37
+# 参考: topics/01-基础概念与对比分析/01-32-AsyncAPI工程生态深度分析.md
+# 参考: topics/01-基础概念与对比分析/01-37-AsyncAPI组织级应用与治理.md
+# 用法: asyncapi validate asyncapi-contract-skeleton.yaml && spectral lint 本文件
+
+asyncapi: '3.0.0'
+info:
+  title: <Domain> 事件契约
+  version: 1.0.0
+  description: |
+    <Domain> 域事件契约骨架。
+    替换 <Domain>、<Entity>、<Event> 占位符后即可落地。
+
+servers:
+  prod:
+    host: '<broker-host>:<port>'
+    protocol: kafka              # 按实际协议替换 kafka/mqtt/nats/amqp
+    description: 生产环境 broker（模板值）
+
+channels:
+  <domain>.<entity>.<event>.v1:
+    address: <domain>.<entity>.<event>.v1
+    description: <Event> 事件主通道
+    messages:
+      <Event>:
+        $ref: '#/components/messages/<Event>'
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+        partitions: 3
+        replicas: 3
+        topicConfiguration:
+          cleanup.policy: delete
+
+operations:
+  publish<Event>:
+    action: send
+    channel:
+      $ref: '#/channels/<domain>.<entity>.<event>.v1'
+    messages:
+      - $ref: '#/channels/<domain>.<entity>.<event>.v1/messages/<Event>'
+  subscribe<Event>:
+    action: receive
+    channel:
+      $ref: '#/channels/<domain>.<entity>.<event>.v1'
+    messages:
+      - $ref: '#/channels/<domain>.<entity>.<event>.v1/messages/<Event>'
+
+components:
+  messages:
+    <Event>:
+      name: <Event>
+      title: <中文事件名>
+      description: <简述业务事实>
+      headers:
+        type: object
+        required: [trace-id, idempotency-key, occurred-at]
+        properties:
+          trace-id:
+            type: string
+            format: uuid
+            description: 分布式追踪 ID（02-23）
+          idempotency-key:
+            type: string
+            format: uuid
+            description: 幂等键（02-25）
+          occurred-at:
+            type: string
+            format: date-time
+            description: 业务发生时间
+      payload:
+        $ref: '#/components/schemas/<Event>Event'
+      contentType: application/json
+      correlationId:
+        description: 使用 header.trace-id 作为关联标识
+        location: $message.header#/trace-id
+
+  schemas:
+    <Event>Event:
+      type: object
+      required: [entityId, occurredAt]
+      properties:
+        entityId:
+          type: string
+          description: 实体唯一标识，作为消息 key
+        occurredAt:
+          type: string
+          format: date-time
+          description: 业务发生时间
+        # 演进规则（02-35）：只加可选字段；删字段/改类型走 major 评审

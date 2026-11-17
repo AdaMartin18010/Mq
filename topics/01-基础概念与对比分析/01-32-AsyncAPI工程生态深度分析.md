@@ -1,7 +1,6 @@
 # 1.32 AsyncAPI 工程生态深度分析
 
 > **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
-
 > **时效声明**: 本文事实基于 AsyncAPI 官方站点、GitHub 仓库与发布说明核实至 2026-11。规范当前稳定版 3.1.0（2026-01-31 发布）；工具链版本以官方仓库为准。
 
 ## 目录
@@ -20,7 +19,8 @@
 
 ## 1.32.1 生态全景：从规范到工程闭环
 
-AsyncAPI 的定位是"事件驱动 API 的契约描述"（与 OpenAPI 的兄弟关系见 01-30）。规范本身只是起点，其工程价值由工具链闭环兑现【论证】：
+AsyncAPI 的定位是"事件驱动 API 的契约描述"（与 OpenAPI 的兄弟关系见 01-30）。
+规范本身只是起点，其工程价值由工具链闭环兑现【论证】：
 
 ```text
 设计(Studio/IDE) → 校验(Parser/CLI/Spectral) → 评审(版本控制+Diff)
@@ -86,9 +86,13 @@ const models = await generator.generate(doc);  // doc 为 AsyncAPI 文档对象
 | Python | dataclass | examples/asyncapi-generated-producer-example.py（生成风格+手工横切） |
 | Go | struct | examples/nats-client-example.go |
 
-**模板定制**（Generator 进阶）：内置模板不满足时复制 `@asyncapi/html-template` 等改造——企业门户常见的定制点是页眉/品牌、示例 payload 展示、内部 channel 分组。模板为 Nunjucks 语法，渲染上下文含解析后的 AsyncAPI 文档对象【论证：官方仓库模板结构】。
+**模板定制**（Generator 进阶）：
+内置模板不满足时复制 `@asyncapi/html-template` 等改造——企业门户常见的定制点是页眉/品牌、示例 payload 展示、内部 channel 分组。
+模板为 Nunjucks 语法，渲染上下文含解析后的 AsyncAPI 文档对象【论证：官方仓库模板结构】。
 
-**构建系统集成**：Gradle 插件 `asyncapi-generator` 可在 Java 构建期从契约生成 Spring 客户端/模型（插件仓库检索可得）；Maven 有对应社区插件。接入后"契约变更 → 构建失败/代码刷新"形成强制兑现闭环【论证】。
+**构建系统集成**：
+Gradle 插件 `asyncapi-generator` 可在 Java 构建期从契约生成 Spring 客户端/模型（插件仓库检索可得）；
+Maven 有对应社区插件。接入后"契约变更 → 构建失败/代码刷新"形成强制兑现闭环【论证】。
 
 ## 1.32.3 设计与治理工具链
 
@@ -147,7 +151,7 @@ asyncapi generate models <file> -l python          # Modelina 通道
 **绑定（bindings）的版本史【论证：官方 release notes】**：
 
 | 规范版本 | 时间 | 新增绑定 |
-|----------|------|----------|
+| ---------- | ------ | ---------- |
 | 2.3.0 | 2022-02 | Solace |
 | 2.6.0 | 2023-02 | Pulsar |
 | 3.1.0 | 2026-01-31 | ROS 2 |

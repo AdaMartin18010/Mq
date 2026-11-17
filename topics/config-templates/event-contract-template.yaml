@@ -1,0 +1,91 @@
+# 通用事件契约骨架
+# 用途: 作为事件契约的 starting point，可转换为 AsyncAPI、CloudEvents 或 JSON Schema
+# 参考: topics/02-场景驱动架构设计/02-54-事件契约模板库与命名规范.md
+# 用法: 复制后替换 <DOMAIN>、<ENTITY>、<EVENT> 占位符
+
+eventContract:
+  # metadata: 契约自身的治理信息，与运行时消息头分离
+  metadata:
+    id: "urn:events:<DOMAIN>:<ENTITY>:<EVENT>:v<MAJOR>"
+    name: "<EventName>"
+    domain: "<DOMAIN>"
+    owner: "<team-name>"
+    status: "active"              # active | deprecated | retired
+    version: "<MAJOR>.<MINOR>.<PATCH>"
+    compatibility: "backward"     # backward | forward | full | none
+    reviewers: []                 # 消费方/利益相关团队列表
+    lastReviewed: "YYYY-MM-DD"
+    description: "简述该事件表达的业务事实与触发条件"
+
+  # header: 与传输协议相关的元数据，建议跨事件保持一致
+  header:
+    required:
+      - trace-id
+      - idempotency-key
+      - occurred-at
+    properties:
+      trace-id:
+        type: string
+        format: uuid
+        description: "分布式追踪 ID（衔接 02-23 消息追踪）"
+      idempotency-key:
+        type: string
+        format: uuid
+        description: "消费端幂等键（衔接 02-25 消息幂等性设计）"
+      correlation-id:
+        type: string
+        format: uuid
+        description: "业务相关性 ID，用于把一组事件关联为同一流程"
+      occurred-at:
+        type: string
+        format: date-time
+        description: "业务事件发生时间（非 broker 接收时间）"
+      source-context:
+        type: string
+        description: "触发上下文，如 web / mobile / scheduler / cdc"
+
+  # payload / data schema: 业务负载，应尽量只含事实，不含命令
+  payload:
+    type: object
+    required: []                  # 必填字段列表
+    properties:
+      # 示例字段，请按领域替换
+      entityId:
+        type: string
+        description: "实体唯一标识，通常作为消息 key"
+      occurredAt:
+        type: string
+        format: date-time
+        description: "业务发生时间，与 header.occurred-at 一致"
+      # 新增字段默认应为可选；改必填 = 破坏性变更
+
+  # error: 失败事件的结构，仅在需要时启用
+  error:
+    enabled: false
+    type: "<EventName>Failed"
+    code: "<DOMAIN>_<EVENT>_FAILED"
+    retryable: true
+    severity: "error"             # warning | error | critical
+    compensationHint: "补偿操作指引或 API 路径"
+
+  # compatibility: 版本演进规则，用于 CI 校验
+  compatibility:
+    mode: "backward"              # backward | forward | full | none
+    deprecatedFields: []          # 已废弃字段清单
+    removedInVersion: null        # 计划移除该契约的 major 版本
+
+  # binding: 协议特定参数；不同 broker 可添加不同子节点
+  binding:
+    broker: "kafka"               # kafka | mqtt | nats | rabbitmq | pulsar
+    channel: "<DOMAIN>.<ENTITY>.<EVENT>.v<MAJOR>"
+    contentType: "application/json"
+    keyField: "entityId"          # 用作分区/路由键的 payload 字段
+    kafka:
+      partitions: 3
+      replicationFactor: 3
+      cleanupPolicy: "delete"
+    mqtt:
+      qos: 1
+      retain: false
+    nats:
+      subject: "<DOMAIN>.<ENTITY>.<EVENT>.v<MAJOR>"

@@ -1,6 +1,7 @@
 # 1.17 Redis Stream深度分析
 
 > **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
+> **时效声明**: 本文事实基于 Redis/Valkey 官方发布信息，核实至 2026-11。
 
 ## 目录
 
@@ -16,6 +17,7 @@
   - [1.17.5 Redis Stream最佳实践](#1175-redis-stream最佳实践)
   - [1.17.6 Redis 8 与 Stream 演进](#1176-redis-8-与-stream-演进)
     - [Redis 8 许可证变化与影响](#redis-8-许可证变化与影响)
+    - [Valkey 分叉对照](#valkey-分叉对照)
     - [Redis 8 新特性概览](#redis-8-新特性概览)
     - [Stream 相关增强](#stream-相关增强)
     - [参考来源](#参考来源)
@@ -52,7 +54,7 @@ Redis Stream是一个追加日志（append-only log），每个条目（entry）
 
 ### 核心命令与示例
 
-**XADD：添加消息**
+**XADD：添加消息**:
 
 ```bash
 # 自动生成 ID
@@ -62,7 +64,7 @@ XADD mystream * sensor_id 123 temperature 25.6
 XADD mystream MAXLEN ~ 1000 1720000000000-0 sensor_id 123 temperature 25.6
 ```
 
-**XREAD：读取消息**
+**XREAD：读取消息**:
 
 ```bash
 # 从开头读取
@@ -75,14 +77,14 @@ XREAD BLOCK 5000 STREAMS mystream $
 XREAD STREAMS mystream otherstream 0 0
 ```
 
-**XRANGE / XREVRANGE：范围查询**
+**XRANGE / XREVRANGE：范围查询**:
 
 ```bash
 XRANGE mystream 1720000000000 1720086400000
 XRANGE mystream - + COUNT 10
 ```
 
-**XLEN / XTRIM / XDEL：管理 Stream**
+**XLEN / XTRIM / XDEL：管理 Stream**:
 
 ```bash
 XLEN mystream
@@ -92,7 +94,7 @@ XDEL mystream 1720000000000-0
 
 ### 消费者组与消息确认
 
-**XGROUP：创建消费者组**
+**XGROUP：创建消费者组**:
 
 ```bash
 # 从起始位置创建
@@ -102,7 +104,7 @@ XGROUP CREATE mystream mygroup 0
 XGROUP CREATE mystream mygroup $
 ```
 
-**XREADGROUP：消费者组读取**
+**XREADGROUP：消费者组读取**:
 
 ```bash
 # 读取未分配的新消息
@@ -112,7 +114,7 @@ XREADGROUP GROUP mygroup consumer1 COUNT 10 STREAMS mystream >
 XREADGROUP GROUP mygroup consumer1 COUNT 10 STREAMS mystream 0
 ```
 
-**XACK / XCLAIM / XAUTOCLAIM：确认与重新分配**
+**XACK / XCLAIM / XAUTOCLAIM：确认与重新分配**:
 
 ```bash
 # 确认消息
@@ -125,7 +127,7 @@ XCLAIM mystream mygroup consumer2 60000 1720000000000-0
 XAUTOCLAIM mystream mygroup consumer2 60000 0-0 COUNT 100
 ```
 
-**XPENDING：查看 pending 消息**
+**XPENDING：查看 pending 消息**:
 
 ```bash
 XPENDING mystream mygroup
@@ -177,14 +179,18 @@ XPENDING mystream mygroup - + 10 consumer1
 
 ### Redis 8 许可证变化与影响
 
-Redis 8 于 2025 年 5 月发布，在许可证方面引入重大变化：
+Redis 8 于 2025 年 5 月发布（开源主线已演进至 8.10），在许可证方面引入重大变化：
 
-- **三许可证模式**：Redis 8 提供 RSALv2、SSPLv1 与 AGPLv3 三种许可证可选。
+- **三许可证模式**：Redis 8.x 提供 RSALv2、SSPLv1 与 AGPLv3 三种许可证可选。
 - **AGPLv3 回归开源**：AGPLv3 是 OSI 认可的开源许可证，允许社区免费使用、修改与分发。
 - **对使用方的影响**：
   - 内部使用或 SaaS 内部服务通常不受 AGPL 网络 copyleft 条款触发。
   - 将 Redis 8 作为对外暴露的网络服务组成部分时，需评估 AGPL 的源代码公开义务。
   - 云厂商托管 Redis 服务多采用 RSAL/SSPL 或转向 Valkey（BSD 许可证分支）。
+
+### Valkey 分叉对照
+
+Valkey 是 Linux Foundation 于 2024 年 3 月主导的 Redis 7.2.4 BSD 分叉，当前主线已演进至 9.x（最新 9.1.3），被多数云厂商作为 Redis 兼容默认替代；Redis 8.x（开源主线 8.10）采用 RSALv2/SSPLv1/AGPLv3 三许可证。许可证深度对比与治理建议见 [01-34 消息系统许可证与选型合规分析](./01-34-消息系统许可证与选型合规分析.md)。
 
 ### Redis 8 新特性概览
 
@@ -203,8 +209,11 @@ Redis 8 于 2025 年 5 月发布，在许可证方面引入重大变化：
 
 - [Redis is now available under the AGPLv3 open source license](https://redis.io/blog/agplv3/)
 - [Redis Licenses](https://redis.io/legal/licenses/)
+- [Redis 8.10 Announcement](https://redis.io/blog/announcing-redis-810-compact-hash-jsonpath-extensions-performance-improvements-and-more/)
 - [Redis Streams 官方文档](https://redis.io/docs/data-types/streams/)
 - [Redis Streams 教程](https://redis.io/docs/data-types/streams-tutorial/)
+- [Valkey Project](https://valkey.io/)
+- [Valkey GitHub Releases](https://github.com/valkey-io/valkey/releases)
 
 ---
 
@@ -214,8 +223,9 @@ Redis 8 于 2025 年 5 月发布，在许可证方面引入重大变化：
 - [Redis Streams教程](https://redis.io/docs/data-types/streams-tutorial/)
 - [Redis 8 AGPLv3 公告](https://redis.io/blog/agplv3/)
 - [Redis 许可证说明](https://redis.io/legal/licenses/)
+- [Valkey 项目主页](https://valkey.io/)
 
 ---
 
-**最后更新**: 2026-01-06
-**适用版本**: Redis 5.0+ / Redis 8.x
+**最后更新**: 2026-11-18
+**适用版本**: Redis 5.0+ / Redis 8.x / Valkey 9.x

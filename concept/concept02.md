@@ -48,7 +48,7 @@ def partition_log(message_key, partition_num):
 
 **形式化证明**：
 
-```
+```text
 定理：Kafka在日志场景下提供高吞吐+持久化保证
 
 前提：
@@ -83,7 +83,7 @@ def partition_log(message_key, partition_num):
 
 **架构设计论证**：
 
-```
+```text
 MQTT Broker架构（思维导图）
 ├── 连接管理层
 │   ├── TCP连接池管理
@@ -151,7 +151,7 @@ public class IoTDeviceSubscriber implements MqttCallback {
 
 **形式化证明**：
 
-```
+```text
 定理：NATS在微服务场景下提供亚毫秒延迟
 
 前提：
@@ -212,7 +212,7 @@ graph TD
 
 ### 3.2 场景-架构权衡证明图
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    场景驱动的架构权衡空间                      │
 │                                                             │
@@ -402,7 +402,7 @@ sub, _ := js.Subscribe("trading.order", func(msg *nats.Msg) {
 
 **证明**：
 
-```
+```text
 1. 单分区有序性：
    ∀e₁, e₂ ∈ Events_of_same_order
    timestamp(e₁) < timestamp(e₂) ⇒ offset(e₁) < offset(e₂)
@@ -432,7 +432,7 @@ sub, _ := js.Subscribe("trading.order", func(msg *nats.Msg) {
 
 **证明**：
 
-```
+```text
 基于的四步握手协议：
 
 1. 去重性：
@@ -467,7 +467,7 @@ sub, _ := js.Subscribe("trading.order", func(msg *nats.Msg) {
 
 **证明**：
 
-```
+```text
 基于和的性能数据：
 
 1. 单机容量：
@@ -496,7 +496,7 @@ sub, _ := js.Subscribe("trading.order", func(msg *nats.Msg) {
 
 ### 6.1 三维场景决策立方体
 
-```
+```text
           高吞吐量
              ↑
              │ Kafka
@@ -522,7 +522,7 @@ ELSE IF 场景∈{混合} THEN 选择=多协议网关
 
 ### 6.2 场景演进路径图
 
-```
+```text
 初期阶段(1000 QPS)
     ↓
 单体应用 → 引入消息队列解耦
@@ -670,7 +670,7 @@ public class SeckillProcessor {
 
 ### 8.1 场景-技术匹配度雷达图
 
-```
+```text
         日志聚合
            ↑
            │
@@ -693,7 +693,7 @@ NATS:     ████████░░ 微服务/边缘计算 (8/10)
 
 ### 8.2 场景化选型决策树（带证明）
 
-```
+```text
 START
 │
 ├─▶ 场景识别

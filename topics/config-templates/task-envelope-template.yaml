@@ -1,0 +1,50 @@
+# 任务队列信封模板
+# 用途: 描述异步任务消息的最小结构，支持幂等、追踪、截止时间与重试预算
+# 参考: topics/02-场景驱动架构设计/02-57-IT通用场景事件契约模式库.md
+# 参考: topics/02-场景驱动架构设计/02-16-消息重试机制.md
+# 用法: 复制后替换 <TASK_TYPE>、<PAYLOAD> 占位符；task_id 由调度器生成并全局唯一
+
+taskEnvelope:
+  # metadata: 任务元数据
+  metadata:
+    task_id: "task-<uuid>"           # 全局唯一任务标识，兼作幂等键
+    task_type: "<TASK_TYPE>"         # 任务类型，决定执行器路由
+    trace_id: "trace-<uuid>"         # 分布式追踪 ID
+    span_id: "span-<uuid>"           # 当前 span ID
+    parent_span_id: "span-<uuid>"    # 父 span ID（可选）
+
+  # scheduling: 调度信息
+  scheduling:
+    created_at: "2026-11-18T09:30:00Z"   # 任务创建时间
+    deadline: "2026-11-18T09:35:00Z"     # 最晚执行时间，过期可放弃或转死信
+    scheduled_at: "2026-11-18T09:30:00Z" # 计划首次执行时间（延迟任务用）
+    priority: "normal"                   # critical | high | normal | low
+    queue: "tasks.<TASK_TYPE>"           # 任务队列名
+
+  # retry: 重试预算与策略
+  # 与 02-16 消息重试机制衔接：调度器统一控制重试，避免消费端各自重试
+  retry:
+    max_attempts: 5                  # 最大尝试次数（含首次）
+    remaining: 5                     # 剩余尝试次数，每次失败递减
+    backoff_strategy: "exponential"  # fixed | exponential | custom
+    initial_interval_ms: 1000        # 首次重试间隔
+    max_interval_ms: 30000           # 最大重试间隔
+    jitter: true                     # 是否启用抖动，防止重试风暴
+    dlq_topic: "tasks.<TASK_TYPE>.dlq" # 耗尽预算后的死信目标
+
+  # execution: 执行上下文（由执行器填充）
+  execution:
+    worker_id: null                  # 当前执行该任务的 worker 标识
+    started_at: null                 # 开始执行时间
+    completed_at: null               # 完成时间
+    result: null                     # success | failed | timeout | cancelled
+
+  # payload: 任务参数，应保持不可变
+  # 需要状态演化时，应通过状态机事件表达，而不是修改本 envelope
+  payload:
+    _comment: "按 <TASK_TYPE> 替换为具体任务参数 schema"
+    # 示例：
+    # template_id: "welcome-v1"
+    # to: "user@example.com"
+    # variables:
+    #   user_name: "张三"

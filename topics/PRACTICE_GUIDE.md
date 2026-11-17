@@ -430,7 +430,7 @@ warning_alerts:
 
 #### Kafka常见故障
 
-**故障1: UnderReplicatedPartitions**
+**故障1: UnderReplicatedPartitions**:
 
 ```markdown
 症状: 分区副本数不足
@@ -446,7 +446,7 @@ warning_alerts:
 - 监控磁盘使用率
 ```
 
-**故障2: Consumer Lag过高**
+**故障2: Consumer Lag过高**:
 
 ```markdown
 症状: 消费延迟持续增长
@@ -464,7 +464,7 @@ warning_alerts:
 
 #### MQTT常见故障
 
-**故障1: 设备重连风暴**
+**故障1: 设备重连风暴**:
 
 ```markdown
 症状: Broker CPU 100%，新连接被拒绝
@@ -480,7 +480,7 @@ warning_alerts:
 - 监控连接数
 ```
 
-**故障2: 主题订阅爆炸**
+**故障2: 主题订阅爆炸**:
 
 ```markdown
 症状: Broker内存溢出
@@ -498,7 +498,7 @@ warning_alerts:
 
 #### NATS常见故障
 
-**故障1: 节点故障**
+**故障1: 节点故障**:
 
 ```markdown
 症状: 部分客户端连接断开
@@ -514,7 +514,7 @@ warning_alerts:
 - 定期故障演练
 ```
 
-**故障2: 慢消费者**
+**故障2: 慢消费者**:
 
 ```markdown
 症状: 消息投递延迟
@@ -532,7 +532,7 @@ warning_alerts:
 
 #### Pulsar常见故障
 
-**故障1: BookKeeper节点故障**
+**故障1: BookKeeper节点故障**:
 
 ```markdown
 症状: Ledger副本数不足，消息写入失败
@@ -548,7 +548,7 @@ warning_alerts:
 - 监控BookKeeper健康状态
 ```
 
-**故障2: Consumer Lag积压**
+**故障2: Consumer Lag积压**:
 
 ```markdown
 症状: 消费延迟持续增长，Backlog增加
@@ -565,7 +565,7 @@ warning_alerts:
 - 设置合理的消息保留策略
 ```
 
-**故障3: 多租户配额超限**
+**故障3: 多租户配额超限**:
 
 ```markdown
 症状: Namespace消息速率受限，Producer发送失败

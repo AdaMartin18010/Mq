@@ -1,0 +1,62 @@
+# CDC 事件契约模板（Debezium envelope + 业务 payload 占位）
+# 用途: 描述 Debezium 风格的变更数据捕获事件结构，供下游流处理/湖仓/审计消费
+# 参考: topics/02-场景驱动架构设计/02-57-IT通用场景事件契约模式库.md
+# 参考: topics/01-基础概念与对比分析/01-31-数据集成与流处理生态分析.md
+# 用法: 复制后替换 <PREFIX>、<SCHEMA>、<TABLE> 占位符；payload 部分按业务 schema 展开
+
+# Debezium envelope（官方稳定字段）
+# 官方文档: https://debezium.io/documentation/reference/stable/connectors/postgresql.html
+cdcEvent:
+  # op: 操作类型
+  #   c = create (insert)
+  #   u = update
+  #   d = delete
+  #   r = read (snapshot)
+  op: "<c|u|d|r>"
+
+  # before: 变更前的行状态
+  #   - create / snapshot 时为 null
+  #   - update / delete 时依赖 REPLICA IDENTITY FULL 才有完整旧值
+  before:
+    _comment: "变更前字段，按实际业务 schema 展开"
+    # <column>: <old_value>
+
+  # after: 变更后的行状态
+  #   - delete 时为 null
+  #   - create / update / snapshot 时包含新值
+  after:
+    _comment: "变更后字段，按实际业务 schema 展开"
+    # <column>: <new_value>
+
+  # source: 事件来源元数据
+  source:
+    version: "3.1.0.Final"           # Debezium 连接器版本
+    connector: "postgresql"          # 连接器类型：postgresql/mysql/mongodb/...
+    name: "<PREFIX>"                 # 逻辑服务器名 / connector 名
+    db: "<DATABASE>"                 # 数据库名
+    schema: "<SCHEMA>"               # 模式名（PostgreSQL/SQL Server/Oracle 等）
+    table: "<TABLE>"                 # 表名
+    lsn: 123456789                   # 日志序列号，用于排序与断点恢复
+    txId: 5521                       # 事务 ID
+    ts_ms: 1763467200123             # 源库操作时间戳（毫秒）
+
+  # ts_ms: Debezium 处理该事件时的毫秒时间戳
+  # 注意：这是 connector 处理时间，不是业务时间；排序优先使用 source.ts_ms
+  ts_ms: 1763467200456
+
+  # transaction: 事务元数据（可选）
+  # 需 connector 配置 provide.transaction.metadata=true 才生成
+  transaction:
+    id: "tx-uuid-or-xid"             # 事务唯一标识
+    total_order: 1                   # 事务内全局顺序
+    data_collection_order: 1         # 表内顺序
+
+  # 业务侧扩展：schema 版本与变更策略
+  # 建议与 schema registry 或 schema history topic 联动
+  schemaVersion: "<SCHEMA>.<TABLE>.v<MAJOR>"
+  schemaChangeStrategy: "forward_compatible"   # forward_compatible | backward_compatible | none
+
+  # payload: 当需要把 Debezium envelope 再包装一层时使用
+  # 例如 outbox 模式或需要额外业务上下文时
+  payload:
+    _comment: "业务 payload 占位，可选；通常直接消费 after/before 即可"

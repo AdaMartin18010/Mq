@@ -319,7 +319,7 @@ cp server.properties server.properties.backup
 
 ### 迁移步骤
 
-**阶段1：准备KRaft Controller节点**
+**阶段1：准备KRaft Controller节点**:
 
 ```properties
 # controller.properties
@@ -331,7 +331,7 @@ controller.listener.names=PLAINTEXT
 log.dirs=/var/kafka/kraft-controller
 ```
 
-**阶段2：启动Controller集群**
+**阶段2：启动Controller集群**:
 
 ```bash
 # 格式化元数据存储（首次启动）
@@ -341,7 +341,7 @@ kafka-storage.sh format -t <cluster-id> -c controller.properties
 kafka-server-start.sh controller.properties
 ```
 
-**阶段3：迁移Broker节点**
+**阶段3：迁移Broker节点**:
 
 ```properties
 # broker.properties（KRaft模式）
@@ -352,7 +352,7 @@ listeners=PLAINTEXT://:9092
 log.dirs=/var/kafka/kraft-broker
 ```
 
-**阶段4：逐步迁移**
+**阶段4：逐步迁移**:
 
 ```text
 1. 启动KRaft Controller集群（3-5节点）

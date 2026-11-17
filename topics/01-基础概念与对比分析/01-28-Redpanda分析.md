@@ -1,8 +1,8 @@
 # 1.28 Redpanda 分析
 
 > **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
-
-> **时效声明**: 本文事实基于 Redpanda 官方文档、发布公告及第三方对比评测，核实至 2026-01。当前稳定产品线为 Redpanda 25.x，社区版采用 BSL 1.1 许可证。
+>
+> **时效声明**: 本文事实基于 Redpanda 官方文档、发布公告及 GitHub releases，核实至 2026-11。当前 Redpanda Streaming 已切换至 CalVer 版本体系，最新稳定线为 v26.2。
 
 ## 目录
 
@@ -10,14 +10,15 @@
   - [目录](#目录)
   - [1.28.1 Redpanda 定位与架构](#1281-redpanda-定位与架构)
     - [产品定位](#产品定位)
-    - [架构图](#架构图)
     - [关键架构特性](#关键架构特性)
   - [1.28.2 版本演进与关键特性](#1282-版本演进与关键特性)
+    - [CalVer 版本体系](#calver-版本体系)
     - [版本时间线](#版本时间线)
     - [核心特性详解](#核心特性详解)
       - [1. WASM 数据转换](#1-wasm-数据转换)
       - [2. 分层存储（Tiered Storage）](#2-分层存储tiered-storage)
-      - [3. Iceberg / 湖仓集成](#3-iceberg--湖仓集成)
+      - [3. Shadowing 跨集群灾难恢复](#3-shadowing-跨集群灾难恢复)
+      - [4. Iceberg / 湖仓集成](#4-iceberg--湖仓集成)
   - [1.28.3 Redpanda vs Kafka](#1283-redpanda-vs-kafka)
     - [架构与运维对比](#架构与运维对比)
     - [生态与许可证对比](#生态与许可证对比)
@@ -48,20 +49,6 @@
 - ✅ **Kafka 协议兼容**：多数 Kafka 客户端、连接器、管理工具仅需修改 `bootstrap.servers`
 - ✅ **thread-per-core**：基于 Seastar 框架，每 CPU 核心绑定一个线程，共享无状态设计
 
-### 架构图
-
-```text
-┌────────────────────────────────────────────┐
-│           Redpanda 单二进制集群              │
-├────────────────────────────────────────────┤
-│  Node-1  │  Node-2  │  Node-3              │
-│  Seastar │  Seastar │  Seastar (per core)  │
-│  Raft ×N │  Raft ×N │  Raft ×N             │
-│  (Broker + Controller + Schema Registry    │
-│   + HTTP Proxy，同一进程)                   │
-└────────────────────────────────────────────┘
-```
-
 ### 关键架构特性
 
 | 维度 | Redpanda | 说明 |
@@ -70,22 +57,37 @@
 | **并发模型** | Thread-per-core (Seastar) | 每核独立分区、内存、I/O，避免锁竞争 |
 | **共识协议** | Raft（原生，每个分区一个 Raft group） | 元数据与数据复制统一使用 Raft |
 | **部署形态** | 单二进制 | 内置 Schema Registry、HTTP Proxy、Admin API |
-| **内存管理** | 自管理内存 + 大页支持 | 不依赖 OS page cache 与 JVM heap |
 | **协议兼容** | Kafka wire protocol | 支持 Produce/Fetch/Metadata/Consumer Groups 等 |
 
 ---
 
 ## 1.28.2 版本演进与关键特性
 
+### CalVer 版本体系
+
+Redpanda Streaming 从 **v26** 开始采用 **CalVer（Calendar Versioning）** 风格：主版本号对应年份（`v26.x` = 2026 年发布），功能版本与补丁号继续以 `v26.1`、`v26.2`、`v26.2.x` 演进。此前的 21.x–25.x 属于旧语义化版本遗留，读者在查阅旧文档或镜像标签时可能同时看到两种口径。官方支持状态与生命周期现统一以 CalVer 序列为准。
+
+> ⚠️ **发版渠道变更**：自 **v26.2.2** 起，Redpanda 不再在 GitHub Releases 页面发布后续补丁版本；GitHub 仅保留到 v26.2.2，新版 release notes 与下载入口迁移至官方文档站。运维人员在自动化脚本中拉取 GitHub release assets 时需要切换至 docs.redpanda.com 或 Redpanda 官方仓库源。
+
+**当前支持矩阵（2026-11）**：
+
+| 版本 | 发布月份 | 支持截止（Self-Hosted） | 状态 |
+| ------ | ---------- | ------------------------ | ------ |
+| **v26.2** | 2026-07 | 2027-07-28 | [Latest / 当前最新](https://docs.redpanda.com/streaming/current/reference/releases/) |
+| v26.1 | 2026-03 | 2027-03-31 | Supported |
+| v25.3 | 2025-11 | 2026-11-19 | Supported（临近 EOL） |
+| v25.2 及更早 | — | 已到期 | End of life |
+
+v26.2 的补丁版本已推进至 **v26.2.6（2026-10-22）**，但 GitHub releases 页面最新只到 **v26.2.2（2026-08-21）**，后续补丁仅在 [Redpanda Docs 发布说明](https://docs.redpanda.com/streaming/current/reference/releases/redpanda/) 中维护。
+
 ### 版本时间线
 
 | 年份 | 版本 | 关键里程碑 |
 | ------ | ------ | ----------- |
-| 2021 | 21.x | 早期 GA，单二进制、WASM Data Transforms Tech Preview、Tiered Storage Tech Preview |
-| 2022-2023 | 22.x-23.x | 分层存储逐步成熟、多 AZ 容灾、企业级安全特性 |
-| 2024 | 24.x | 性能持续优化、Redpanda Console 强化、云产品扩展 |
-| 2025 | 25.x | **Iceberg Topics GA**、Databricks Unity Catalog 集成、Redpanda Connect GA、Shadowing（跨集群 DR） |
-| 2026 | 25.3+ | 新版 Admin API（ConnectRPC）、Topic UUID（KIP-516）、Iceberg REST catalog 扩展 |
+| 2021–2023 | 21.x–23.x | 早期 GA、Tiered Storage、WASM Data Transforms、企业安全 |
+| 2024 | 24.x | 性能持续优化、Console 强化、云产品扩展 |
+| 2025 | 25.x | **Iceberg Topics GA**、Databricks 集成、Redpanda Connect GA、Shadowing 首次发布 |
+| 2026 | **26.x (CalVer)** | Cloud Topics GA、新版 Admin API、Topic UUID、Iceberg REST catalog 扩展、发版渠道迁移至 Docs 站 |
 
 ### 核心特性详解
 
@@ -94,18 +96,12 @@
 Redpanda 提供 **Data Transforms** 功能，允许在 broker 内用 WebAssembly 脚本对 topic 数据进行轻量级转换（如脱敏 PII、格式规范化），避免数据反复进出外部流处理引擎。
 
 ```bash
-# 生成一个示例 WASM 项目
+# 生成一个示例 WASM 项目并部署
 rpk wasm generate redact-pii
-
-# 部署转换脚本到指定 topic
 rpk wasm deploy ./redact-pii/dist/main.js \
   --name redact-pii-01 \
   --input-topic raw-events \
   --output-topic clean-events
-
-# 列出并移除转换
-rpk wasm list
-rpk wasm remove redact-pii-01
 ```
 
 > ⚠️ 社区版与企业版对 Data Transforms 的支持范围不同；生产环境需确认许可证覆盖。
@@ -118,18 +114,34 @@ rpk wasm remove redact-pii-01
 # 创建 topic 时启用分层存储
 rpk topic create logs-longterm \
   -c redpanda.remote.write=true \
-  -c redpanda.remote.read=true \
-  -c redpanda.remote.recovery=true
+  -c redpanda.remote.read=true
 
-# 对已有 topic 开启
-rpk topic alter-config logs-longterm \
-  --set redpanda.remote.read=true \
-  --set redpanda.remote.write=true
+# v26.2 起新增 tiered_v2（beta），对象存储侧支持完整压实
+rpk cluster config get default_redpanda_storage_mode_tiered_impl
 ```
 
-> ⚠️ 自管集群中，分层存储属于 Enterprise 功能；社区版需购买许可证。
+> ⚠️ 自管集群中，分层存储属于 Enterprise 功能；社区版需购买许可证。v26.2 中 Tiered Storage v2 仍标为 beta，不建议生产部署。
 
-#### 3. Iceberg / 湖仓集成
+#### 3. Shadowing 跨集群灾难恢复
+
+Shadowing 是 Redpanda 内置的**企业级灾备复制**机制，在 25.3 首次发布，26.x 持续增强。它在目标（shadow）集群上以**只读 shadow topic** 形式复制源集群的 topic 数据、topic 配置、消费者组 offset、ACL 及 Schema Registry 内容，并保证 offset 与源集群一致，故障切换时无需做 offset 映射。
+
+```bash
+# 创建 shadow link（目标集群上执行）
+rpk shadow create my-dr-link --config-file shadow-link.yaml
+
+# 查看复制延迟与状态
+rpk shadow status my-dr-link
+```
+
+**v26.x 主要增强**：
+
+- **v26.2**：支持从 Confluent Schema Registry 通过 HTTP API 影子复制 schema；shadow link 支持角色同步（RBAC roles）；支持 Cloud Topics shadowing；引入 `schema_registry_sync_memory_bytes`、`shadow_link_failover_batch_size` 等配置项。
+- **v26.1**：Shadowing 与 Cloud Topics 的集成准备就绪，后续在 v26.2 GA；同时修复多个 Shadow Link 在 PLAIN 认证、大量 secret 分页场景下的稳定性问题。
+
+> ⚠️ Shadowing 为 Enterprise 功能；RPO/RTO 受网络带宽与复制延迟影响，需通过 drills 验证。【估算】典型压测场景下 RPO 可达秒级到亚秒级，但实际以自身负载为准。
+
+#### 4. Iceberg / 湖仓集成
 
 Redpanda 25.x 推出 **Iceberg Topics**，topic 数据可直接物化为 Apache Iceberg 表，无需额外的 ETL/ELT 管道。支持 AWS Glue、Databricks Unity Catalog、Snowflake Open Catalog、GCP BigLake 等 REST catalog。
 
@@ -138,9 +150,18 @@ Redpanda 25.x 推出 **Iceberg Topics**，topic 数据可直接物化为 Apache 
 rpk topic create lakehouse-events \
   -c redpanda.iceberg.mode=distributed
 
-# 查看 Iceberg 表元数据是否已同步到 catalog
-rpk cluster config get iceberg_catalog_config
+# v26.2 起支持按 key/value/headers 分段配置翻译方式
+rpk topic create lakehouse-events \
+  -c redpanda.iceberg.mode='{"value":"value_schema_id_prefix","key":"utf8"}'
 ```
+
+> ⚠️ **破坏性 schema 变更警示**：Redpanda **v25.3** 对 Iceberg Topics 引入了不兼容的表 schema 变更。升级前必须按官方迁移指南操作，否则新写入数据可能进入死信队列（DLQ）。主要影响包括：
+>
+> - `redpanda.timestamp` 从 `timestamp` 改为 `timestamptz`
+> - `redpanda.headers.key` 从 `binary` 改为 `string`
+> - Avro optionals / unions / enums 的列类型与命名规则变化
+>
+> 详细迁移步骤见 [Iceberg Schema Changes and Migration Guide](https://docs.redpanda.com/streaming/current/upgrade/iceberg-schema-changes-and-migration-guide/)。
 
 ---
 
@@ -151,12 +172,10 @@ rpk cluster config get iceberg_catalog_config
 | 维度 | Redpanda | Apache Kafka (4.x) | 说明 |
 | ------ | --------- | ------------------- | ------ |
 | **实现语言** | C++ | Scala/Java (JVM) | Redpanda 无 GC 停顿 |
-| **外部依赖** | 无 | KRaft controller quorum（内置，但仍需规划 controller 角色） | Redpanda 单二进制即可运行 |
-| **部署组件** | 一个二进制 | broker + controller（可合并，但生产常分离） | Redpanda 运维面更小 |
+| **外部依赖** | 无 | KRaft controller quorum | Redpanda 单二进制即可运行 |
+| **部署组件** | 一个二进制 | broker + controller（生产常分离） | Redpanda 运维面更小 |
 | **共识协议** | Raft per partition | KRaft（元数据）+ ISR 复制（数据） | Redpanda 元数据与数据统一 Raft |
-| **Schema Registry** | 内置 | 需外部 Confluent Schema Registry 或兼容实现 | Redpanda 开箱即用 |
-| **HTTP Proxy** | 内置 | 需外部 REST Proxy | Redpanda 开箱即用 |
-| **启动速度** | 秒级 | 数十秒级 | Redpanda 更适合容器化/Serverless |
+| **Schema Registry / HTTP Proxy** | 内置 | 需外部组件 | Redpanda 开箱即用 |
 | **尾延迟（p99）** | 通常更低且稳定 | 受 GC、page cache 影响更大 | Redpanda 在高扇出写入场景优势明显 |
 | **JVM 调优** | 不需要 | 必须 | Redpanda 降低运维门槛 |
 
@@ -166,10 +185,8 @@ rpk cluster config get iceberg_catalog_config
 | ------ | --------- | ------------- | ------ |
 | **许可证** | BSL 1.1（社区版，4 年后转 Apache 2.0）+ 商业企业版 | Apache 2.0 | Redpanda 社区版对“对外提供托管服务”有限制 |
 | **Kafka 协议覆盖** | 大部分常用 API | 完整、最新 | Redpanda 可能滞后数月到数个 KIP |
-| **Kafka Connect** | 兼容多数 connector | 原生最完整 | Redpanda 需验证 broker-specific API |
 | **Kafka Streams/ksqlDB** | 可运行，但非原生 | 原生 | Redpanda 更适合作为后端 broker |
-| **KIP-848 新消费组协议** | 不支持/未声明 | Kafka 4.0 GA | 新协议带来增量再均衡 |
-| **KIP-932 Share Groups** | 不支持/未声明 | Kafka 4.1 Preview / 4.2 GA（路线图） | 队列语义差距显著 |
+| **KIP-848 / KIP-932** | 不支持/未声明 | Kafka 4.x 引入 | 新消费组协议与队列语义差距显著 |
 | **云托管服务** | Redpanda Cloud | MSK、Confluent Cloud、Aiven 等 | Kafka 选择更多 |
 | **社区与生态成熟度** | 快速增长 | 10 年以上积累 | Kafka 生态仍最丰富 |
 
@@ -181,7 +198,7 @@ Redpanda 官方及第三方评测的常见结论（实际数据依赖硬件与�
 - **硬件利用率**：thread-per-core 设计让 Redpanda 更能榨取多核 NVMe 性能，单节点 CPU 利用率更高。
 - **资源占用**：Redpanda 单 broker 内存占用通常低于同等规模 Kafka broker（无 JVM heap）。
 
-> ⚠️ 性能数字对负载极度敏感。Jack Vanlightly 2023 年的独立测试曾指出在某些配置下 Kafka 吞吐更高；建议以自身工作负载压测为准。
+> ⚠️ 性能数字对负载极度敏感。[Jack Vanlightly 2023 年的独立测试](https://jack-vanlightly.com/blog/2023/5/15/kafka-vs-redpanda-performance-do-the-claims-add-up)曾指出在某些配置下 Kafka 吞吐更高；建议以自身工作负载压测为准。
 
 ---
 
@@ -190,15 +207,12 @@ Redpanda 官方及第三方评测的常见结论（实际数据依赖硬件与�
 ### 单节点快速启动
 
 ```bash
-# 安装 rpk CLI（以 Linux 为例）
-curl -1sLf https://dl.redpanda.com/public/redpanda/config/gpg.deb.asc | sudo gpg --dearmor -o /usr/share/keyrings/redpanda-archive-keyring.gpg
-
 # 启动单节点开发集群
 rpk container start --nodes 1
 
 # 验证集群状态
 rpk cluster info
-rpk redpanda admin brokers list
+rpk cluster brokers list
 ```
 
 ### 生产配置片段
@@ -209,39 +223,18 @@ redpanda:
   data_directory: /var/lib/redpanda/data
   node_id: 1
   seed_servers:
-    - host:
-        address: rp-1.example.com
-        port: 33145
-    - host:
-        address: rp-2.example.com
-        port: 33145
-    - host:
-        address: rp-3.example.com
-        port: 33145
-  rpc_server:
-    address: 0.0.0.0
-    port: 33145
-  kafka_api:
-    - address: 0.0.0.0
-      port: 9092
-  admin:
-    - address: 0.0.0.0
-      port: 9644
-
-  # 资源限制：每核一个 reactor，建议预留少量核心给 OS
-  num_io_groups: 4
+    - host: { address: rp-1.example.com, port: 33145 }
+    - host: { address: rp-2.example.com, port: 33145 }
+    - host: { address: rp-3.example.com, port: 33145 }
+  rpc_server:   { address: 0.0.0.0, port: 33145 }
+  kafka_api:    [{ address: 0.0.0.0, port: 9092 }]
+  admin:        [{ address: 0.0.0.0, port: 9644 }]
 
 rpk:
   kafka_api:
-    brokers:
-      - rp-1.example.com:9092
-      - rp-2.example.com:9092
-      - rp-3.example.com:9092
+    brokers: [rp-1.example.com:9092, rp-2.example.com:9092, rp-3.example.com:9092]
   admin_api:
-    addresses:
-      - rp-1.example.com:9644
-      - rp-2.example.com:9644
-      - rp-3.example.com:9644
+    addresses: [rp-1.example.com:9644, rp-2.example.com:9644, rp-3.example.com:9644]
 ```
 
 ### 常用 rpk 运维命令
@@ -258,7 +251,7 @@ rpk group describe order-consumers
 rpk topic alter-config orders --set retention.ms=604800000
 
 # 查看节点状态与许可证
-rpk redpanda admin brokers list
+rpk cluster brokers list
 rpk cluster license info
 ```
 
@@ -292,17 +285,19 @@ rpk cluster license info
 
 ## 1.28.6 参考来源
 
-- [Redpanda Docs: What’s New in Redpanda](https://docs.redpanda.com/streaming/25.3/get-started/release-notes/redpanda/)
-- [Redpanda Docs: Licensing Overview](https://docs.redpanda.com/streaming/current/get-started/licensing/overview/)
-- [Redpanda Blog: Tiered Storage, Wasm Data Transforms, Protobuf](https://www.redpanda.com/blog/introducing-tiered-storage-protobuf-support-wasm-data-transforms)
-- [Redpanda Blog: Cloud Summer Update 2025 — Iceberg GA](https://www.redpanda.com/blog/cloud-summer-update-2025)
+- [Redpanda Docs: Release Notes Index](https://docs.redpanda.com/streaming/current/reference/releases/)
+- [Redpanda Docs: Redpanda Release Notes (v26.2.2 onward)](https://docs.redpanda.com/streaming/current/reference/releases/redpanda/)
+- [GitHub: redpanda-data/redpanda Releases](https://github.com/redpanda-data/redpanda/releases)
+- [Redpanda Docs: Upgrade — Iceberg Schema Changes and Migration Guide](https://docs.redpanda.com/streaming/current/upgrade/iceberg-schema-changes-and-migration-guide/)
+- [Redpanda Blog: 25.3 — Enterprise Disaster Recovery with Shadowing](https://www.redpanda.com/blog/25-3-enterprise-disaster-recovery)
+- [Redpanda Blog: Shadow Linking — DR Replication Made Easy](https://www.redpanda.com/blog/shadow-linking-disaster-recovery-replication-made-easy)
+- [Redpanda Docs: What’s New in Redpanda](https://docs.redpanda.com/streaming/current/get-started/release-notes/redpanda/)
+- [Redpanda Docs: Licensing Overview](https://docs.redpanda.com/streaming/current/get-started/licensing/)
 - [Conduktor: Redpanda vs Kafka — Architecture, Trade-offs](https://www.conduktor.io/glossary/redpanda-vs-kafka)
-- [Stribog: Redpanda vs Kafka — The Same Wire Protocol, Another System](https://stribog.com/blog/redpanda-vs-kafka-broker-without-jvm-zookeeper)
-- [ACE MQ: Redpanda vs Kafka — Licence, Features, Cost, Support (2026)](https://acemq.com/compare/redpanda-vs-kafka/)
 - [Jack Vanlightly: Kafka vs Redpanda Performance — Do the claims add up?](https://jack-vanlightly.com/blog/2023/5/15/kafka-vs-redpanda-performance-do-the-claims-add-up)
 - [Apache Kafka KIP-932: Queues for Kafka](https://cwiki.apache.org/confluence/display/KAFKA/KIP-932%3A+Queues+for+Kafka)
 - [GitHub: Redpanda BSL License](https://github.com/redpanda-data/redpanda/blob/dev/licenses/bsl.md)
 
 ---
 
-**最后更新**: 2026-01-06
+**最后更新**: 2026-11-18

@@ -35,7 +35,7 @@
 
 环境与数据规则：本库用例在 L4 层执行；指标检查基于 Prometheus API（无环境时 SKIP）；自治用例在独立命名空间/测试集群执行，禁止触达生产告警接收器。
 
-**TC-OBS-01 指标体系完备性**
+**TC-OBS-01 指标体系完备性**:
 
 - 目的：验证 01-33.2 六系统指标矩阵的行覆盖
 - 逐系统抽查命令：
@@ -51,7 +51,7 @@
 
 - 通过标准：矩阵每行 ≥1 个非空序列；缺行记采集缺口并补 exporter 配置
 
-**TC-OBS-02 指标时效性**
+**TC-OBS-02 指标时效性**:
 
 - 步骤：对比 broker 实际产生消息速率与指标曲线延迟；注入已知速率（如固定 1k msg/s）比对曲线
 
@@ -64,7 +64,7 @@ date +%s > /tmp/inject_ts
 
 - 通过标准：采集-展示延迟 < 2× scrape_interval【估算】；超期查 exporter 缓冲与网络
 
-**TC-OBS-03 高基数防护**
+**TC-OBS-03 高基数防护**:
 
 - 步骤：统计序列总量与 topic/queue 级指标数：
 
@@ -77,7 +77,7 @@ curl -s 'localhost:9090/api/v1/query?query=count(kafka_consumergroup_lag)'  # �
 
 ## T.07.3 告警用例（TC-OBS-04~07）
 
-**TC-OBS-04 告警链路端到端**
+**TC-OBS-04 告警链路端到端**:
 
 - 步骤：手工 fire 测试规则 → Alertmanager → 接收器：
 
@@ -89,7 +89,7 @@ echo 'kafka_controller_offlinepartitionscount 1' | curl --data-binary @- localho
 
 - 通过标准：P0 到达电话/IM < 2 分钟；路由与 severity 标签一致
 
-**TC-OBS-05 抑制与静默正确性**
+**TC-OBS-05 抑制与静默正确性**:
 
 - 步骤：模拟父级故障（杀 broker）观察子级 topic 告警是否被抑制；设置带到期时间的静默：
 
@@ -100,7 +100,7 @@ amtool silence add system=kafka --duration=30m --alertmanager.url=http://localho
 
 - 通过标准：抑制规则生效（不重复轰炸）；静默到期自动恢复；周检无超期静默
 
-**TC-OBS-06 SLO 燃尽告警校准**
+**TC-OBS-06 SLO 燃尽告警校准**:
 
 - 注入方法对照表：
 
@@ -112,14 +112,14 @@ amtool silence add system=kafka --duration=30m --alertmanager.url=http://localho
 - 步骤：注入可控错误率，验证多窗口 burn rate 规则按预期触发/不触发
 - 通过标准：2% 预算/1h 注入在 1h 窗口内触发 Critical；0.1% 注入不触发【论证：多窗口设计语义】
 
-**TC-OBS-07 告警质量周检**
+**TC-OBS-07 告警质量周检**:
 
 - 步骤：`./topics/scripts/alert-quality-check.sh --week`
 - 通过标准：无 runbook 告警=0；静默超期=0；重复率（同根因多条）下降趋势
 
 ## T.07.4 自动伸缩用例（TC-OBS-08）
 
-**TC-OBS-08 按 lag 扩缩容正确性**
+**TC-OBS-08 按 lag 扩缩容正确性**:
 
 - 环境：KEDA + Kafka consumer（config-templates/keda-scaledobject-kafka.yaml）
 - 步骤：
@@ -136,7 +136,7 @@ kubectl get pods -w | grep orders-consumer
 
 ## T.07.5 自愈用例（TC-OBS-09~10）
 
-**TC-OBS-09 自愈有效性（按 runbook 注入）**
+**TC-OBS-09 自愈有效性（按 runbook 注入）**:
 
 - 步骤对照 03-63.5 表逐行注入：
 
@@ -155,7 +155,7 @@ kubectl exec <consumer-pod> -- kill -STOP 1   # 模拟卡死（心跳在、无�
 
 - 通过标准：每行场景的 检测→处置→恢复→留痕 四步完整；处置次数超过熔断阈值自动升级人工
 
-**TC-OBS-10 护栏负向用例（不该自动的绝不自动）**
+**TC-OBS-10 护栏负向用例（不该自动的绝不自动）**:
 
 - 步骤：模拟 quorum 丢失、DLQ 突增、疑似脑裂恢复三类场景
 - 通过标准：**无任何自动处置动作**，仅告警到人；若发现自动动作 → 立即按 P 类缺陷修复并回滚自治配置（TEST-05 建档）

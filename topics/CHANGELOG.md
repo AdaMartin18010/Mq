@@ -2,27 +2,126 @@
 
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
 
+## [3.16.0] - 2026-11-18
+
+### 批次40-46：深度主题补全（盲区扫描七域，用户确认"全部 7 批"，8 文档）
+
+- ✅ **01-47 事件溯源核心机制与存储选型**（275 行，批次40）：事件存储/快照/投影/Upcaster；**EventStoreDB 已更名 KurrentDB（26.2，2026-09-30）**、Kafka 作事件存储边界、PostgreSQL 18/Redis 8.10 选型
+- ✅ **02-58 CQRS 与事件溯源落地设计**（192 行，批次40）：读模型延迟治理、读己之写、Outbox/Saga 衔接、何时不用决策表
+- ✅ **01-48 Serverless 事件架构与函数消息**（396 行，批次41）：Knative Eventing v1.24、Lambda SQS 批处理窗口/partial batch failure、Durable Functions、KEDA v2.21 函数 scaler、成本模型
+- ✅ **02-59 消息平台工程与内部开发者门户**（246 行，批次42）：CNCF 平台工程成熟度五维模型、自助服务 L1-L4、Backstage（AsyncAPI 渲染/Spectral linter 插件）、EventCatalog 集成、Golden Path
+- ✅ **01-49 消息系统零信任安全体系**（400 行，批次43）：KIP-768 OIDC（Kafka 3.1 内置）、MQTT 5.0 AUTH challenge-response、NATS nsc、SPIFFE/SPIRE、信封加密；**诚实口径：Kafka 官方发布仍用 GPG+SHA512（Strimzi 0.38+ 已用 Cosign）、无官方 SPIFFE 插件**
+- ✅ **01-50 OpenTelemetry 消息语义约定与全链路追踪**（331 行，批次44）：**semconv v1.45.0 变更（messaging.system 废弃→messaging.system.name，kafka.* 命名空间迁移）**、六系统 traceparent 注入矩阵、批量消费 span 建模
+- ✅ **01-51 多云与边缘消息联邦技术**（350 行，批次45）：MM2 exactly-once（3.5+）vs Cluster Linking vs NATS Supercluster；**uReplicator 已停滞**、eKuiper v2.4、NanoMQ CVE 警示
+- ✅ **01-52 多语言客户端生态与编程模型**（374 行，批次46）：**sarama 维护放缓、franz-go 支持 0.8-4.4+**；Kafka 客户端-broker 双向兼容规则（4.x 需客户端 ≥2.1）；MicroProfile Reactive Messaging 3.0/Spring Cloud Stream 4.3/虚拟线程
+
+**治理同步**：INDEX 登记 8 条目；STATUS 统计（主题文档 184→192、总计 468→476 实地核实）；ROADMAP 批次40-46 勾记；自检通过
+
+## [3.15.0] - 2026-11-18
+
+### 批次34-39：DSL 契约体系（用户确认"全部 6 批"，以 DSL 为主线：设计 → DSL → 治理 → 场景 → 领域）
+
+**新增 6 篇主题文档**（全部版本事实 WebSearch 官方核实）：
+
+- ✅ **01-43 设计到 DSL 的转换方法论**（395 行，批次34）：五源转换——Event Storming 色标→构件映射、EIP 模式三态映射（直接表达/需 x- 扩展/需下沉）、遗留代码逆向（Springwolf 2.9.0 为 2.x 最后版本、EventCatalog 插件 7.0.3）、OpenAPI→AsyncAPI 规则、BPMN→消息契约；每源 before/after 示例与反模式
+- ✅ **01-44 DSL 表达力边界与等价转换策略**（379 行，批次35）：AsyncAPI 3.1 构件表达力清单、四类不可表达语义（行为逻辑/数据派生/非功能不完整/跨契约编排，绑定字段缺口经官方 binding 文档核实）、等价转换策略矩阵（x- 扩展/外部 $ref/多规范混合/下沉代码/平台配置）、"进 DSL 还是进代码"决策树、Smithy eventStream/TypeSpec Events/GraphQL subscription 对照
+- ✅ **02-56 Spec-Driven 契约驱动开发体系**（268 行，批次36）：契约三范式对比、评审门禁（spectral:asyncapi + breaking change 政策 + 事件语义化版本）、漂移检测分级治理、生命周期四态状态机（联动事件目录）、契约测试金字塔（Microcks Incubating/Pact MessagePact）
+- ✅ **02-57 IT 通用场景事件契约模式库**（260 行，批次37）：命令/事件/查询三契约、CDC（Debezium envelope 字段官方核实）、告警（CloudEvents）、审计、任务信封、Webhook 交付（CE HTTP Webhook 规范核实）六模式
+- ✅ **01-45 产业领域消息标准纵览**（399 行，批次38）：金融 ISO 20022（SWIFT CBPR+ 2025-11 共存结束、Fedwire 2026-11-16 结构化地址强制）、医疗 FHIR R5 订阅（R6 草案中）、物流 EPCIS 2.0/CBV 2.0（2022-06 GS1 批准）、能源 OpenADR 3.0（2025-04 首批认证）；四步领域契约化共性模式
+- ✅ **01-46 IoT 与互联网领域消息标准纵览**（382 行，批次39）：Sparkplug 3.0（Eclipse 规范）、OPC UA PubSub 1.05.06（OPC UA FX 2026-07 维护发布）、订单状态机事件建模、A2A v1.0.0 GA（2026-03-12）
+
+**新增 config-templates 模板 3 个**（批次37）：cdc-debezium-event-template.yaml、task-envelope-template.yaml、webhook-delivery-template.yaml
+
+**治理同步**：INDEX 登记 6 条目；STATUS 统计更新（主题文档 178→184、配置模板 66→69、总计 459→468 实地核实）；ROADMAP 批次34-39 勾记；01-43 超行精简（411→395）；AGENTS.md §7.1 更新
+
+## [3.14.0] - 2026-11-18
+
+### 批次27-33：国际标准对齐（用户确认"全部 7 批 + 并行代理逐批推进"，补齐 AsyncAPI 全面应用与设计模板等 7 大域盲区）
+
+**新增 8 篇主题文档**（全部版本事实 WebSearch 官方核实，时效声明核实至 2026-11）：
+
+- ✅ **01-37 AsyncAPI 组织级应用与治理**（394 行，批次27）：Kafka/MQTT/NATS/SQS/Solace/JMS 绑定深度与坑表、事件目录平台对比（EventCatalog/Solace Event Portal/Confluent/Aiven Karapace/Backstage）、Microcks（已晋升 CNCF Incubating）契约测试 CI/CD、OpenAPI 协同、Solace 引 Gartner EDA 成熟度五级、Raiffeisen/LEGO/BNZ 采用案例
+- ✅ **01-38 企业集成模式全目录与系统映射**（333 行，批次28）：Hohpe EIP 六大模式族 60+ 模式速查、逐模式映射项目 02/03 深度篇、六系统映射总表、选型决策树；与 02-47（Outbox/Inbox/Saga 深度）互链互补
+- ✅ **01-39 云消息模式与微服务消息模式目录**（319 行，批次29）：Azure 11 个消息模式/AWS SNS-SQS-EventBridge（Bus/Pipes/Scheduler）-Kinesis/GCP Pub/Sub（ordering keys/exactly-once）核实、EIP 云化对应表、microservices.io 模式目录
+- ✅ **01-40 应用层流协议与交互标准**（355 行，批次30）：WebSocket（RFC 6455/8441/9220）、SSE（WHATWG）、WebTransport（W3C CR 2026-07-30）、gRPC streaming、RSocket（W3C CG 2019 已关闭，生态活跃度低）、Reactive Streams 1.0.4（Reactor 3.8/RxJava 3/Akka 2.11）、六协议+MQ 选型总矩阵
+- ✅ **02-53 事件驱动设计方法论与工作坊**（230 行，批次31）：Event Storming 三级流程与色标、Domain Storytelling、C4 建模、ADR 模板（含 Kafka 替代 RabbitMQ 示例）、DDD Context Mapping 与消息边界
+- ✅ **02-54 事件契约模板库与命名规范**（225 行，批次31）：契约骨架五节结构、CloudEvents 信封适配、命名规范、错误事件契约、版本化与弃用模板
+- ✅ **01-41 工作流编排系统与消息协同**（393 行，批次32）：Temporal v1.32.2/Camunda 8.10.0（BPMN 2.0.2，ISO/IEC 19510）/Open Workflow v1.1.0（原 CNCF Serverless Workflow 更名）/Dapr v1.19.1/Conductor（Netflix 2023-12 停维护，社区 fork conductor-oss）；编排 vs 编舞选型矩阵
+- ✅ **01-42 JMS/AMQP 与传统企业消息标准**（386 行，批次33）：Jakarta Messaging 3.1（Jakarta EE 11 仍为 3.1，无 4.0——纠正原线索）、AMQP 1.0 深度（ISO/IEC 19464、link/credit 背压）、RabbitMQ 4.0 起 AMQP 1.0 原生默认、STOMP 1.2、遗留集成选型
+
+**新增 config-templates 模板 3 个**（批次31）：event-contract-template.yaml、cloudevents-envelope-example.json、asyncapi-contract-skeleton.yaml
+
+**治理同步**：INDEX 登记 8 条目；STATUS 统计更新（主题文档 170→178、配置模板 63→66、总计 448→459 实地核实）；ROADMAP 批次27-33 勾记；修复 01-38→01-39 一处预留链接；自检 ERROR=0（WARN=4 历史档案知情项）
+
+## [3.13.0] - 2026-11-18
+
+### 批次26：版本行动项落地（批次15 版本基线"差距与行动"7 组清零，7 路并行执行）
+
+全部版本事实经 WebSearch 官方来源核实，涉时效声明文档同步更新至"核实至 2026-11"：
+
+- ✅ **01-25 Kafka**（189→253 行）：新增 4.2（KIP-932 production-ready）/4.3（KIP-1274 等 6 项）/4.4（KIP-1191 DLQ 等 5 项）演进段、官方"最近三个 release"支持策略、4.x 版本选择速查；选型决策树与场景表新增 4.4+ DLQ 分支
+- ✅ **01-12 Pulsar**（1427→326 行，精简冗余扩写）：**5.0 确认 GA（2026-10-05，官方定位新 LTS）**，重写 4.x/5.0 演进段与选型口径；Oxia 确认为新集群推荐元数据存储（Helm 默认），ZooKeeper 经 PIP-454 在线迁移；精简重复代码示例与对比表，保留三层架构/BookKeeper/分层存储核心论证
+- ✅ **01-15 RabbitMQ**（748→367 行，精简）：升级路径硬约束（3.13/4.0/4.1 必须先迁 4.2 再向上，含 Khepri 蓝绿例外）、支持窗口时间线（4.4 至 2027-07、4.3 至 2027-01、4.2 已 EOL）、Erlang/OTP 版本要求矩阵、升级检查清单
+- ✅ **01-26 NATS**：章节"2.10/2.11 演进"大改为"2.10~2.15 演进"，版本表扩全谱系（2.15 最新/2.14 维护中/2.13 跳过/2.12 与 2.11 EOL 含终版号）、支持策略与 API level 门控说明
+- ✅ **01-27 RocketMQ**（→381 行）：版本表更新至 5.5.1（2026-08-20 当前最新）；5.5.0（2026-04-10）LiteTopic 从"路线图"转为已发布事实（RIP-83）；时效声明从 2026-01 更新至 2026-11
+- ✅ **01-28 Redpanda**（→303 行）：CalVer 口径对齐（v26.x，旧 21-25.x 为语义化遗留）；v26.2 支持至 2027-07-28、GitHub releases 止于 26.2.2；**Shadowing 首发纠正为 25.3**（官方来源，26.x 为增强迭代）；25.3 起 Iceberg topic 破坏性 schema 变更警示
+- ✅ **01-17 Redis**（→231 行）：新增 Valkey 对照段（9.x 主线，互链 01-34 不重复展开）
+- ✅ **03-27 版本升级指南**（201→256 行）：新增 NATS/RabbitMQ/Redpanda 三系统"版本现状与硬约束"（升级路径、支持窗口、Erlang 要求、Iceberg 变更评估），版本兼容性矩阵新增 Redpanda 行
+
+**治理同步**：ROADMAP 版本追踪清单"差距与行动"列 8 行全部标 ✅ 落地；STATUS 时效性 92→95%、总体 88→90%；自检 ERROR=0（WARN=4 历史档案知情项）
+
+## [3.12.0] - 2026-11-18
+
+### 批次18：深度补齐（用户编排确认"批次18 先行 + 允许并行子代理"，5 路并行执行）
+
+**案例研究加厚（18a，达深度分析标准 250-400 行）**：
+
+- ✅ 02-07 更多生产环境案例（103→344 行，13 代码块/8 表格）：4 个合成案例深化（容量估算、故障场景、mermaid 架构图）+ 3 个公开可溯源案例（Robinhood Kafka、阿里双十一 RocketMQ、滴滴 RocketMQ，附来源链接）
+- ✅ 02-08 混合架构案例（104→317 行，10/6）：DoorDash RabbitMQ→Kafka+Flink Iguazu、Netflix Keystone/Data Mesh、滴滴双写双读迁移
+- ✅ 02-09 性能优化案例（108→281 行，8/6）：DoorDash 生产者批处理、Sophotech RabbitMQ→NATS 延迟优化、LinkedIn TopicGC
+
+**运维指南加厚（18b，03-15~38 共 24 篇全部达 180-290 行 / ≥2 代码块 / ≥1 表格）**：
+
+- ✅ 03-15~23（9 篇，181-282 行）：迁移、安全加固、基准测试模板、成本优化、故障恢复演练、容量规划、灾难恢复、性能测试、故障预防——补具体命令、config-templates/scripts 真实引用、可勾选清单
+- ✅ 03-24~31（8 篇，181-242 行）：最佳实践、监控告警、安全加固清单、版本升级、故障排查、性能调优、自动化运维、成本优化实践
+- ✅ 03-32~38（7 篇，184-254 行）：安全审计、合规（互链 01-34）、数据治理、文档管理、知识库、CI/CD、多租户
+
+**术语与测试矩阵（18c）**：
+
+- ✅ 01-23 术语词汇表（140→159 行）：新增 12 术语（KIP-932 Share Groups、Oxia、S3 解耦、LiteTopic、CalVer、CloudEvents、AsyncAPI、Outbox/Saga/Inbox、KEDA、OpenTelemetry、Valkey），Share Group 标注更新为 4.2 GA
+- ✅ Testing 覆盖矩阵 ○→●：TEST-02/03/04 新增 RocketMQ/Redpanda 用例 20 个（docker 官方镜像验证设计，诚实标注未实机运行）；RocketMQ 行 7/7 ●、Redpanda 行 7/7 ●（一致性列维持 Jepsen 锚点说明）
+
+**治理同步**：
+
+- ✅ 元文档状态对齐：AGENTS.md §7.1 进度表重写（消除批次8-11 滞后标记）；PROJECT_STATUS 完成度更新（核心深度 80→90%、结构健康度 60→85%、总体 85→88%）、"剩余工作"节重写为批次26+滚动项；ROADMAP P4 表版本追踪清单 ✔→✅、批次26 登记
+- ✅ 自检：doc-self-check.sh quick ERROR=0（WARN=4 均为历史档案知情保留项）
+
 ## [3.11.0] - 2026-11-17
 
 ### 批次21~25：盲区扫描五批（用户确认"全部"后执行）
 
 **批次21 合规与许可证**：
+
 - ✅ 01-34 许可证与选型合规（251 行）：八系统许可证矩阵（Redis 三许可核实至 2026-11、Redpanda BSL、Confluent CCL）、AGPL/SSPL/RSAL/BSL 条款深度解读、五场景合规决策树、云托管转嫁、合规例行机制
 - ✅ 02-50 消息数据合规设计（186 行）：删除权 vs 不可变日志四大折衷、crypto-shredding、传键不传值、方案对比与反模式
 
 **批次22 AI 原生消息**：
+
 - ✅ 01-35 MQ×AI Agent（251 行）：A2A（2025-04 Google，2026-04 已 150+ 组织）与 MCP 双层栈、Agent 消息五大模式、六系统适配度矩阵（核实至 2026-11）
 - ✅ 01-36 事件驱动 RAG 与流式管道（247 行）：RAG 管道消息化、四类事件流式语义、索引新鲜度 SLO 分解
 
 **批次23 多活与跨地域**：
+
 - ✅ 02-51 多活消息架构设计（162 行）：环回/冲突/全局序三大难题、六系统多活对照（关键判断：开源无开箱全域双写）、单元化/GeoRep/CRDT/Supercluster 四模式
 - ✅ 03-64 跨地域运维实践指南（171 行）：按系统落地命令、跨区监测四指标、演练切换与对账
 
 **批次24 血缘与 FinOps**：
+
 - ✅ 02-52 消息数据血缘设计（180 行）：三档精度、捕获方式对比、影响分析入 PR 工作流、腐化对账
 - ✅ 03-65 成本归集实践指南（172 行）：三级成本标签、分摊采集操作、元/百万消息单位指标、闲置治理 30 天规则
 
 **批次25 机制补全**：
+
 - ✅ doc-self-check 新增检查 #11：外链健康巡检（full 模式，300 上限，仅 404/410 告警，403/超时跳过）
 - ✅ TEST-06 新增 T.06.8 季度保鲜例行清单（版本基线/全量自检+外链/技能对账/内容抽样，四行式记录纪律）
 - ✅ topics/README 新增 concept→topics 映射表（6 篇历史资产 → 全系列重构落点）
@@ -36,16 +135,19 @@
 ### 批次19：全面一致性治理（用户指令"全面梳理达成本项目全面的一致"）
 
 **统计口径对齐**：
+
 - ✅ 根 README 项目统计从 410/156/20/52/58/110 对齐至 440/162/18/53/63/111（含 skills 与 concept）
 - ✅ 脚本 README 补登记 alert-quality-check.sh
 
 **格式一致性（WARN 挂账清零）**：
+
 - ✅ 代码块语言标注 73→0：启发式批量标注（bash/yaml/json/java/python/go/mermaid/text 等）+ 17 文件 46 处图示散文块标 text；修复中途一次状态机缺陷（带语言开 fence 未计入状态）并凭 git HEAD 精确回退重建
 - ✅ 缺"最后更新"日期 23→0（19 篇主题文档补记 + 4 个系列 README）
 - ✅ fence 结构异常 5→0：修正 3 篇新文档关闭 fence 带语言（本批创作瑕疵自纠）；修复 04-05 历史缺闭合 fence（text 块未闭合+python 块关闭错位）
 - ✅ 自检脚本修复：awk 多文件 fence 状态跨文件泄漏（FNR==1 重置）——计数从失真 270 归位
 
 **结构治理核查**：
+
 - ✅ 同目录重复文件：零（03-11/03-28 批次3 已合并定位；同名仅各目录 README，属正常）
 - ✅ 最终自检：ERROR=0，WARN=4（全部为历史档案 COMPREHENSIVE_REVIEW 知情保留项，检查器按设计保留）
 

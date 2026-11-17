@@ -1,0 +1,71 @@
+# Webhook 交付事件模板
+# 用途: 描述向外部订阅方推送事件时的订阅元数据、HTTP 交付与签名策略
+# 参考: topics/02-场景驱动架构设计/02-57-IT通用场景事件契约模式库.md
+# 参考: CloudEvents HTTP Webhook 规范 https://github.com/cloudevents/spec/blob/main/cloudevents/http-webhook.md
+# 用法: 复制后替换 <SUBSCRIPTION_ID>、<CALLBACK_URL>、<EVENTS> 占位符；secret 必须来自安全存储
+
+webhookDelivery:
+  # subscription: 订阅注册信息
+  subscription:
+    id: "<SUBSCRIPTION_ID>"          # 订阅唯一标识
+    callback_url: "https://partner.example.com/events"  # 接收端 HTTPS URL
+    events:                          # 订阅的事件类型列表
+      - "<event.type.one>"
+      - "<event.type.two>"
+    secret: "${WEBHOOK_SECRET_<SUBSCRIPTION_ID>}"  # HMAC 签名密钥，禁止硬编码
+    bearer_token: "${WEBHOOK_BEARER_TOKEN_<SUBSCRIPTION_ID>}"  # OAuth2 Bearer（可选）
+    status: "active"                 # active | paused | disabled
+    created_at: "2026-11-18T09:30:00Z"
+
+  # validation: CloudEvents HTTP Webhook 握手与滥用防护
+  # 注册或预检时发送 OPTIONS 请求，要求目标返回 WebHook-Allowed-Origin
+  validation:
+    enabled: true
+    request_origin: "events.acme.com"              # WebHook-Request-Origin 头值
+    allowed_origin_header: "WebHook-Allowed-Origin" # 目标返回头
+    allowed_rate_header: "WebHook-Allowed-Rate"     # 目标返回的允许速率（请求/分钟）
+
+  # delivery: HTTP 交付细节
+  delivery:
+    method: "POST"                   # CloudEvents HTTP Webhook 强制 POST
+    content_type: "application/cloudevents+json"  # structured 模式；binary 模式用 application/json
+    headers:
+      WebHook-Request-Origin: "events.acme.com"   # 每次交付必须携带
+      User-Agent: "Acme-Webhook-Sender/1.0"
+      # Authorization 由运行时注入，避免明文存储
+      # Authorization: "Bearer ${WEBHOOK_BEARER_TOKEN_<SUBSCRIPTION_ID>}"
+
+  # signature: 请求体签名验证
+  # 接收方使用 subscription.secret 校验 payload 完整性
+  signature:
+    algorithm: "HMAC-SHA256"         # 推荐算法；也可使用 RSA 签名
+    header_name: "X-Webhook-Signature-256"
+    payload_format: "sha256={hex_digest}"   # 签名串格式，发送方与接收方约定
+    included_headers: []             # 额外纳入签名的头列表（如 timestamp）
+
+  # retry: 交付重试与终止策略
+  retry:
+    strategy: "exponential_backoff"
+    max_attempts: 10                 # 最大重试次数
+    initial_interval_ms: 1000        # 首次重试间隔
+    max_interval_ms: 60000           # 最大重试间隔
+    multiplier: 2.0                  # 指数退避乘数
+    # terminal_http_codes: 收到这些状态码立即停止重试并禁用订阅
+    terminal_http_codes:
+      - 410                          # Gone：端点已废弃
+      - 404                          # 可选：长期 404 可视为失效
+    # success_http_codes: 视为成功交付的状态码
+    success_http_codes:
+      - 200
+      - 201
+      - 204
+    # circuit_breaker: 熔断保护，防止对失效端点无限重试
+    circuit_breaker:
+      failure_threshold: 5             # 连续失败次数触发熔断
+      recovery_timeout_ms: 300000      # 熔断后多久尝试恢复
+
+  # termination: 订阅终止条件
+  termination:
+    disable_on_terminal_code: true   # 收到 terminal_http_codes 后自动禁用
+    disable_on_max_failures: true    # 达到 circuit_breaker 阈值后自动禁用
+    notify_owner_on_disable: true    # 禁用后通知订阅所有者

@@ -1,51 +1,38 @@
 # 1.12 Apache Pulsar深度分析
 
 > **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
+> **时效声明**: 本文事实基于 Apache Pulsar 官方发布信息，核实至 2026-11。
 
 ## 目录
 
 - [1.12 Apache Pulsar深度分析](#112-apache-pulsar深度分析)
   - [目录](#目录)
   - [1.12.1 Pulsar核心架构](#1121-pulsar核心架构)
-    - [分层架构设计](#分层架构设计)
-    - [存储与计算分离](#存储与计算分离)
-    - [多租户架构](#多租户架构)
   - [1.12.2 Pulsar核心概念](#1122-pulsar核心概念)
-    - [Namespace（命名空间）](#namespace命名空间)
-    - [Topic（主题）](#topic主题)
-    - [Subscription（订阅）](#subscription订阅)
-    - [BookKeeper（存储层）](#bookkeeper存储层)
+    - [多租户命名空间](#多租户命名空间)
+    - [订阅类型](#订阅类型)
+    - [BookKeeper 存储层](#bookkeeper-存储层)
   - [1.12.3 Pulsar性能特性](#1123-pulsar性能特性)
-    - [吞吐量性能](#吞吐量性能)
-    - [延迟特性](#延迟特性)
-    - [扩展性设计](#扩展性设计)
   - [1.12.4 Pulsar一致性机制](#1124-pulsar一致性机制)
     - [消息投递语义](#消息投递语义)
     - [持久化保证](#持久化保证)
     - [事务支持](#事务支持)
   - [1.12.5 Pulsar与Kafka对比](#1125-pulsar与kafka对比)
     - [架构对比](#架构对比)
-    - [性能对比](#性能对比)
     - [运维对比](#运维对比)
+    - [选型口径](#选型口径)
   - [1.12.6 Pulsar应用场景](#1126-pulsar应用场景)
-    - [多租户SaaS平台](#多租户saas平台)
+    - [多租户 SaaS 平台](#多租户-saas-平台)
     - [地理复制场景](#地理复制场景)
     - [流处理场景](#流处理场景)
   - [1.12.7 Pulsar开发架构与程序设计](#1127-pulsar开发架构与程序设计)
-    - [1.12.7.1 开发架构分层模型](#11271-开发架构分层模型)
-      - [1. Broker无状态实现机制（详细代码实现）](#1-broker无状态实现机制详细代码实现)
-      - [2. BookKeeper存储引擎设计（详细架构）](#2-bookkeeper存储引擎设计详细架构)
-    - [1.12.7.2 编程语言生态与多语言支持](#11272-编程语言生态与多语言支持)
-    - [1.12.7.3 消息确认模式的动态设计](#11273-消息确认模式的动态设计)
-    - [1.12.7.4 Schema注册中心：开发时类型安全](#11274-schema注册中心开发时类型安全)
-    - [1.12.7.5 动态配置与热加载：开发运维一体化](#11275-动态配置与热加载开发运维一体化)
-    - [1.12.7.6 性能优化编程模式](#11276-性能优化编程模式)
-      - [Zero-Copy传输实现（详细代码）](#zero-copy传输实现详细代码)
-      - [批量与压缩策略（详细对比）](#批量与压缩策略详细对比)
-    - [1.12.7.7 开发架构论证总结](#11277-开发架构论证总结)
-  - [1.12.8 Pulsar 4.x 演进与 Oxia](#1128-pulsar-4x-演进与-oxia)
+    - [无状态 Broker 与开发体验](#无状态-broker-与开发体验)
+    - [消息确认模式](#消息确认模式)
+    - [Schema 与动态配置](#schema-与动态配置)
+    - [性能编程模式](#性能编程模式)
+  - [1.12.8 Pulsar 4.x/5.0 演进与 Oxia](#1128-pulsar-4x50-演进与-oxia)
     - [版本时间线](#版本时间线)
-    - [4.0 关键变化](#40-关键变化)
+    - [5.0 关键变化](#50-关键变化)
     - [Oxia 的定位与架构意义](#oxia-的定位与架构意义)
     - [升级注意事项](#升级注意事项)
     - [参考来源链接](#参考来源链接)
@@ -58,88 +45,37 @@
 
 ## 1.12.1 Pulsar核心架构
 
-### 分层架构设计
-
-**Pulsar三层架构**：
+Pulsar 采用**存储与计算分离**的三层架构：
 
 ```text
 ┌─────────────────────────────────────────┐
-│         客户端层（Producer/Consumer）      │
-│   支持多种协议：Kafka、MQTT、AMQP等        │
+│  客户端层（Producer/Consumer/多协议适配）  │
 └──────────────┬──────────────────────────┘
-               │
                ↓
 ┌─────────────────────────────────────────┐
-│         Broker层（无状态计算层）          │
-│    ┌──────────┐  ┌──────────┐           │
-│    │ Broker-1 │  │ Broker-2 │           │
-│    │ 消息路由  │  │ 消息路由  │           │
-│    │ 负载均衡  │  │ 负载均衡  │           │
-│    └─────┬────┘  └─────┬────┘           │
-│          │             │                │
-│          └──────┬──────┘                │
-│                 ↓                       │
-│         ┌───────────────┐               │
-│         │  ZooKeeper   │               │
-│         │  元数据管理   │               │
-│         └───────────────┘               │
-└─────────────────────────────────────────┘
-               │
+│  Broker层（无状态计算层 / 元数据接口）      │
+│  ┌──────────┐  ┌──────────┐  ┌────────┐ │
+│  │ 消息路由  │  │ 负载均衡  │  │Managed │ │
+│  │ 协议适配  │  │ 动态分配  │  │Ledger  │ │
+│  └─────┬────┘  └─────┬────┘  └───┬────┘ │
+│        └─────────────┴───────────┘      │
+│  元数据后端：ZooKeeper / Etcd / RocksDB / Oxia │
+└──────────────┬──────────────────────────┘
                ↓
 ┌─────────────────────────────────────────┐
-│      BookKeeper层（持久化存储层）        │
-│    ┌──────────┐  ┌──────────┐          │
-│    │ Bookie-1  │  │ Bookie-2  │          │
-│    │ 顺序写入  │  │ 顺序写入  │          │
-│    │ 副本复制  │  │ 副本复制  │          │
-│    └──────────┘  └──────────┘          │
-│    ┌──────────┐                        │
-│    │ Bookie-3  │                        │
-│    │ 副本复制  │                        │
-│    └──────────┘                        │
+│  BookKeeper层（持久化存储层 / 分层存储）    │
+│  Journal(WAL) → WriteCache → EntryLog   │
+│  副本 Ensemble (E/WQ/AQ 可配)            │
 └─────────────────────────────────────────┘
 ```
-
-**架构特点**：
 
 | 层级 | 组件 | 职责 | 特点 |
 | ------ | ------ | ------ | ------ |
-| **客户端层** | Producer/Consumer | 消息生产消费 | 支持多协议适配器 |
-| **Broker层** | Broker节点 | 消息路由、负载均衡 | 无状态，易于扩展 |
-| **存储层** | BookKeeper集群 | 消息持久化存储 | 顺序写入，高性能 |
+| **客户端层** | Producer/Consumer | 消息生产消费 | 支持 Java/Go/Python/C++/Node.js，兼容 Kafka 协议 |
+| **Broker层** | Broker 节点 | 消息路由、负载均衡、Schema 管理 | 无状态，可独立扩展 |
+| **存储层** | BookKeeper 集群 | 消息持久化、分层存储卸载 | 顺序写入、多副本、冷热分层 |
 
----
-
-### 存储与计算分离
-
-**存储与计算分离架构**：
-
-```text
-传统架构（Kafka）：
-┌─────────────────┐
-│   Broker-1      │
-│  ┌───────────┐  │
-│  │ 计算逻辑   │  │
-│  │ 存储数据   │  │ ← 耦合
-│  └───────────┘  │
-└─────────────────┘
-
-Pulsar架构（分离）：
-┌─────────────────┐      ┌─────────────────┐
-│   Broker-1      │      │   BookKeeper    │
-│  ┌───────────┐  │      │  ┌───────────┐  │
-│  │ 计算逻辑   │  │ ←──→ │  │ 存储数据   │  │
-│  └───────────┘  │      │  └───────────┘  │
-└─────────────────┘      └─────────────────┘
-    无状态                     有状态
-```
-
-**分离优势**：
-
-1. **独立扩展**：Broker和BookKeeper可独立扩展
-2. **故障隔离**：Broker故障不影响存储，BookKeeper故障不影响路由
-3. **资源优化**：计算和存储资源可分别优化
-4. **运维简化**：无状态Broker易于部署和管理
+**架构优势**：Broker 与 BookKeeper 独立扩缩容；Broker 故障不丢数据；计算/存储资源可按需优化；原生多租户隔离。
 
 **参考来源**：
 
@@ -148,9 +84,9 @@ Pulsar架构（分离）：
 
 ---
 
-### 多租户架构
+## 1.12.2 Pulsar核心概念
 
-**多租户模型**：
+### 多租户命名空间
 
 ```text
 Tenant（租户）
@@ -159,204 +95,40 @@ Tenant（租户）
           └── Subscription（订阅）
 ```
 
-**多租户层级**：
+Topic 地址格式：`persistent://tenant/namespace/topic` 或 `non-persistent://tenant/namespace/topic`。
 
-| 层级 | 说明 | 示例 |
+### 订阅类型
+
+| 类型 | 说明 | 典型场景 |
 | ------ | ------ | ------ |
-| **Tenant** | 租户，组织或公司级别 | `acme-corp` |
-| **Namespace** | 命名空间，应用或环境级别 | `production`, `development` |
-| **Topic** | 主题，消息分类 | `orders`, `payments` |
-| **Subscription** | 订阅，消费组 | `order-processor` |
+| **Exclusive** | 单 Consumer 独占消费 | 顺序处理 |
+| **Shared** | 多 Consumer 负载均衡 | 高吞吐并行 |
+| **Failover** | 主备自动切换 | 高可用顺序 |
+| **Key_Shared** | 按 Key 路由到固定 Consumer | 按 Key 有序并行 |
 
-**多租户配置示例**：
-
-```properties
-# Tenant配置
-tenant=acme-corp
-allowedClusters=us-west,us-east
-
-# Namespace配置
-namespace=acme-corp/production
-replicationClusters=us-west,us-east
-retentionPolicies=time=7d,size=10GB
-
-# Topic配置
-topic=persistent://acme-corp/production/orders
-partitions=10
-```
-
-**多租户优势**：
-
-1. **资源隔离**：不同租户资源隔离
-2. **权限控制**：细粒度权限管理
-3. **配额管理**：按租户设置配额
-4. **成本分摊**：支持多租户SaaS场景
-
-**参考来源**：
-
-- [Pulsar Multi-tenancy](https://pulsar.apache.org/docs/concepts-multi-tenancy/)
-
----
-
-## 1.12.2 Pulsar核心概念
-
-### Namespace（命名空间）
-
-**定义**：命名空间是Pulsar中的逻辑分组单元，用于组织和管理Topic。
-
-**命名空间特性**：
-
-| 特性 | 说明 |
-| ------ | ------ |
-| **隔离性** | 不同命名空间资源隔离 |
-| **配置** | 可设置保留策略、复制策略等 |
-| **权限** | 命名空间级别权限控制 |
-
-**命名空间配置**：
-
-```bash
-# 创建命名空间
-pulsar-admin namespaces create acme-corp/production
-
-# 设置保留策略
-pulsar-admin namespaces set-retention acme-corp/production \
-  --time 7d --size 10GB
-
-# 设置复制策略
-pulsar-admin namespaces set-replication-clusters \
-  acme-corp/production --clusters us-west,us-east
-```
-
----
-
-### Topic（主题）
-
-**定义**：Topic是消息的逻辑分类，类似于Kafka的Topic。
-
-**Topic类型**：
-
-| 类型 | 说明 | 格式 |
-|------|------|------|
-| **Non-persistent** | 非持久化Topic，消息不持久化 | `non-persistent://tenant/ns/topic` |
-| **Persistent** | 持久化Topic，消息持久化到BookKeeper | `persistent://tenant/ns/topic` |
-
-**Topic分区**：
-
-```bash
-# 创建分区Topic
-pulsar-admin topics create-partitioned-topic \
-  persistent://acme-corp/production/orders \
-  --partitions 10
-```
-
-**Topic特性**：
-
-- **分区Topic**：支持分区，类似Kafka Partition
-- **非分区Topic**：单分区Topic，简化管理
-- **自动创建**：支持自动创建Topic
-
----
-
-### Subscription（订阅）
-
-**定义**：Subscription定义了消息的消费方式，类似于Kafka的Consumer Group。
-
-**订阅类型**：
-
-| 类型 | 说明 | 特点 |
-| ------ | ------ | ------ |
-| **Exclusive** | 独占订阅 | 只有一个Consumer可消费 |
-| **Shared** | 共享订阅 | 多个Consumer负载均衡消费 |
-| **Failover** | 故障转移订阅 | 主Consumer故障时自动切换 |
-| **Key_Shared** | 键共享订阅 | 按消息Key分配Consumer |
-
-**订阅模式对比**：
-
-```text
-Exclusive订阅：
-Topic → Consumer-1 (独占)
-      → Consumer-2 (等待)
-
-Shared订阅：
-Topic → Consumer-1 (消息1,3,5...)
-      → Consumer-2 (消息2,4,6...)
-
-Failover订阅：
-Topic → Consumer-1 (主)
-      → Consumer-2 (备，主故障时切换)
-
-Key_Shared订阅：
-Topic → Consumer-1 (Key=A的消息)
-      → Consumer-2 (Key=B的消息)
-```
-
-**参考来源**：
-
-- [Pulsar Subscriptions](https://pulsar.apache.org/docs/concepts-messaging/#subscriptions)
-
----
-
-### BookKeeper（存储层）
-
-**定义**：BookKeeper是Pulsar的底层存储系统，负责消息的持久化存储。
-
-**BookKeeper架构**：
-
-```text
-┌─────────────────────────────────────────┐
-│         BookKeeper集群                  │
-│    ┌──────────┐  ┌──────────┐          │
-│    │ Bookie-1  │  │ Bookie-2  │          │
-│    │ Ledger-1  │  │ Ledger-1  │          │
-│    │ Ledger-2  │  │ Ledger-2  │          │
-│    └──────────┘  └──────────┘          │
-│    ┌──────────┐                        │
-│    │ Bookie-3  │                        │
-│    │ Ledger-1  │                        │
-│    └──────────┘                        │
-└─────────────────────────────────────────┘
-```
-
-**BookKeeper核心概念**：
+### BookKeeper 存储层
 
 | 概念 | 说明 |
 | ------ | ------ |
-| **Ledger** | 顺序写入的日志文件 |
-| **Entry** | Ledger中的一条记录 |
-| **Bookie** | BookKeeper存储节点 |
-| **Ensemble** | Ledger的副本集合 |
+| **Ledger** | 顺序写入的日志单元 |
+| **Entry** | Ledger 内一条记录 |
+| **Bookie** | BookKeeper 存储节点 |
+| **Ensemble** | Ledger 的 Bookie 副本集合 |
 
-**BookKeeper特性**：
-
-1. **顺序写入**：所有写入都是顺序的，高性能
-2. **副本复制**：支持多副本，高可用
-3. **故障恢复**：自动检测和恢复故障Bookie
-4. **分层存储**：支持将冷数据卸载到对象存储
-
-**参考来源**：
-
-- [BookKeeper Overview](https://bookkeeper.apache.org/docs/latest/)
+BookKeeper 将多 Topic 的写入混合追加到 EntryLog，避免 Kafka 式文件碎片化；Journal（SSD）与 EntryLog（HDD/S3）分离，兼顾延迟与成本。
 
 ---
 
 ## 1.12.3 Pulsar性能特性
 
-### 吞吐量性能
+| 指标 | 典型值 | 说明 |
+| ------ | -------- | ------ |
+| **单 Topic 吞吐** | 100万+ msg/s | 取决于配置与批量策略 |
+| **P50 延迟** | <5 ms | 同机房、批量写入 |
+| **P99 延迟** | <20 ms | 含持久化确认 |
+| **扩展性** | Broker/BookKeeper 独立扩容 | 计算与存储解耦 |
 
-**官方基准测试数据**：
-
-| 场景 | 吞吐量 | 配置 | 参考来源 |
-| ------ | -------- | ------ | --------- |
-| **单Topic** | 1.5M+ msg/s | 3 Brokers, 3 Bookies | Pulsar官方基准 |
-| **多Topic** | 10M+ msg/s | 10 Brokers, 10 Bookies | Yahoo!生产环境 |
-| **地理复制** | 500K+ msg/s | 跨地域复制 | 生产环境实测 |
-
-**性能优化要点**：
-
-1. **批量写入**：Producer批量发送消息
-2. **异步发送**：使用异步Producer提高吞吐量
-3. **分区数量**：合理设置分区数量
-4. **BookKeeper配置**：优化BookKeeper写入参数
+**性能优化要点**：Producer 批量发送、异步发送、合理分区数、BookKeeper Journal/Cache 调优、分层存储卸载冷数据。
 
 **参考来源**：
 
@@ -364,163 +136,29 @@ Topic → Consumer-1 (Key=A的消息)
 
 ---
 
-### 延迟特性
-
-**延迟指标**：
-
-| 指标 | 延迟 | 说明 |
-|------|------|------|
-| **P50延迟** | <5ms | 中位数延迟 |
-| **P99延迟** | <20ms | 99分位延迟 |
-| **P99.9延迟** | <50ms | 99.9分位延迟 |
-
-**延迟优化**：
-
-1. **持久化策略**：非持久化Topic延迟更低
-2. **批量大小**：合理设置批量大小
-3. **网络优化**：Broker和BookKeeper同机房部署
-4. **BookKeeper配置**：优化BookKeeper写入延迟
-
----
-
-### 扩展性设计
-
-**水平扩展能力**：
-
-| 组件 | 扩展方式 | 限制 |
-| ------ | --------- | ------ |
-| **Broker** | 无状态，易于扩展 | 无限制 |
-| **BookKeeper** | 增加Bookie节点 | 受ZooKeeper限制 |
-| **Topic分区** | 增加分区数 | 单Topic最多65536分区 |
-
-**扩展示例**：
-
-```bash
-# 扩展Broker
-# 1. 启动新Broker节点
-# 2. 自动加入集群（无需配置）
-
-# 扩展BookKeeper
-# 1. 启动新Bookie节点
-# 2. 更新BookKeeper配置
-# 3. 自动加入集群
-
-# 扩展Topic分区
-pulsar-admin topics create-partitioned-topic \
-  persistent://tenant/ns/topic \
-  --partitions 20  # 从10扩展到20
-```
-
----
-
 ## 1.12.4 Pulsar一致性机制
 
 ### 消息投递语义
 
-**投递语义**：
-
 | 语义 | 说明 | 实现方式 |
 | ------ | ------ | --------- |
-| **At-Most-Once** | 最多一次 | 不等待ACK |
-| **At-Least-Once** | 至少一次 | 等待ACK，可能重复 |
-| **Exactly-Once** | 恰好一次 | 幂等Producer + 事务 |
+| **At-Most-Once** | 最多一次 | 不等待 ACK |
+| **At-Least-Once** | 至少一次 | 等待 ACK，可能重复 |
+| **Exactly-Once** | 恰好一次 | 幂等 Producer + 事务 |
 
-**Exactly-Once实现**：
+### 持久化保证
 
-```java
-// 启用幂等Producer
-Producer<byte[]> producer = pulsarClient.newProducer()
-    .topic("persistent://tenant/ns/topic")
-    .enableBatching(true)
-    .producerName("my-producer")
-    .sendTimeout(0, TimeUnit.SECONDS)
-    .create();
+- 消息写入 BookKeeper 多副本后返回 ACK；
+- 可配置 ensemble/write-quorum/ack-quorum；
+- 支持非持久化 Topic 以换取更低延迟。
 
-// 事务Producer
-Transaction txn = pulsarClient.newTransaction()
-    .withTransactionTimeout(30, TimeUnit.SECONDS)
-    .build()
-    .get();
+### 事务支持
 
-producer.newMessage(txn)
-    .value("message".getBytes())
-    .send();
-```
+Pulsar 事务提供跨 Topic/Partition 的原子提交，消息对其它 Consumer 隔离，直到事务提交。
 
 **参考来源**：
 
 - [Pulsar Message Delivery Semantics](https://pulsar.apache.org/docs/concepts-messaging/#message-delivery-semantics)
-
----
-
-### 持久化保证
-
-**持久化级别**：
-
-| 级别 | 说明 | 配置 |
-|------|------|------|
-| **Non-persistent** | 消息不持久化 | `non-persistent://tenant/ns/topic` |
-| **Persistent** | 消息持久化到BookKeeper | `persistent://tenant/ns/topic` |
-
-**持久化配置**：
-
-```bash
-# 设置持久化策略
-pulsar-admin namespaces set-persistence \
-  tenant/ns \
-  --bookkeeper-ack-quorum 2 \
-  --bookkeeper-ensemble 3 \
-  --bookkeeper-write-quorum 3
-```
-
-**持久化保证**：
-
-- **写入确认**：消息写入BookKeeper后返回ACK
-- **副本复制**：多副本保证数据安全
-- **故障恢复**：BookKeeper自动恢复故障副本
-
----
-
-### 事务支持
-
-**事务特性**：
-
-| 特性 | 说明 |
-| ------ | ------ |
-| **原子性** | 事务内消息要么全部成功，要么全部失败 |
-| **隔离性** | 事务消息对其他Consumer不可见，直到提交 |
-| **持久性** | 提交后消息持久化 |
-| **一致性** | 保证消息顺序和一致性 |
-
-**事务使用示例**：
-
-```java
-// 创建事务
-Transaction txn = pulsarClient.newTransaction()
-    .withTransactionTimeout(30, TimeUnit.SECONDS)
-    .build()
-    .get();
-
-try {
-    // 发送事务消息
-    producer.newMessage(txn)
-        .value("message1".getBytes())
-        .send();
-
-    producer.newMessage(txn)
-        .value("message2".getBytes())
-        .send();
-
-    // 提交事务
-    txn.commit().get();
-} catch (Exception e) {
-    // 回滚事务
-    txn.abort().get();
-}
-```
-
-**参考来源**：
-
 - [Pulsar Transactions](https://pulsar.apache.org/docs/transactions/)
 
 ---
@@ -531,897 +169,181 @@ try {
 
 | 维度 | Kafka | Pulsar |
 | ------ | ------- | -------- |
-| **架构模式** | 存储与计算耦合 | 存储与计算分离 |
-| **Broker状态** | 有状态（存储数据） | 无状态（仅路由） |
-| **存储层** | 本地磁盘 | BookKeeper集群 |
-| **扩展性** | 需要重新分配分区 | Broker和存储独立扩展 |
-| **多租户** | 不支持 | 原生支持 |
-
-**架构优势对比**：
-
-```text
-Kafka架构：
-- 优点：简单，成熟稳定
-- 缺点：存储与计算耦合，扩展复杂
-
-Pulsar架构：
-- 优点：存储与计算分离，易于扩展，支持多租户
-- 缺点：架构复杂，需要维护BookKeeper集群
-```
-
----
-
-### 性能对比
-
-| 指标 | Kafka | Pulsar |
-| ------ | ------- | -------- |
-| **吞吐量** | 100万+ TPS | 100万+ TPS |
-| **延迟** | 5-100ms | 5-50ms |
-| **扩展性** | 需要重新分配分区 | Broker和存储独立扩展 |
-| **地理复制** | 需要MirrorMaker | 原生支持 |
-
-**性能测试数据**：
-
-| 场景 | Kafka | Pulsar | 说明 |
-| ------ | ------- | -------- | ------ |
-| **单Topic吞吐量** | 1.2M msg/s | 1.5M msg/s | 相同配置 |
-| **多Topic吞吐量** | 8M msg/s | 10M msg/s | 10个Topic |
-| **延迟（P99）** | 15ms | 12ms | 相同配置 |
-
----
+| **存储/计算** | 耦合（Broker 本地盘） | 分离（Broker + BookKeeper） |
+| **Broker 状态** | 有状态 | 无状态 |
+| **扩展方式** | 重分配 Partition | Broker/BookKeeper 独立扩容 |
+| **多租户** | 需外部隔离 | 原生 Tenant/Namespace |
+| **地理复制** | MirrorMaker 等外部方案 | 原生 Geo-replication |
 
 ### 运维对比
 
 | 维度 | Kafka | Pulsar |
 | ------ | ------- | -------- |
-| **部署复杂度** | 中等（需要ZooKeeper） | 高（需要ZooKeeper+BookKeeper） |
-| **扩展复杂度** | 高（需要重新分配分区） | 低（Broker无状态扩展） |
-| **故障恢复** | 需要重新选举Leader | Broker故障不影响存储 |
-| **多租户支持** | 不支持 | 原生支持 |
+| **部署复杂度** | 中等（KRaft 后降低） | 高（多组件：Broker/BookKeeper/元数据） |
+| **故障恢复** | Leader 重选举 | Broker 故障不影响存储 |
+| **扩缩容** | 需重平衡 Partition | 无状态 Broker 快速扩容 |
 
-**运维优势对比**：
+### 选型口径
 
-```text
-Kafka运维：
-- 优点：成熟稳定，社区支持好
-- 缺点：扩展复杂，需要重新分配分区
-
-Pulsar运维：
-- 优点：Broker无状态，易于扩展，支持多租户
-- 缺点：架构复杂，需要维护BookKeeper集群
-```
+- **优先 Pulsar**：多租户 SaaS、跨区域复制、云原生弹性、强 Schema 治理、需要存算独立演进。
+- **优先 Kafka**：生态深度依赖（如 Flink/Kafka Streams 成熟度）、团队熟悉 KRaft、单机或中小规模。
+- **5.0 更新**：新集群选型应评估 Pulsar 5.0 LTS + Oxia 作为元数据后端；存量 4.x 集群可先升级后按需启用 Scalable Topics/v5 API。
 
 ---
 
 ## 1.12.6 Pulsar应用场景
 
-### 多租户SaaS平台
+### 多租户 SaaS 平台
 
-**场景描述**：SaaS平台需要为多个租户提供消息队列服务。
-
-**Pulsar优势**：
-
-1. **原生多租户**：Tenant和Namespace隔离
-2. **资源隔离**：不同租户资源隔离
-3. **权限控制**：细粒度权限管理
-4. **配额管理**：按租户设置配额
-
-**架构示例**：
-
-```text
-Tenant: acme-corp
-  └── Namespace: production
-      └── Topic: orders
-          └── Subscription: order-processor
-
-Tenant: beta-inc
-  └── Namespace: production
-      └── Topic: orders
-          └── Subscription: order-processor
-```
-
----
+Tenant/Namespace 提供资源、权限、配额隔离，适合为多个业务线或客户提供共享消息中台。
 
 ### 地理复制场景
 
-**场景描述**：需要跨地域复制消息，保证数据一致性。
-
-**Pulsar优势**：
-
-1. **原生地理复制**：无需额外工具
-2. **自动故障转移**：主地域故障自动切换
-3. **一致性保证**：保证消息顺序和一致性
-
-**地理复制配置**：
-
-```bash
-# 创建地理复制
-pulsar-admin clusters create us-west \
-  --url http://us-west-broker:8080 \
-  --broker-url pulsar://us-west-broker:6650
-
-pulsar-admin clusters create us-east \
-  --url http://us-east-broker:8080 \
-  --broker-url pulsar://us-east-broker:6650
-
-# 设置命名空间复制
-pulsar-admin namespaces set-replication-clusters \
-  tenant/ns --clusters us-west,us-east
-```
-
-**参考来源**：
-
-- [Pulsar Geo-replication](https://pulsar.apache.org/docs/administration-geo/)
-
----
+原生支持跨集群复制，可配置同步/异步复制、命名空间级复制集群、自动故障转移。
 
 ### 流处理场景
 
-**场景描述**：需要实时流处理，类似Kafka Streams。
-
-**Pulsar优势**：
-
-1. **Pulsar Functions**：轻量级流处理框架
-2. **Pulsar SQL**：SQL查询流数据
-3. **多协议支持**：支持Kafka、MQTT等协议
-
-**Pulsar Functions示例**：
-
-```java
-public class WordCountFunction implements Function<String, String> {
-    @Override
-    public String process(String input, Context context) {
-        // 处理逻辑
-        return processed;
-    }
-}
-```
-
-**参考来源**：
-
-- [Pulsar Functions](https://pulsar.apache.org/docs/functions-overview/)
+Pulsar Functions 提供轻量级流处理；Pulsar SQL 支持交互式查询；多协议适配降低异构系统接入成本。
 
 ---
 
 ## 1.12.7 Pulsar开发架构与程序设计
 
-### 1.12.7.1 开发架构分层模型
+### 无状态 Broker 与开发体验
 
-**Pulsar技术栈全景**：
+Broker 将持久化状态外置到 BookKeeper 与 Metadata Store，内存中的 ManagedLedger 缓存可随时重建。开发者无需关注 Partition 分配、Leader 选举等细节，代码量较 Kafka 减少约 40-60%【估算】。
 
-```text
-Pulsar技术栈全景
-┌─────────────────────────────────────────────────────────────┐
-│                      API层 (多语言Client)                      │
-│  Java/Python/Go/C++/Node.js/WS 统一协议封装                  │
-└───────────────────────┬───────────────────────────────────────┘
-                        │
-┌───────────────────────▼───────────────────────────────────────┐
-│                  协议层 (自定义二进制协议)                     │
-│ 基于Netty的异步事件驱动 + Protobuf元数据序列化                │
-│ 支持TCP/TLS/HTTP多种传输方式                                │
-└───────────────────────┬───────────────────────────────────────┘
-                        │
-┌───────────────────────▼───────────────────────────────────────┐
-│                  Broker层 (计算层/无状态)                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │
-│  │ LoadBalancer │  │ManagedLedger │  │   Cache      │        │
-│  │ 动态分区分配 │  │Ledger管理    │  │PageCache     │        │
-│  └──────────────┘  └──────┬───────┘  └──────────────┘        │
-│                           │                                  │
-│  └──────────────────┬─────────────────┘                      │
-│                     │                                       │
-│  元数据接口：可插拔的Metadata Store                        │
-│  (ZK/Etcd/RocksDB)                                        │
-└───────────────────────┬───────────────────────────────────────┘
-                        │
-┌───────────────────────▼───────────────────────────────────────┐
-│              BookKeeper层 (存储层/有状态)                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │ Journal  │  │WriteCache│  │ReadCache │  │EntryLog  │    │
-│  │ WAL日志  │  │MemTable  │  │BlockCache│  │SSTable   │    │
-│  │ (SSD)    │  │(内存)    │  │(内存)    │  │(HDD/S3)  │    │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘    │
-│       └─────────┬───────────┬───────────┬─────────┘        │
-│                 │           │           │                  │
-│  存储模型：Journal Group Commit + EntryLog顺序写            │
-│  复制协议： Ensemble (E=3, WQ=2, AQ=2)                     │
-└───────────────────────┬───────────────────────────────────────┘
-                        │
-┌───────────────────────▼───────────────────────────────────────┐
-│              分层存储 (S3/GCS/Azure)                          │
-│  自动卸载冷数据，支持4级存储：内存→SSD→HDD→对象存储          │
-└─────────────────────────────────────────────────────────────┘
-```
+### 消息确认模式
 
-**关键技术实现论证**：
+- **累积确认（Cumulative Ack）**：顺序场景一次确认到当前消息，减少网络往返。
+- **单条确认（Individual Ack）**：并行场景精确控制每条消息。
+- **Negative Ack / Retry Topic / DLQ**：原生重试与死信机制，无需外部封装。
 
-#### 1. Broker无状态实现机制（详细代码实现）
+### Schema 与动态配置
 
-**无状态不等于无数据**：Pulsar Broker在内存中维护**ManagedLedger**缓存，但所有持久化状态都委托给BookKeeper和Metadata Store。这种设计的关键在于：
+Pulsar 内置 Schema Registry，支持 Avro/Protobuf/JSON 的演进与兼容性校验；动态配置通过 Admin API 热加载，无需重启 Broker。
 
-- **会话状态外置**：Producer/Consumer的元数据（游标位置、订阅关系）存储在ZK，Broker重启后从ZK恢复
-- **计算状态可丢弃**：Cache中的Ledger数据可随时从BookKeeper重新加载
-- **路由状态动态**：Service Discovery实时查询Topic→Broker映射，无静态绑定
+### 性能编程模式
 
-**代码实现模式**（基于Pulsar源码架构）：
+- **Zero-Copy**：Netty FileRegion 减少用户态拷贝。
+- **智能批量**：按时间/数量双重窗口聚合，避免小消息导致批量失效。
+- **分层存储**：热数据在 BookKeeper，冷数据自动卸载到 S3/GCS/Azure Blob。
 
-```java
-// ManagedLedgerImpl.java 伪代码（基于架构）
-class ManagedLedgerImpl {
-    // **纯内存状态，可丢失**
-    private final Cache<Long, Entry> entryCache;
-    private long lastConfirmedEntryId;
+---
 
-    // **持久化状态，由BookKeeper保证**
-    private final BookKeeper bkClient;
-    private final MetadataStore metaStore;
-
-    // 写操作：WAL到BookKeeper即返回
-    public CompletableFuture<Position> asyncAddEntry(byte[] data) {
-        // 1. 写入BookKeeper（持久化）
-        return bkClient.asyncAddEntry(ledgerId, data)
-            .thenApply(entryId -> {
-                // 2. 更新内存Cache（非必需）
-                entryCache.put(entryId, new Entry(data));
-                return new Position(ledgerId, entryId);
-            });
-    }
-
-    // 重启恢复逻辑：从BK读取最近几个Ledger重建Cache
-    public void recover() {
-        List<LedgerInfo> ledgers = metaStore.readLedgers(ledgerName);
-        this.lastConfirmedEntryId = ledgers.getLast().getLastEntry();
-    }
-}
-```
-
-**与Kafka的对比论证**：
-
-- **Kafka**：分区副本状态强绑定Broker，Broker宕机=分区不可用，需选举新Leader（30秒级延迟）
-- **Pulsar**：Broker宕机仅影响瞬时的路由，Producer通过Service Discovery重新连接到新Broker，延迟<1秒。这是**无状态架构的核心优势**。
-
-#### 2. BookKeeper存储引擎设计（详细架构）
-
-BookKeeper采用**LSM Tree变种架构**，将随机写转为顺序写：
-
-```text
-写入路径：
-Producer → Broker → Journal (WAL, SSD) → WriteCache (内存) → EntryLog (HDD/S3)
-        ↓
-     Ack返回 (Journal落盘即返回)
-
-读取路径：
-Consumer → Broker → ReadCache (内存) → EntryLog (顺序读) → Bookie磁盘
-
-关键设计：
-- Journal Group Commit：批量刷盘，降低IOPS
-- EntryLog顺序写：多个Topic的数据混合追加，避免Kafka式的文件碎片化
-- 双盘分离：Journal用SSD保证低延迟，EntryLog用HDD优化成本
-```
-
-**性能论证**（基于生产环境数据）：
-
-- **写入放大**：Kafka的Partition增多→文件句柄增多→PageCache碎片化→写入放大3-5倍。BookKeeper的EntryLog与Topic无关，写入放大≈1.1倍
-- **IOPS利用率**：Kafka在万级Partition时，磁盘IOPS 80%消耗在元数据操作。BookKeeper的IOPS 95%用于有效数据写入
-
-### 1.12.7.2 编程语言生态与多语言支持
-
-**服务端实现**：Pulsar Broker和BookKeeper均为**Java**实现，但架构支持**GraalVM原生编译**。
-
-**性能论证**（基于生产环境数据）：
-
-- **启动时间**：传统JVM启动需30-60秒，GraalVM原生镜像可降至**100毫秒**，实现Serverless瞬时扩容
-- **内存占用**：原生镜像内存从2GB降至**200MB**，适合边缘计算
-- **开发权衡**：失去JVM的动态调优能力（如JIT），但获得云原生弹性
-
-**GraalVM原生编译实现**（基于concept06.md）：
-
-```bash
-# 构建原生镜像
-mvn clean package -Pnative-image
-
-# 生成的二进制文件
-./pulsar-broker-native
-
-# 启动时间对比
-# JVM版本：30-60秒
-# 原生版本：100毫秒（提升300-600倍）
-```
-
-**代码结构**（基于模块划分）：
-
-```text
-pulsar-broker/
-├── protocol/          # Netty协议处理
-├── service/           # Broker核心逻辑
-├── loadbalance/       # 动态负载均衡
-├── managed-ledger/    # Ledger管理
-├── cache/             # 消息缓存
-└── metadata/          # 元数据存储抽象
-
-pulsar-client-java/
-├── api/               # 客户端接口
-├── impl/              # 实现（Producer/Consumer）
-├── schema/            # 序列化（Avro/Protobuf/JSON）
-└── auth/              # 认证（TLS/OAuth2）
-```
-
-**与Kafka的对比**：
-
-- **Kafka**：Scala/Java混合，学习曲线陡峭，编译慢
-- **Pulsar**：纯Java，Maven构建，模块化清晰，新贡献者上手快（**贡献者增长速率**是Kafka的2倍）
-
-**代码质量指标**（基于GitHub统计数据）：
-
-| 指标 | Kafka | Pulsar | Pulsar优势 |
-| ------ | ------- | -------- | ------------ |
-| **代码行数** | ~500K | ~300K | 代码更精简，维护成本低 |
-| **模块数** | 15 | 8 | 模块化更清晰 |
-| **编译时间** | 10-15分钟 | 5-8分钟 | 编译速度提升40% |
-| **测试覆盖率** | 75% | 82% | 测试覆盖更全面 |
-| **PR接受率** | 60% | 85% | 社区更活跃 |
-
-**客户端语言支持矩阵**：
-
-| 语言 | Kafka客户端 | Pulsar客户端 | Pulsar优势 | 实现质量 |
-| ------ | ------------- | -------------- | ------------ | ---------- |
-| **Java** | 官方，成熟 | **官方，原生Schema** | Schema自动注册 | ★★★★★ |
-| **Python** | confluent-kafka (C扩展) | **pulsar-client (C++绑定)** | 无GIL限制，性能高 | ★★★★☆ |
-| **Go** | sarama/segmentio | **pulsar-client-go (纯Go)** | 无CGO依赖，易交叉编译 | ★★★★★ |
-| **C++** | librdkafka | **pulsar-client-cpp** | 统一代码库，多语言共享 | ★★★★☆ |
-| **Node.js** | kafkajs | **pulsar-client (C++绑定)** | 异步性能优于KafkaJS | ★★★☆☆ |
-
-**多语言实现策略**：
-
-- **核心C++客户端**：Pulsar采用**C++实现核心客户端**，其他语言（Python/Node.js）通过**SWIG绑定**。保证性能一致性
-- **纯Go客户端**：Go客户端独立实现，无CGO，编译部署简单，云原生友好
-- **Kafka兼容模式**：Pulsar提供**pulsar-kafka-proxy**，可无缝迁移Kafka应用，降低语言迁移成本
-
-**开发体验对比**（Python示例）：
-
-**Kafka**：
-
-```python
-# 依赖confluent-kafka，需安装librdkafka（系统级依赖）
-from confluent_kafka import Producer
-
-p = Producer({'bootstrap.servers': 'localhost:9092'})
-p.produce('topic', 'value')
-p.flush()  # 同步阻塞
-```
-
-**Pulsar**：
-
-```python
-# pip install pulsar-client，纯Python包
-import pulsar
-
-client = pulsar.Client('pulsar://localhost:6650')
-producer = client.create_producer('my-topic')
-producer.send(b'hello')  # 异步非阻塞，自动批处理
-client.close()
-```
-
-**论证**：Pulsar客户端**依赖更少**，启动更快（**首次连接延迟**比Kafka低40%），适合Serverless函数（如AWS Lambda）。
-
-### 1.12.7.3 消息确认模式的动态设计
-
-**累积确认（Cumulative Ack） vs 单条确认（Individual Ack）**：
-
-```java
-// 场景：批量处理后选择性重试
-Consumer<String> consumer = client.newConsumer()
-    .topic("events")
-    .subscriptionName("retryable-sub")
-    .acknowledgmentGroupTime(0, TimeUnit.MILLISECONDS) // 立即确认
-    .subscribe();
-
-Message<String> msg1 = consumer.receive();
-Message<String> msg2 = consumer.receive();
-Message<String> msg3 = consumer.receive();
-
-// 处理成功，累积确认（释放msg1~msg3）
-consumer.acknowledgeCumulative(msg3);
-
-// 若msg3处理失败，可单独Nack
-consumer.negativeAcknowledge(msg3); // **自动重试**
-```
-
-**与Kafka的对比论证**：
-
-- **Kafka**：Offset提交是单调的，无法跳过失败消息。需依赖**外部死信队列**（DLQ）实现重试
-- **Pulsar**：内置**Negative Ack**和**Retry Topic**机制，死信队列是原生特性
-- **开发效率**：Pulsar减少30%的DLQ封装代码（基于实战统计）
-
-**程序设计模式深度论证**（基于concept06.md）：
-
-**1. 累积确认（Cumulative Ack）模式**：
-
-```java
-// 适用场景：顺序处理，前面的消息必须成功才能继续
-Consumer<String> consumer = client.newConsumer()
-    .subscriptionType(SubscriptionType.Failover) // Failover订阅保证顺序
-    .subscribe();
-
-while (true) {
-    Message<String> msg = consumer.receive();
-    try {
-        process(msg); // 处理消息
-        consumer.acknowledgeCumulative(msg); // 确认到当前消息的所有消息
-    } catch (Exception e) {
-        // 失败时，前面的消息已确认，当前消息会重试
-        consumer.negativeAcknowledge(msg);
-    }
-}
-```
-
-**性能优势**（基于生产环境数据）：
-
-- **确认开销**：累积确认只需一次网络往返，比单条确认减少**N-1次**网络调用（N为批量大小）
-- **内存释放**：累积确认后，Broker可立即释放已确认消息的内存，内存占用降低**60%**
-
-**2. 单条确认（Individual Ack）模式**：
-
-```java
-// 适用场景：并行处理，消息间无依赖
-Consumer<String> consumer = client.newConsumer()
-    .subscriptionType(SubscriptionType.Shared) // Shared订阅支持并行
-    .acknowledgmentGroupTime(100, TimeUnit.MILLISECONDS) // 批量确认窗口
-    .subscribe();
-
-CompletableFuture<Void> futures = new CompletableFuture<>();
-while (true) {
-    Message<String> msg = consumer.receive();
-    // 异步处理，不阻塞
-    CompletableFuture.runAsync(() -> {
-        process(msg);
-        consumer.acknowledge(msg); // 单条确认
-    });
-}
-```
-
-**性能优势**：
-
-- **并行度**：单条确认允许消息乱序处理，并行度提升**3-5倍**
-- **故障隔离**：单条消息失败不影响其他消息，故障影响范围缩小**90%**
-
-**3. Negative Acknowledge（Nack）机制**（详细实现）：
-
-```java
-// 自动重试配置
-Consumer<String> consumer = client.newConsumer()
-    .topic("orders")
-    .subscriptionName("order-processor")
-    .negativeAckRedeliveryDelay(1, TimeUnit.MINUTES) // 1分钟后重试
-    .deadLetterPolicy(DeadLetterPolicy.builder()
-        .maxRedeliverCount(3) // 最多重试3次
-        .deadLetterTopic("orders-dlq") // 死信队列
-        .build())
-    .subscribe();
-
-Message<String> msg = consumer.receive();
-try {
-    processOrder(msg);
-    consumer.acknowledge(msg);
-} catch (TemporaryException e) {
-    // 临时错误，重试
-    consumer.negativeAcknowledge(msg);
-} catch (PermanentException e) {
-    // 永久错误，直接确认（会进入死信队列）
-    consumer.acknowledge(msg);
-}
-```
-
-**与Kafka的详细对比**（基于concept06.md）：
-
-| 特性 | Kafka | Pulsar | 开发效率提升 |
-| ------ | ------- | -------- | ------------ |
-| **重试机制** | 需手动实现（Offset回退） | **内置Nack** | 减少50%重试代码 |
-| **死信队列** | 需外部实现（DLQ Topic） | **原生支持** | 减少30%DLQ代码 |
-| **确认粒度** | 仅Offset（分区级） | **消息级** | 精确控制，减少重复处理 |
-| **确认延迟** | 需手动配置`auto.commit.interval.ms` | **可编程确认窗口** | 更灵活的批量确认策略 |
-
-### 1.12.7.4 Schema注册中心：开发时类型安全
-
-**Kafka的Schema问题**：
-
-- 无原生Schema，需依赖外部Confluent Schema Registry
-- Producer和Consumer需手动指定Schema ID，开发繁琐
-- Schema演进需人工管理兼容性（BACKWARD/FORWARD）
-
-**Pulsar原生Schema**（详细实现）：
-
-```java
-// 定义Schema
-Schema<Order> schema = Schema.AVRO(Order.class);
-
-// Producer自动注册Schema
-Producer<Order> producer = client.newProducer(schema)
-    .topic("orders")
-    .create();
-
-// Consumer自动获取Schema并反序列化
-Consumer<Order> consumer = client.newConsumer(schema)
-    .topic("orders")
-    .subscribe();
-
-// Schema演进：自动校验兼容性
-Schema<OrderV2> newSchema = Schema.AVRO(OrderV2.class);
-// 若OrderV2不兼容Order，Producer创建失败
-```
-
-**程序设计优势**：
-
-- **类型安全**：编译期检查，减少运行时`ClassCastException`
-- **开发效率**：无需手动管理Schema ID，框架自动处理
-- **版本管理**：Pulsar内置Schema版本控制，可查询历史Schema
-
-**组织级影响**：在微服务架构中，Schema作为**API契约**，Pulsar的原生支持降低了跨团队协作成本。相比Kafka需额外部署Schema Registry，**基础设施复杂度降低30%**。
-
-### 1.12.7.5 动态配置与热加载：开发运维一体化
-
-**Kafka的静态配置痛点**：
-
-- `server.properties`需**重启生效**，生产环境变更窗口难协调
-- 配置作用域全局，无法针对单个Topic调整
-- 缺乏配置版本管理，回滚需手动修改文件
-
-**Pulsar的动态配置架构**（详细实现）：
-
-```java
-// Broker启动时加载默认配置
-@FieldContext(dynamic = true)  // **标记为动态**
-private int maxUnackedMessagesPerConsumer = 50000;
-
-// HTTP Admin接口动态修改
-// curl -X POST http://broker:8080/admin/v2/brokers/configuration \
-//   -d '{"maxUnackedMessagesPerConsumer": 100000}'
-
-// 配置立即生效，无需重启
-// 客户端下次连接时获取新配置
-```
-
-**实现机制**：
-
-1. **配置元数据存储**：所有动态配置存储在Metadata Store（ZK/Etcd）
-2. **watchers机制**：Broker监听配置路径变化，实时刷新内存变量
-3. **版本控制**：每次配置变更产生版本号，支持回滚到任意历史版本
-
-**开发运维协同**：
-
-- **开发**：代码中标记`@FieldContext(dynamic = true)`
-- **运维**：通过Admin API或Dashboard调整参数
-- **审计**：所有变更记录到日志，可追溯
-
-**对比论证**：Pulsar的配置变更**延迟从30分钟降至1秒**，且**风险可回滚**，符合GitOps理念。
-
-**Feature Flag驱动开发**：
-
-```java
-// 新功能开发：死信队列增强
-@FieldContext(dynamic = true)
-private boolean enableDLQAdvancedFeatures = false; // 默认关闭
-
-// 上线后逐步灰度
-// 为10%的租户开启
-pulsar-admin namespaces set-dlq-policy my-tenant/my-ns \
-  --advanced-features true \
-  --apply-percent 10
-
-// 监控无异常后全量
-pulsar-admin namespaces set-dlq-policy my-tenant/my-ns \
-  --advanced-features true
-```
-
-**开发价值**：
-
-- **安全发布**：新功能通过Feature Flag控制，发现问题即时关闭
-- **A/B测试**：不同租户使用不同配置，对比效果
-- **降级预案**：高负载时关闭非核心功能（如消息追踪）
-
-### 1.12.7.6 性能优化编程模式
-
-#### Zero-Copy传输实现（详细代码）
-
-**Pulsar的实现**（基于Netty的FileRegion）：
-
-```java
-// ManagedLedgerImpl.java
-public void asyncReadEntries(long startEntry, long endEntry, ReadCallback cb) {
-    // 1. 从BookKeeper读取Entry（顺序读）
-    bkClient.asyncReadEntries(ledgerId, startEntry, endEntry)
-        .thenAccept(entries -> {
-            // 2. 直接发送到Channel，无需拷贝到用户空间
-            for (Entry entry : entries) {
-                ctx.writeAndFlush(new NioMessage(entry));
-            }
-        });
-}
-
-class NioMessage implements FileRegion {
-    private final Entry entry;
-
-    @Override
-    public long transferTo(WritableByteChannel target, long position) {
-        // **Zero-Copy**：FileChannel.transferTo()
-        return entry.getDataChannel().transferTo(position, size, target);
-    }
-}
-```
-
-**性能提升**（基于生产环境数据）：
-
-- **CPU消耗**：相比Kafka的传统read()+write()，Zero-Copy减少**70% CPU占用**
-- **延迟**：减少一次内存拷贝，P99延迟降低**15%**
-
-#### 批量与压缩策略（详细对比）
-
-**Pulsar的智能批量**：
-
-```java
-producer = client.newProducer()
-    .topic("my-topic")
-    .enableBatching(true)
-    .batchingMaxPublishDelay(10, TimeUnit.MILLISECONDS) // 时间窗口
-    .batchingMaxMessages(1000)                          // 数量阈值
-    .batchingPartitionSwitchFrequencyByPublishDelay(10) // **动态切换分区**
-    .compressionType(CompressionType.LZ4)              // 压缩
-    .create();
-
-// **策略**：先按时间聚合10ms内的消息，若未到阈值也强制发送
-// **优势**：避免消息过小导致批量失效（Kafka的linger.ms在高吞吐下不生效）
-```
-
-**压缩效率对比**（基于基准测试）：
-
-| 算法 | Kafka压缩率 | Pulsar压缩率 | Pulsar优势 |
-| ------ | ------------- | -------------- | ------------ |
-| GZIP | 60% | 60% | 相同 |
-| LZ4 | 75% | **80%** | Pulsar批量更大，字典效果更好 |
-| ZSTD | 70% | **75%** | Pulsar支持训练字典 |
-
-### 1.12.7.7 开发架构论证总结
-
-```text
-需求：构建消息中台，支持多业务线，团队50人，Java为主
-    ↓
-┌─ 选择Kafka？
-│  ├─ 优势：生态成熟，人才易招聘
-│  ├─ 劣势：开发需关注分区数、Rebalance，学习曲线陡峭
-│  └─ 适用：核心业务已稳定，变化少
-│
-┌─ 选择Pulsar？
-│  ├─ 优势：API简洁，无分区概念，开发专注业务
-│  ├─ 劣势：需学习BookKeeper运维，社区相对年轻
-│  └─ 适用：新业务，快速迭代，云原生部署
-│
-└─ 决策：新业务选Pulsar，存量Kafka通过Connector桥接
-    └─ 架构演进：逐步将Kafka业务迁移至Pulsar（2年周期）
-
-论证依据（基于concept06.md生产环境数据）：
-- **开发效率**：Pulsar的零配置Producer比Kafka快30%
-- **维护成本**：Pulsar自动分区均衡，减少50%运维工单
-- **团队成长**：Pulsar的模块化代码利于新人贡献（PR接受率比Kafka高40%）
-```
-
-**开发效率对比**（基于concept06.md详细统计数据）：
-
-| 开发任务 | Kafka耗时 | Pulsar耗时 | 效率提升 |
-| --------- | ---------- | ----------- | --------- |
-| **创建Producer** | 需配置10+参数（5分钟） | 零配置（30秒） | **10倍** |
-| **实现死信队列** | 需外部实现（2小时） | 原生支持（10分钟） | **12倍** |
-| **Schema管理** | 需部署Schema Registry（1天） | 内置支持（0分钟） | **∞** |
-| **配置热更新** | 需重启（30分钟） | 动态配置（1秒） | **1800倍** |
-| **多租户隔离** | 需自建（1周） | 原生支持（1小时） | **168倍** |
-
-**代码量对比**（基于实际项目统计，concept06.md）：
-
-```java
-// Kafka实现订单处理（需关注分区、Offset等）
-public class KafkaOrderProcessor {
-    private KafkaConsumer<String, Order> consumer;
-    private KafkaProducer<String, Order> producer;
-
-    public void process() {
-        // 需手动管理分区分配
-        consumer.subscribe(Collections.singletonList("orders"));
-        // 需手动提交Offset
-        while (true) {
-            ConsumerRecords<String, Order> records = consumer.poll(Duration.ofMillis(100));
-            for (ConsumerRecord<String, Order> record : records) {
-                processOrder(record.value());
-                // 需手动提交Offset
-                consumer.commitSync();
-            }
-        }
-    }
-}
-// 代码行数：~50行
-
-// Pulsar实现订单处理（专注业务逻辑）
-public class PulsarOrderProcessor {
-    private Consumer<Order> consumer;
-
-    public void process() {
-        // 无需关注分区、Offset等细节
-        while (true) {
-            Message<Order> msg = consumer.receive();
-            try {
-                processOrder(msg.getValue());
-                consumer.acknowledge(msg); // 自动管理游标
-            } catch (Exception e) {
-                consumer.negativeAcknowledge(msg); // 自动重试
-            }
-        }
-    }
-}
-// 代码行数：~20行（减少60%）
-```
-
-**开发体验对比**（基于开发者调研，concept06.md）：
-
-| 维度 | Kafka | Pulsar | 开发者满意度 |
-| ------ | ------- | -------- | ------------ |
-| **API简洁性** | 需理解分区、Offset | **无分区概念** | Pulsar高40% |
-| **错误处理** | 需手动实现重试 | **内置Nack机制** | Pulsar高50% |
-| **类型安全** | 需外部Schema Registry | **原生Schema** | Pulsar高60% |
-| **调试难度** | 分区分布复杂 | **无分区，调试简单** | Pulsar高45% |
-| **文档质量** | 分散在多个文档 | **统一文档** | Pulsar高30% |
-
-**Pulsar开发架构的核心优势**（基于concept06.md深度论证）：
-
-1. **无状态设计**：降低开发者心智负担，无需关注分区数和副本分布
-2. **API现代化**：异步Future、Schema原生、多语言绑定统一
-3. **云原生友好**：K8s Operator、动态配置、GraalVM原生编译
-4. **技术债务负增长**：存算分离允许独立演进，配置可回滚
-
-**适用场景**（基于生产环境案例）：
-
-- ✅ **优先选择**：云原生新应用、IoT多协议接入、事件驱动架构、多租户SaaS平台
-- ⚠️ **谨慎选择**：强依赖Kafka生态（如Flink Connector成熟度）、团队无K8s经验
-- ❌ **避免选择**：单机部署、消息量<1万TPS（杀鸡用牛刀）
-
-**编程语言生态成熟度**（基于concept06.md详细对比）：
-
-| 语言 | 客户端质量 | 性能 | 生产就绪度 | 推荐场景 |
-| ------ | ----------- | ------ | ----------- | --------- |
-| **Java** | ★★★★★ | 高 | ✅ 生产级 | 企业级应用 |
-| **Python** | ★★★★☆ | 中高 | ✅ 生产级 | 数据科学、AI |
-| **Go** | ★★★★★ | 高 | ✅ 生产级 | 云原生、微服务 |
-| **C++** | ★★★★☆ | 极高 | ✅ 生产级 | 高性能、嵌入式 |
-| **Node.js** | ★★★☆☆ | 中 | ⚠️ 特定场景 | Web应用、实时推送 |
-
-**整体语言支持度**：与Kafka持平，但**API一致性**优于Kafka（所有语言API设计统一）。
-
-**开发架构总结**（基于concept06.md）：
-
-**Pulsar开发架构的核心价值**：
-
-1. **降低开发复杂度**：无分区概念，开发者专注业务逻辑，代码量减少**60%**
-2. **提升开发效率**：Schema原生、动态配置、Feature Flag，开发效率提升**30-50%**
-3. **减少运维负担**：自动分区均衡、动态配置、零停机更新，运维工单减少**50%**
-4. **技术债务负增长**：存算分离、配置可回滚、模块化设计，技术债务随时间递减
-
-**组织级影响**（基于concept06.md）：
-
-- **团队规模**：Pulsar的模块化设计降低新人上手时间，团队扩展效率提升**40%**
-- **代码质量**：类型安全、Schema自动校验，运行时错误减少**70%**
-- **技术演进**：存算分离允许独立升级，技术演进成本降低**60%**
-
-## 1.12.8 Pulsar 4.x 演进与 Oxia
-
-2024 年起，Apache Pulsar 进入 4.x 主线。该系列在保留 3.x 存算分离、多租户等核心设计的同时，把演进重点放在**可观测性、QoS、运行时安全**以及**元数据存储的去 ZooKeeper 化**上。本节梳理 3.x → 4.0 LTS → 4.1+ 的时间线，并说明 Oxia 作为新一代元数据存储的定位。
+## 1.12.8 Pulsar 4.x/5.0 演进与 Oxia
 
 ### 版本时间线
 
-| 版本 | 发布时间 | 版本性质 | 关键定位 |
+| 版本 | 发布时间 | 性质 | 关键定位 |
 | --- | --- | --- | --- |
-| **Pulsar 3.3.0** | 2024-06-06 | 特性版本 | 4.0 之前的最后一个重要特性窗口，为 4.0 铺路 |
-| **Pulsar 4.0.0** | 2024-10-21 | 第二个 LTS | 引入 Oxia 元数据插件、全量 OpenTelemetry 指标、Alpine/Java 21 容器镜像 |
-| **Pulsar 4.1.0** | 2025-09-09 | 特性版本 | 19 个 PIP；Java 客户端最低要求提升至 Java 17；Broker 缓存与限流增强 |
-| **Pulsar 4.1.x** | 2025 年 Q4 起持续发布 | 补丁版本 | CVE 修复、依赖升级（BookKeeper、Netty、ZooKeeper 等） |
+| **Pulsar 4.0.0** | 2024-10-21 | 第二个 LTS | Oxia 元数据插件、OpenTelemetry 全链路指标、Alpine/Java 21 镜像 |
+| **Pulsar 4.1.0** | 2025-09-09 | 特性版本 | 19 个 PIP；Java 客户端最低 Java 17；Broker 缓存与限流增强 |
+| **Pulsar 4.1.3** | 2026-02-19 | 补丁版本 | 依赖升级，Oxia 升级至 0.7.2 |
+| **Pulsar 4.0.14** | 2026-10-05 | 维护版本 | 4.0 LTS 维护线，包含 5.0 部分性能修复的回移 |
+| **Pulsar 5.0.0-M1** | 2026-06-23 | 里程碑 | Scalable Topics 与 v5 API 首个预览 |
+| **Pulsar 5.0.0** | 2026-10-05 | 第三个 LTS（GA） | Scalable Topics、v5 Java 客户端、Oxia 推荐默认、显著性能提升 |
+| **Pulsar 5.0.1** | 2026-10-26 | 补丁版本 | 5.0 LTS 首个维护版本 |
 
-> 注：截至 2026 年 1 月，4.x 的最新可用主线为 4.1.x 补丁系列；后续 4.2/5.0 的功能计划以社区官方发布为准。
+> 【论证】Pulsar 5.0.0 已于 2026-10-05 GA，官方定位为新的长期支持版本（LTS），5.0.1 于 2026-10-26 发布。
 
-### 4.0 关键变化
+### 5.0 关键变化
 
-Pulsar 4.0 是继 3.0 LTS 之后的第二个长期支持版本，核心变化包括：
+1. **Scalable Topics（PIP-460/468/483/486 等）**
+   - 通过 `topic://` 地址暴露单一逻辑流，无需预先指定分区数。
+   - 运行时按 Key-range 自动 split/merge 热段与冷段，保持 per-key 顺序。
+   - 需要 v5 Java 客户端或兼容客户端；v4 客户端无法使用。
+   - 当前限制：5.0 不支持 Scalable Topics 的地理复制与 Replicated Subscriptions。
 
-1. **Oxia 元数据存储插件（PIP-335）**
-   - 新增 `pulsar-metadatastore-oxia` 实现，允许仅依赖 Oxia 启动完整 Pulsar 集群，无需 ZooKeeper。
-   - 不改变现有默认行为，ZooKeeper 用户可继续运行。
+2. **v5 Java 客户端 API（PIP-466）**
+   - 重新设计为 Stream/Queue/Checkpoint 三类消费者，语义更清晰。
+   - 支持非阻塞异步接收、背压、减少 ACK 开销。
+   - v5 API 也适用于现有分区/非分区 Topic，可逐步迁移。
 
-2. **全链路 OpenTelemetry 指标（PIP-264）**
-   - Broker 连接、复制、Consumer、Producer、Managed Ledger、Managed Cursor、Schema Registry、事务、Metadata Store 等均接入 OTel。
-   - 支持将 OTel resource attributes 复制为 Prometheus label。
+3. **Scalable Topics Client Specification 1.0**
+   - 语言无关的规范，Java v5 客户端为参考实现，其它 SDK 逐步对齐。
 
-3. **Key_Shared 订阅增强（PIP-379）**
-   - 引入 Draining Hashes 机制，改善按 Key 有序投递在扩缩容、消费者重启时的阻塞问题。
-   - 提供可观测指标帮助定位有序消息卡住根因。
+4. **现有工作负载的性能与可靠性提升**
+   - 官方 IoT 场景基准（500 publishers / 20 Key_Shared consumers）：Pulsar 5.0.0 较 4.0.13 总吞吐提升约 1.7×，P99 端到端延迟从 202.3 s 降至 1.08 s。
+   - 减少线程切换、批量提交、BookKeeper 批量读、紧凑 ACK bitmap 等优化。
+   - 地理复制、Key_Shared、Failover、Shared、延迟投递、事务恢复等修复。
+   - 分层存储按时间戳 seek 的冷搜索对象存储请求减少约 90%（已回移至 4.0.14/4.2.5）。
 
-4. **QoS 与限流重构（PIP-322）**
-   - 用统一令牌桶算法替换原先 default/precise 两套限流器，降低 CPU 与锁竞争。
+5. **运维改进**
+   - 默认负载均衡策略改为 **AvgShedder**，减少不必要的 bundle 迁移。
+   - 结构化日志（PIP-467）携带 topic/subscription/storage 上下文。
+   - 支持关闭空闲 Topic 释放内存与指标序列而不删除数据（PIP-470）。
+   - Pulsar Manager 不再维护，需迁移到其它管理工具。
 
-5. **容器镜像升级（PIP-324）**
-   - 官方 Docker 镜像从 Ubuntu 迁移到 Alpine，基础镜像 CVE 从 12 个降至 0。
-   - 默认携带 Java 21 与 Generational ZGC，进一步降低 GC 停顿。
-
-6. **Topic Policies Service 可插拔（PIP-376）**
-   - 允许替换默认的 system-topic 策略后端，为后续元数据存储统一化做准备。
-
-7. **其他重要特性**
-   - PIP-352：基于 Event time 的 Compaction。
-   - PIP-321：Namespace 级别 allowed-cluster 控制。
-   - PIP-368：基于 lookup properties 的 lookup 策略。
-   - PIP-374：Consumer receiverQueue 内消息可见性。
-
-8. **移除与破坏性变更**
-   - 默认不再自动创建分区的 DLQ/Retry Topic（#22705），需要显式创建。
-   - 移除 `DeviationShedder` 负载均衡策略。
-   - 清理 `PersistentSubscription.getStats` 等废弃接口。
-   - Functions 默认不再内置 Java serde 选项（#22832）。
+6. **运行时与镜像变更**
+   - 服务端要求 Java 21+，推荐 Java 25（Docker 镜像默认使用）。
+   - Java 客户端要求 Java 17+（4.0.x 仍支持 Java 8/11）。
+   - Docker 镜像从 `apachepulsar/pulsar-all` 改为 `apachepulsar/pulsar`，IO Connector NAR 需单独提供。
+   - etcd 元数据后端已移除，升级前需迁移到 ZooKeeper 或 Oxia。
 
 ### Oxia 的定位与架构意义
 
-**Oxia** 是 Apache Pulsar 社区推动的元数据与协调系统，现为 CNCF Sandbox 项目。它的 API 模型与 ZooKeeper/Etcd/Chubby 类似（线性化键、会话、临时节点、通知、CAS），但采用**分片（sharded）架构**：每个分片拥有独立的 leader、WAL 与 LSM 状态，协调器（coordinator）负责分片分配与选主，不处于数据路径。
+**Oxia** 是 Apache Pulsar 社区推动的元数据与协调系统，现为 CNCF Sandbox 项目。它提供类似 ZooKeeper/Etcd 的线性化键值、会话、临时节点、通知、CAS 等语义，但采用**分片（sharded）架构**：每个分片拥有独立 leader、WAL 与 LSM 状态，coordinator 负责分片分配与选主，不处于数据路径。
 
-对 Pulsar 而言，Oxia 的架构意义在于：
+对 Pulsar 而言：
 
-- **消除单 RSM 瓶颈**：ZooKeeper 的写吞吐与容量受单一 leader 限制；Oxia 可通过增加节点水平扩展。
-- **统一元数据与游标**：在 ZooKeeper 架构中，cursor positions 因写量过大被放在 BookKeeper ledgers 中；Oxia 可直接承载 cursor positions，减少运维面。
-- **支撑超大规模 Topic**：官方文档明确 Oxia 是**新生产集群的推荐元数据存储**，ZooKeeper 仍完全兼容。
-- **保留协调语义**：仍提供会话、临时记录、有序通知、范围扫描、原子序列等分布式系统原语，因此无需在 BookKeeper 之外再维护一套协调服务。
+- **消除单 RSM 瓶颈**：ZooKeeper 写吞吐受单一 leader 限制，Oxia 可水平扩展。
+- **统一元数据与游标**：Oxia 可直接承载 cursor positions，减少 BookKeeper ledgers 中的游标存储复杂度。
+- **支撑超大规模 Topic**：官方明确 Oxia 是**新生产集群的推荐元数据存储**，Scalable Topics 也推荐搭配 Oxia。
+- **部署默认变化**：Pulsar Helm chart 与 Docker Compose 已默认使用 Oxia 作为元数据后端；ZooKeeper 仍完全兼容。
 
-Pulsar 的元数据存储层通过 `MetadataStoreProvider` 抽象，已内置 ZooKeeper、Etcd、RocksDB、内存以及 Oxia 实现，后端切换对上层业务代码透明。
+Pulsar 的 `MetadataStoreProvider` 抽象使后端切换对上层透明，已内置 ZooKeeper、Etcd、RocksDB、内存及 Oxia 实现（5.0 起移除 etcd）。
 
 ### 升级注意事项
 
-- **4.0 升级路径**：官方建议先升级到 3.0.x 或 3.3.x，再升级到 4.0.0；从 2.x 出发需经 2.10.6/2.11.3 → 3.0.7 → 4.0.0。
-- **可回滚**：Pulsar 4.x 的设计允许升级后在出现问题时回滚到原版本，但必须在测试/预发环境验证具体配置后再上生产。
-- **客户端兼容性**：Pulsar 4.0/4.1 的 Java 客户端可兼容旧集群；4.1 起 **Java 客户端最低要求 Java 17**（PIP-421），升级前需确认应用 JVM 版本。
-- **Oxia 迁移**：4.0/4.1 中 Oxia 是可选后端，新建集群可直接使用；现有 ZooKeeper 集群若需迁移，可关注 PIP-454 迁移框架的后续版本支持。
-- **容器与 JDK**：若使用官方 Docker 镜像，4.0 起基础镜像为 Alpine + Java 21，需检查现有监控、日志、sidecar 镜像的兼容性。
+- **4.x → 5.0 路径**：建议先升级到 4.0.x 或 4.2.x 最新维护版本，再升级 5.0.0；保留回滚窗口，升级前设置 `scalableTopicsEnabled=false` 等回滚前置项。
+- **Oxia 迁移**：新集群可直接以 Oxia 启动；现有 ZooKeeper 集群可使用 PIP-454 迁移框架在线迁移。
+- **客户端兼容性**：v4 Java 客户端在 5.0 集群上继续可用；使用 Scalable Topics 必须 v5 API。
+- **Java 版本**：服务端 Java 21+，客户端 Java 17+；检查监控、sidecar、插件的 JDK 与镜像兼容性。
 
 ### 参考来源链接
 
-- [Apache Pulsar 4.0.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-4.0.0/)
-- [Announcing Apache Pulsar 4.0（官方博客）](https://pulsar.apache.org/blog/2024/10/24/announcing-apache-pulsar-4-0/)
+- [Apache Pulsar 5.0 LTS 发布博客](https://pulsar.apache.org/blog/2026/10/05/announcing-apache-pulsar-5-0/)
+- [Pulsar 5.0 下载页](https://pulsar.apache.org/download/)
+- [Pulsar 5.0 Release Highlights](https://pulsar.apache.org/docs/next/release-highlights/)
+- [Apache Pulsar 5.0.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-5.0.0/)
+- [Apache Pulsar 5.0.1 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-5.0.1/)
+- [Apache Pulsar 4.1.3 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-4.1.3/)
+- [Apache Pulsar 4.0.14 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-4.0.14/)
 - [Apache Pulsar 4.1 发布博客](https://pulsar.apache.org/blog/2025/09/09/announcing-apache-pulsar-4-1/)
-- [Apache Pulsar 3.3.0 发布说明](https://pulsar.apache.org/release-notes/versioned/pulsar-3.3.0/)
+- [Configure metadata store - Oxia recommended](https://pulsar.apache.org/docs/next/administration-metadata-store/)
+- [Helm deploy with Oxia](https://pulsar.apache.org/docs/next/helm-deploy/)
 - [PIP-335：Support Oxia metadata store plugin](https://github.com/apache/pulsar/blob/master/pip/pip-335.md)
-- [Configure metadata store - Oxia recommended](https://pulsar.apache.org/docs/)
-- [Migrate metadata store from ZooKeeper to Oxia](https://pulsar.apache.org/docs/)
-- [What is Oxia?（Oxia 官方文档）](https://oxia-db.github.io/docs/what-is-oxia)
+- [What is Oxia?](https://oxia-db.github.io/docs/what-is-oxia)
 
 ## 1.12.9 Pulsar参考资源
 
 ### 官方文档
 
-- **Pulsar官方文档**: [Apache Pulsar Documentation](https://pulsar.apache.org/docs/)
-- **BookKeeper官方文档**: [Apache BookKeeper Documentation](https://bookkeeper.apache.org/docs/)
-- **Pulsar性能调优**: [Performance Tuning Guide](https://pulsar.apache.org/docs/)
+- [Apache Pulsar Documentation](https://pulsar.apache.org/docs/)
+- [Apache BookKeeper Documentation](https://bookkeeper.apache.org/docs/)
+- [Pulsar Performance Tuning](https://pulsar.apache.org/docs/)
 
 ### 生产案例
 
-- **Yahoo!**: 使用Pulsar处理百万级消息
-- **Splunk**: 使用Pulsar进行日志聚合
-- **Tencent**: 使用Pulsar构建消息平台
+- **Yahoo!**: 使用 Pulsar 处理百万级消息
+- **Splunk**: 使用 Pulsar 进行日志聚合
+- **Tencent**: 使用 Pulsar 构建消息平台
 
 ### 学术资源
 
-- **Pulsar论文**: [Apache Pulsar: A cloud-native, distributed messaging and streaming platform](https://arxiv.org/abs/1904.01163)
-- **BookKeeper论文**: [BookKeeper: A Distributed Log Service](https://bookkeeper.apache.org/docs/)
+- [Apache Pulsar: A cloud-native, distributed messaging and streaming platform](https://arxiv.org/abs/1904.01163)
+- [BookKeeper: A Distributed Log Service](https://bookkeeper.apache.org/docs/)
 
 ---
 
 **参考来源**：
 
-- Apache Pulsar官方文档和设计文档
-- BookKeeper官方文档和论文
-- Yahoo!、Splunk、Tencent等生产环境案例
-- Pulsar与Kafka性能对比测试数据
-- **Pulsar开发架构与程序设计深度论证（concept06.md）**：存算分离的技术实现、API设计哲学、多语言支持、性能优化编程模式
-- **Pulsar动态系统论深度分析（concept05.md）**：系统动力学视角、时间维度演化、负载动态响应、故障传播、混沌工程
+- Apache Pulsar 官方文档与设计文档
+- Apache BookKeeper 官方文档与论文
+- Yahoo!、Splunk、Tencent 等生产环境案例
+- Pulsar 与 Kafka 性能对比测试数据
+- [Apache Pulsar 5.0 LTS 发布博客](https://pulsar.apache.org/blog/2026/10/05/announcing-apache-pulsar-5-0/)
+- [Pulsar 5.0 Release Highlights](https://pulsar.apache.org/docs/next/release-highlights/)
 
-**最后更新**: 2026-01-06
+**最后更新**: 2026-11-18
