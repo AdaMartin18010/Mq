@@ -1,0 +1,77 @@
+# Testing/fixtures/docker-compose-test-env.yml
+# 说明：本项目测试用最小共存环境骨架，仅包含 Kafka / NATS / RabbitMQ 三系统。
+# 生产级全量配置（多 broker、持久化卷、监控、认证等）请引用：
+#   topics/config-templates/docker-compose-kafka.yml
+#   topics/config-templates/docker-compose-nats.yml
+#   topics/config-templates/docker-compose-rabbitmq.yml
+#   topics/config-templates/docker-compose-all.yml
+version: "3.8"
+
+services:
+  # Kafka 单节点 KRaft 模式，仅用于 E1/E2 集成与业务场景冒烟
+  kafka-test:
+    image: confluentinc/cp-kafka:7.8.0
+    hostname: kafka-test
+    container_name: kafka-test
+    labels:
+      - "hermes.run=test-env"
+      - "mq-test=true"
+    ports:
+      - "19092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:19092"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-test:9093"
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  # NATS + JetStream，用于测试状态流与边缘聚合场景
+  nats-test:
+    image: nats:2.10-alpine
+    hostname: nats-test
+    container_name: nats-test
+    labels:
+      - "hermes.run=test-env"
+      - "mq-test=true"
+    ports:
+      - "14222:4222"
+      - "18222:8222"
+    command: "-js -m 8222"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8222/jsz"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  # RabbitMQ，用于支付回调、命令下发等队列场景
+  rabbitmq-test:
+    image: rabbitmq:3.13-management-alpine
+    hostname: rabbitmq-test
+    container_name: rabbitmq-test
+    labels:
+      - "hermes.run=test-env"
+      - "mq-test=true"
+    ports:
+      - "15672:15672"
+      - "15673:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: test
+      RABBITMQ_DEFAULT_PASS: test
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+networks:
+  default:
+    name: mq-test-network

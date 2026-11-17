@@ -227,7 +227,7 @@ while not cancelled(task_id) and not exceeded(budget):
 
 - [Atlan：Google A2A 协议解析](https://atlan.com/know/google-a2a-protocol/)、[A2A 生态 2026-04（150+ 组织）](https://www.cnblogs.com/shanyou/p/20903593)
 - [acemq：RabbitMQ vs Kafka vs NATS for AI Agents（2026-10）](https://acemq.com/compare/message-brokers-for-ai-agents/)
-- 项目内：[AI_SKILL-01 Agent Skills 标准](../AI_Skill/AI_SKILL-01-国际Agent-Skills标准与生态对齐.md)、[02-08 混合架构案例](../02-场景驱动架构设计/02-08-混合架构案例.md)、[02-12 消息路由策略](../02-场景驱动架构设计/02-12-消息路由策略.md)
+- 项目内：[AI_SKILL-01 Agent Skills 标准](../../AI_Skills/AI_SKILL-01-国际Agent-Skills标准与生态对齐.md)、[02-08 混合架构案例](../02-场景驱动架构设计/02-08-混合架构案例.md)、[02-12 消息路由策略](../02-场景驱动架构设计/02-12-消息路由策略.md)
 - [A2A 官方仓库](https://github.com/a2aproject/A2A)、[MCP 官方文档](https://modelcontextprotocol.io/)
 
 > 边界声明：本文聚焦"MQ 作为 Agent 基础设施"的选型与模式；Agent 框架本身（LangGraph/CrewAI 等）与 A2A SDK 用法不在范围。生态数据（组织数/stars）为 2026-11 转引的公开报道口径，引用前复核。

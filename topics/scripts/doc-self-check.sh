@@ -23,7 +23,7 @@ echo "=== 知识库规范自检 ($MODE) $TODAY ==="
 #      COMPREHENSIVE_REVIEW 为历史档案，降级 WARN。
 while IFS= read -r line; do
   err "禁用表述(100%完成): $line"
-done < <(grep -rnE '100% *(完成|覆盖)' --include='*.md' topics README.md 2>/dev/null \
+done < <(grep -rnE '100% *(完成|覆盖)' --include='*.md' topics README.md AI_Skills Testing 2>/dev/null \
   | grep -vE '禁止|不得|❌|违反' | grep -v 'COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md')
 while IFS= read -r line; do
   err "禁用表述(生产就绪): $line"
@@ -37,7 +37,7 @@ done < <(grep -nE '100% *(完成|覆盖)|生产就绪' topics/COMPREHENSIVE_REVI
 ARCHIVED='COMPLETION_REPORT|PROJECT_COMPLETION|IMPLEMENTATION_STATUS_FINAL|FINAL_SUMMARY|FINAL_REPORT'
 while IFS= read -r line; do
   err "归档文档引用: $line"
-done < <(grep -rnE "\\]\([^)]*($ARCHIVED)[^)]*\.md" --include='*.md' topics README.md 2>/dev/null)
+done < <(grep -rnE "\\]\([^)]*($ARCHIVED)[^)]*\.md" --include='*.md' topics README.md AI_Skills Testing 2>/dev/null)
 
 # ---------- 3. 相对链接可达性 (ERROR) ----------
 # 跳过模板占位链接（含 -NN- 的示意路径，见 TEMPLATES.md）
@@ -47,7 +47,7 @@ while IFS= read -r f; do
     case "$link" in http*|*'-NN-'*) continue ;; esac
     [ -e "$d/$link" ] || err "死链: $f -> $link"
   done < <(grep -oE '\]\(([^)[:space:]]+\.md)(#[^)]*)?\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//; s/#.*$//')
-done < <(find topics -type f -name '*.md'; echo README.md)
+done < <(find topics AI_Skills Testing -type f -name '*.md'; echo README.md)
 
 # ---------- 4. 定位声明 (ERROR, 02/03 系列主题文档，README 除外) ----------
 for f in topics/0[23]-*/*.md; do
@@ -60,17 +60,17 @@ done
 # 注意：FNR==1 重置 fence 状态（多文件 awk 状态不跨文件泄漏）
 while IFS= read -r line; do
   warn "代码块缺语言标注: $line"
-done < <(find topics -type f -name '*.md' -exec awk 'FNR==1{infence=0} /^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
+done < <(find topics AI_Skills Testing -type f -name '*.md' -exec awk 'FNR==1{infence=0} /^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
 
 # ---------- 6. 最后更新日期 (WARN) ----------
-for f in topics/0[1-4]-*/*.md topics/AI_Skill/*.md topics/Testing/*.md; do
+for f in topics/0[1-4]-*/*.md AI_Skills/*.md Testing/*/*.md; do
   [ -f "$f" ] || continue
   tail -5 "$f" | grep -qE '\*\*最后更新\*\*: [0-9]{4}-[0-9]{2}-[0-9]{2}' || warn "缺最后更新或格式错误: $f"
 done
 
 # ---------- 7. INDEX 登记 (WARN) ----------
 if [ -f topics/INDEX.md ]; then
-  for f in topics/0[1-4]-*/*.md topics/AI_Skill/*.md topics/Testing/*.md; do
+  for f in topics/0[1-4]-*/*.md AI_Skills/*.md Testing/*/*.md; do
     case "$f" in */README.md) continue ;; esac
     [ -f "$f" ] || continue
     base=$(basename "$f" .md)
@@ -88,23 +88,34 @@ if [ "$MODE" = "full" ]; then
   done
 fi
 
-# ---------- 9. 统计对账 ----------
+# ---------- 9. 决策一致性校验（quick 模式） ----------
+# 调用独立脚本检查 decision-registry.tsv 一致性、出处存在性与结论回查，
+# 并将其 ERROR/WARN 计数汇总到本脚本总统计中。
+echo "--- 决策一致性校验"
+decision_output=$("$ROOT/topics/scripts/doc-decision-check.sh" 2>&1)
+echo "$decision_output"
+decision_errors=$(echo "$decision_output" | grep -oE 'ERROR=[0-9]+' | tail -1 | cut -d= -f2)
+decision_warns=$(echo "$decision_output" | grep -oE 'WARN=[0-9]+' | tail -1 | cut -d= -f2)
+ERRORS=$((ERRORS + ${decision_errors:-0}))
+WARNS=$((WARNS + ${decision_warns:-0}))
+
+# ---------- 10. 统计对账 ----------
 count_dir() { find "$1" -maxdepth 1 -type f -name '*.md' 2>/dev/null | wc -l; }
 T01=$(count_dir "topics/01-基础概念与对比分析")
 T02=$(count_dir "topics/02-场景驱动架构设计")
 T03=$(count_dir "topics/03-架构与运维实践")
 T04=$(count_dir "topics/04-动态系统论与演化分析")
-AIS=$(count_dir "topics/AI_Skill")
-TST=$(count_dir "topics/Testing")
+AIS=$(count_dir "AI_Skills")
+TST=$(find "Testing" -type f -name '*.md' 2>/dev/null | wc -l)
 EX=$(find topics/examples -type f 2>/dev/null | wc -l)
 CT=$(find topics/config-templates -type f 2>/dev/null | wc -l)
 SC=$(find topics/scripts -type f -name '*.sh' 2>/dev/null | wc -l)
 echo "--- 实地计数: 01=$T01 02=$T02 03=$T03 04=$T04 AI_Skill=$AIS Testing=$TST examples=$EX config=$CT scripts=$SC"
 [ -f topics/PROJECT_STATUS.md ] && grep -qE '文档统计' topics/PROJECT_STATUS.md || warn "PROJECT_STATUS.md 缺统计节，无法对账"
 
-# ---------- 10. 技能漂移对账 (WARN, full / --skill-drift) ----------
+# ---------- 11. 技能漂移对账 (WARN, full / --skill-drift) ----------
 if [ "$MODE" = "--skill-drift" ] || [ "$MODE" = "full" ]; then
-  if [ -d skills ]; then
+  if [ -d AI_Skills/skills ]; then
     while IFS= read -r sk; do
       derived=$(awk -F'"' '/derived-at:/{print $2; exit}' "$sk")
       [ -z "$derived" ] && { warn "缺 derived-at: $sk"; continue; }
@@ -124,16 +135,16 @@ if [ "$MODE" = "--skill-drift" ] || [ "$MODE" = "full" ]; then
         flag && /^  [a-zA-Z-]+:/ { flag=0 }
         flag { line=$0; gsub(/^[ \t]+|[ \t]+$/,"",line); if (line!="" && line!="|") print line }
       ' "$sk")
-    done < <(find skills -name SKILL.md 2>/dev/null)
+    done < <(find AI_Skills/skills -name SKILL.md 2>/dev/null)
   else
-    ok "skills/ 目录不存在，跳过技能对账"
+    ok "AI_Skills/skills/ 目录不存在，跳过技能对账"
   fi
 fi
 
-# ---------- 11. 外链健康巡检 (WARN, full 模式；403/超时跳过，仅 404/410 告警；并行 8) ----------
+# ---------- 12. 外链健康巡检 (WARN, full 模式；403/超时跳过，仅 404/410 告警；并行 8) ----------
 if [ "$MODE" = "full" ]; then
   echo "--- 外链巡检（仅 404/410 告警；403 与超时跳过；并行 8）"
-  grep -rhoE '\]\(https?://[^)[:space:]]+\)' --include='*.md' topics README.md 2>/dev/null | \
+  grep -rhoE '\]\(https?://[^)[:space:]]+\)' --include='*.md' topics README.md AI_Skills Testing 2>/dev/null | \
     sed -E 's/^\]\(//; s/\)$//' | sort -u > _urls_tmp.txt
   url_count=$(wc -l < _urls_tmp.txt)
   echo "--- 共 $url_count 个唯一外链（检查上限 300）"

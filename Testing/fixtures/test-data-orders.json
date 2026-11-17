@@ -1,0 +1,102 @@
+[
+  {
+    "orderId": "ORD-2026-0001",
+    "userId": "USR-001",
+    "sku": "SKU-A",
+    "quantity": 2,
+    "amount": 199.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  },
+  {
+    "orderId": "ORD-2026-0002",
+    "userId": "USR-002",
+    "sku": "SKU-B",
+    "quantity": 1,
+    "amount": 59.90,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  },
+  {
+    "orderId": "ORD-2026-0003",
+    "userId": "USR-003",
+    "sku": "SKU-A",
+    "quantity": 5,
+    "amount": 497.50,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  },
+  {
+    "orderId": "ORD-2026-0004",
+    "userId": "USR-004",
+    "sku": "SKU-A",
+    "quantity": 10,
+    "amount": 995.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "CANCELLED"
+  },
+  {
+    "orderId": "ORD-2026-0005",
+    "userId": "USR-005",
+    "sku": "SKU-C",
+    "quantity": 1,
+    "amount": 9999.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "CANCELLED"
+  },
+  {
+    "orderId": "ORD-2026-0006",
+    "userId": "USR-006",
+    "sku": "SKU-D",
+    "quantity": 3,
+    "amount": 0.01,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  },
+  {
+    "orderId": "ORD-2026-0007",
+    "userId": "USR-007",
+    "sku": "SKU-E",
+    "quantity": 1000,
+    "amount": 100000.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  },
+  {
+    "orderId": "ORD-2026-0008",
+    "userId": "USR-008",
+    "sku": "SKU-F",
+    "quantity": 1,
+    "amount": -9.99,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "REJECTED"
+  },
+  {
+    "orderId": "ORD-2026-0009",
+    "userId": "USR-009",
+    "sku": "",
+    "quantity": 0,
+    "amount": 0.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "REJECTED"
+  },
+  {
+    "orderId": "ORD-2026-0001",
+    "userId": "USR-001",
+    "sku": "SKU-A",
+    "quantity": 2,
+    "amount": 199.00,
+    "currency": "CNY",
+    "region": "CN",
+    "expectedState": "SHIPPED"
+  }
+]

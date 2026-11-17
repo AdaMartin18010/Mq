@@ -1,0 +1,24 @@
+# 决策注册表：消息队列知识库高频选型判定一致性基线
+# 表头：decision_id	question	verdict	source_doc	subtree
+# 说明：source_doc 格式为 "文档编号#章节编号"；subtree 为相关子树文档路径，无则填 -
+# 来源：01-59 全局选型决策总树；冲突核对见 01-59 1.59.7
+dec-001	need-dlq	RabbitMQ 原生最强；Kafka 4.4+ Share Groups DLQ 补齐；NATS JetStream MaxDeliver+NAK 可用	01-59#1.59.7	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-002	global-order	仅单分区/单队列/单 Key 可行；吞吐受限；Kafka 单分区 / RabbitMQ 单队列 / Pulsar Key-shared	01-59#1.59.7	topics/02-场景驱动架构设计/02-13-消息顺序保证.md
+dec-003	sub-ms-latency	NATS Core 首选；MQTT QoS 0 次之	01-59#1.59.7	topics/02-场景驱动架构设计/02-14-消息去重策略.md
+dec-004	multi-tenant	Pulsar 最强；RabbitMQ vhost 中等；Kafka 弱	01-59#1.59.7	topics/02-场景驱动架构设计/02-10-高可用架构设计.md
+dec-005	task-queue-normal	RabbitMQ 首选；NATS JetStream / Redis Stream 次选	01-59#1.59.7	topics/02-场景驱动架构设计/02-17-死信队列设计.md
+dec-006	task-queue-high-throughput	Kafka 4.4+ Share Groups；Pulsar / RocketMQ 次选	01-59#1.59.7	topics/02-场景驱动架构设计/02-11-数据一致性保障.md
+dec-007	microservice-async-decoupling	NATS / RabbitMQ；Kafka Share Groups 也可	01-59#1.59.7	topics/02-场景驱动架构设计/02-12-消息路由策略.md
+dec-008	realtime-event-stream-analytics	Kafka / Pulsar	01-59#1.59.7	topics/02-场景驱动架构设计/02-13-消息顺序保证.md
+dec-009	iot-million-devices	MQTT 首选；NATS JetStream 次选	01-59#1.59.7	topics/02-场景驱动架构设计/02-12-消息路由策略.md
+dec-010	exactly-once	Kafka / Pulsar；RabbitMQ publisher confirm + 应用幂等	01-59#1.59.7	topics/02-场景驱动架构设计/02-25-消息幂等性设计.md
+dec-011	long-term-replay-audit	Kafka / Pulsar / NATS JetStream	01-59#1.59.7	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-012	complex-routing-exchanges	RabbitMQ 首选	01-59#1.59.7	topics/02-场景驱动架构设计/02-18-消息过滤策略.md
+dec-013	cache-message-unified	Redis Stream 首选	01-59#1.59.7	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-014	ai-agent-task-dispatch	Kafka / RabbitMQ / NATS，按是否需要回放	01-59#1.59.7	topics/02-场景驱动架构设计/02-31-消息路由与负载均衡设计.md
+dec-015	managed-serverless	优先云厂商托管服务（Azure Service Bus / AWS SQS / GCP Pub/Sub）	01-59#1.59.7	topics/02-场景驱动架构设计/02-10-高可用架构设计.md
+dec-016	log-event-stream	首选 Kafka；Pulsar、Redpanda 次选；热数据 Kafka + 冷数据 S3 Tiered Storage	01-59#1.59.6	topics/02-场景驱动架构设计/02-13-消息顺序保证.md
+dec-017	iot-edge-lightweight	NATS JetStream 首选；MQTT-SN 次选；边缘 NATS + 云端 Kafka	01-59#1.59.6	topics/02-场景驱动架构设计/02-12-消息路由策略.md
+dec-018	realtime-notification-ultra-low-latency	NATS Core 首选；Redis Stream Pub/Sub 次选；在线 NATS + 离线 Redis Stream	01-59#1.59.6	topics/02-场景驱动架构设计/02-14-消息去重策略.md
+dec-019	data-integration-cdc	Kafka + Debezium 首选；Pulsar IO 次选	01-59#1.59.6	topics/02-场景驱动架构设计/02-28-消息存储设计.md
+dec-020	event-sourcing	Kafka / Pulsar 首选；NATS JetStream 次选；Kafka 事件存储 + 投影到 Redis/CQRS	01-59#1.59.6	topics/02-场景驱动架构设计/02-28-消息存储设计.md

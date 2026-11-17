@@ -75,9 +75,16 @@ check_token_covered() {
   fi
 
   # 非编号 token：AI_Skill / examples / AGENTS.md / INDEX.md / TEST-XX 等
+  # 目录整合后注册表 token 不变，脚本侧做别名映射
+  case "$tok" in
+    AI_Skill) [[ -d "$PROJECT_ROOT/AI_Skills" ]] && return 0 ;;
+  esac
   local probe
-  for probe in "$PROJECT_ROOT/topics/$tok" "$PROJECT_ROOT/topics/Testing/$tok.md" "$PROJECT_ROOT/$tok" "$PROJECT_ROOT/$tok.md"; do
-    [[ -e "$probe" ]] && return 0
+  for probe in "$PROJECT_ROOT/topics/$tok" "$PROJECT_ROOT/Testing/*/$tok.md" "$PROJECT_ROOT/$tok" "$PROJECT_ROOT/$tok.md"; do
+    # glob 未展开表示无匹配，继续下一 probe
+    for p in $probe; do
+      [[ -e "$p" ]] && return 0
+    done
   done
   return 1
 }

@@ -6,7 +6,7 @@
 
 - 由 Anthropic 于 2025-10 发布、2025-12-18 以开放规范发布于 agentskills.io、2026-10 捐赠给 AAIF（Linux 基金会）
 - 技能 = 含 SKILL.md 的目录（YAML frontmatter + Markdown 指令），渐进披露三层加载
-- 本项目 AI_Skill 系列对齐该标准制作 MQ 技能（详见 topics/AI_Skill/）
+- 本项目 AI_Skills 系列对齐该标准制作 MQ 技能（详见 AI_Skills/）
 
 **ACK (Acknowledgment)** - 确认机制
 
