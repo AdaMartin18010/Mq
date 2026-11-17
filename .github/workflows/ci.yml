@@ -1,0 +1,41 @@
+# CI 工作流（批次90）：E0 七步全量门禁 + nightly 任务包 dry-run
+name: mq-kb-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * *"   # nightly 03:17（避开整点）
+  workflow_dispatch:
+
+jobs:
+  e0-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 环境预检
+        run: |
+          bash --version | head -1
+          command -v python3 && python3 -c "import yaml" || pip install pyyaml
+      - name: E0 七步全量
+        run: bash topics/scripts/hermes-e0-run.sh
+      - name: 归档产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e0-results
+          path: results/
+          retention-days: 30
+
+  nightly-dry-run:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 环境探测
+        run: bash topics/scripts/hermes-env-precheck.sh
+      - name: weekly 任务包 dry-run
+        run: bash topics/scripts/test-harness.sh --env E2 --dry-run
+      - name: 契约绑定校验
+        run: bash topics/scripts/contract-binding-check.sh

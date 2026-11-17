@@ -10,6 +10,24 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.23.0] - 2026-11-18
+
+### 批次87-93：行业格局更新 + 流表一体/wire protocol 双旗舰 + CI 接入 + 04 深化 + 数据工厂
+
+**批次87 行业格局更新（重大事实已核实）**：
+
+- **[IBM 2026-03-17 完成 110 亿美元收购 Confluent](https://newsroom.ibm.com/2026-03-17-ibm-completes-acquisition-of-confluent,-making-real-time-data-the-engine-of-enterprise-ai-and-agents)** 落地四处：ROADMAP 版本追踪清单"行业格局事件"段（新增季度复核跟踪项）、01-25 生态格局注记、01-34 许可证影响专节（社区版条款/云转嫁/Apache 治理独立性三层影响）、01-28 Iceberg 时效注记
+- 流表一体 GA 事实入版本清单：Confluent Tableflow GA（2025-03）、Redpanda Iceberg Topics GA（25.1，2025-04）
+
+**批次88 流表一体专章**：01-70（261 行，15 个来源核实）：Kafka→Iceberg 五种形态全景（零拷贝视图 Streambased/broker 内建 Redpanda/托管表流 Tableflow/WarpStream Tableflow GA@2026-01/Aiven 单拷贝/AutoMQ Table Topic/Ursa）；**核实关键结论：Kafka 4.x 主线无原生 Iceberg 集成（官方 release notes 为据）**；schema→表契约演化规则与测试维度
+**批次89 wire protocol 专章**：01-71（343 行）：ApiVersions 协商/RecordBatch v2/Produce-Fetch 全字段/fetch 会话（KIP-227）/事务报文序列 + **Jepsen KAFKA-17754 协议层解读（EndTxn 缺全局顺序约束）**；kcat（更名已核实）抓包实践
+**批次90 CI/CD 接入**：`.githooks/pre-commit`（变更脚本 bash -n + registry 列数/ID 唯一 + 契约 spec 快速门禁）+ `.github/workflows/ci.yml`（E0 七步全量 on push/PR + nightly 任务包 dry-run + 产物归档）
+**批次91 04 系列深化**：04-06 消息系统技术演化动力学（系列第 6 篇）：采用-生态增强回路、三组收敛对偶（队列×日志/本地×云/流×表）、重置事件表（含 IBM-Confluent）、niche→renewal 阶段模型
+**批次92 学习路径与 MCP 出口**：LEARNING_PATH.md（三角色路径 × 国际权威教材：Kleppmann 免费书/EIP/Jepsen 等）；MCP_EXPORT_ASSESSMENT.md（KB→MCP server 映射评估，MVP 路线 C→B，实现待排期）
+**批次93 测试数据工厂**：fixtures/generators/ 三生成器（订单 6 边界/支付 4 边界含负金额与非法币种/IoT 含时钟漂移与乱序），--validate 全过，字段对齐场景契约
+
+**治理同步**：E0 七步终检（01-70/71 互链死链零容忍校验）；registry 212 行不变；STATUS（主题 235→238、01 系 68→70、04 系 5→6、元文档 18→20、总计 596→607 实地核实）
+
 ## [3.22.0] - 2026-11-18
 
 ### 批次77-86：国际对齐深化（ODCS/Microcks/Jepsen/混沌/AI契约）+ 抽象层与存储解耦专章

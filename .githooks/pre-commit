@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# pre-commit 门禁（批次90）：快速静态子集（全量 E0 走 CI）
+# 启用：git config core.hooksPath .githooks
+# 内容：bash -n 变更脚本 + registry TSV 校验 + 契约 spec 校验（秒级）
+set -u
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$ROOT" || exit 1
+
+FAILED=0
+
+# 1. 变更的 .sh 语法检查
+while IFS= read -r f; do
+  case "$f" in
+    *.sh)
+      bash -n "$f" || { echo "[pre-commit FAIL] bash -n: $f"; FAILED=1; }
+      ;;
+  esac
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+# 2. registry 校验（变更过 registry 时：列数+ID 唯一）
+if git diff --cached --name-only | grep -q "test-registry.tsv"; then
+  if ! awk -F'\t' 'NF && $1 !~ /^#/ && $1 != "id" { if (NF != 6) { print "[pre-commit FAIL] registry 列数错误: " $1; bad=1 } if (seen[$1]++) { print "[pre-commit FAIL] registry ID 重复: " $1; bad=1 } } END { exit bad }' topics/scripts/test-registry.tsv; then
+    FAILED=1
+  fi
+fi
+
+# 3. 契约 spec 校验（变更过 spec/场景包时）
+if git diff --cached --name-only | grep -qE "契约语义测试/|asyncapi.*\.yaml"; then
+  bash topics/scripts/contract-spec-check.sh >/dev/null || { echo "[pre-commit FAIL] contract-spec-check"; FAILED=1; }
+fi
+
+[[ $FAILED -eq 0 ]] && exit 0
+echo "pre-commit 门禁未过：修复后重新 git add"
+exit 1

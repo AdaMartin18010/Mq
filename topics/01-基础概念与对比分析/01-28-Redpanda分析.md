@@ -145,6 +145,8 @@ rpk shadow status my-dr-link
 
 Redpanda 25.x 推出 **Iceberg Topics**，topic 数据可直接物化为 Apache Iceberg 表，无需额外的 ETL/ELT 管道。支持 AWS Glue、Databricks Unity Catalog、Snowflake Open Catalog、GCP BigLake 等 REST catalog。
 
+> **时效注记（批次 87，核实至 2026-11）**：Iceberg Topics 于 **25.1 GA（2025-04，行业首个多平台 GA，[官方公告](https://www.redpanda.com/blog/redpanda-25-1-iceberg-topics-ga)）**；25.3 起 Iceberg topic 有破坏性 schema 变更（见版本表警示）。流表一体五种形态的国际全景与选型判据见 [01-70](01-70-流表一体与开放表格式收敛深度解析.md)。另：[IBM 收购 Confluent（2026-03 完成）](https://newsroom.ibm.com/2026-03-17-ibm-completes-acquisition-of-confluent,-making-real-time-data-the-engine-of-enterprise-ai-and-agents) 后，Redpanda 与 Confluent 系产品的竞争-合作关系进入新阶段，季度复核跟踪。
+
 ```bash
 # 创建 Iceberg Topic
 rpk topic create lakehouse-events \
