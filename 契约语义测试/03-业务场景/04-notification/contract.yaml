@@ -1,0 +1,33 @@
+# 场景 DSL 契约：通知广播（04-notification）
+# 多通道 fan-out + 用户偏好过滤；契约表达遵循 02-57 Webhook/通知模式
+scenario: notification-broadcast
+version: 1.0.0
+messages:
+  NotificationRequestedCmd:
+    type: command
+    required: [notifyId, idempotencyKey, userRef, channels, contentRef]
+    fields:
+      notifyId: { type: string }
+      idempotencyKey: { type: string }
+      userRef: { type: string }
+      channels: { type: array, desc: '[SMS, EMAIL, APP_PUSH, WEBHOOK] 多通道 fan-out' }
+      contentRef: { type: string, desc: 内容引用（claim-check 模式，payload 不外放） }
+  NotificationDeliveredEvent:
+    type: event
+    required: [notifyId, channel, deliveredAt]
+    fields:
+      notifyId: { type: string }
+      channel: { type: string }
+      deliveredAt: { type: timestamp }
+  NotificationFailedEvent:
+    type: event
+    required: [notifyId, channel, failReason, retryable]
+    fields:
+      notifyId: { type: string }
+      channel: { type: string }
+      failReason: { type: string }
+      retryable: { type: boolean }
+invariants:
+  - 每通道至多一次成功投递记录（幂等去重）
+  - retryable=false 的失败不进入重试（直接死信/人工）
+  - 用户偏好过滤在 fan-out 前应用（消息过滤维度）

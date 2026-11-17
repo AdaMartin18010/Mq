@@ -1,0 +1,51 @@
+# 通知广播 AsyncAPI spec（主系统 RabbitMQ：topic 交换器天然适配多通道路由）
+asyncapi: '3.0.0'
+info:
+  title: 通知广播契约
+  version: 1.0.0
+  description: 通知命令/投递/失败事件流（x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-rabbitmq:
+    host: 'rabbitmq:5672'
+    protocol: amqp
+channels:
+  notify.requests:
+    address: notify.requests
+    messages:
+      NotificationRequestedCmd: { $ref: '#/components/messages/NotificationRequestedCmd' }
+    bindings:
+      amqp:
+        is: routingKey
+        exchange: { name: notify.topic, type: topic, durable: true }
+  notify.results:
+    address: notify.results
+    messages:
+      NotificationDeliveredEvent: { $ref: '#/components/messages/NotificationDeliveredEvent' }
+      NotificationFailedEvent: { $ref: '#/components/messages/NotificationFailedEvent' }
+    bindings:
+      amqp:
+        is: routingKey
+        exchange: { name: notify.results.topic, type: topic, durable: true }
+operations:
+  onNotifyRequested:
+    action: receive
+    channel: { $ref: '#/channels/notify.requests' }
+    x-semantics: [消息过滤, 持久化, 重试退避]
+  onNotifyResult:
+    action: receive
+    channel: { $ref: '#/channels/notify.results' }
+    x-semantics: [死信, 交付语义]
+components:
+  messages:
+    NotificationRequestedCmd:
+      payload: { $ref: 'contract.yaml#/messages/NotificationRequestedCmd/fields' }
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string }
+          idempotency-key: { type: string }
+    NotificationDeliveredEvent:
+      payload: { $ref: 'contract.yaml#/messages/NotificationDeliveredEvent/fields' }
+    NotificationFailedEvent:
+      payload: { $ref: 'contract.yaml#/messages/NotificationFailedEvent/fields' }

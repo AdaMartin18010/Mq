@@ -1,0 +1,43 @@
+# 订单全链路 AsyncAPI spec（主系统 Kafka；场景与系统解耦，切换系统只需换 bindings）
+asyncapi: '3.0.0'
+info:
+  title: 订单全链路契约
+  version: 1.0.0
+  description: 订单域事件流（contract.yaml 的 spec 表达；x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-kafka:
+    host: 'kafka:9092'
+    protocol: kafka
+channels:
+  orders.events:
+    address: orders.events
+    messages:
+      OrderCreatedEvent: { $ref: '#/components/messages/OrderCreatedEvent' }
+      OrderPaidEvent: { $ref: '#/components/messages/OrderPaidEvent' }
+      OrderCancelledEvent: { $ref: '#/components/messages/OrderCancelledEvent' }
+    bindings:
+      kafka:
+        partitions: 6            # orderKey 分区
+        replicationFactor: 3
+operations:
+  onOrderCreated:
+    action: receive
+    channel: { $ref: '#/channels/orders.events' }
+    x-semantics: [交付语义, 顺序性, 幂等去重, 死信, 事务]
+  publishOrderEvent:
+    action: send
+    channel: { $ref: '#/channels/orders.events' }
+components:
+  messages:
+    OrderCreatedEvent:
+      payload: { $ref: 'contract.yaml#/messages/OrderCreatedEvent/fields' }
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string }
+          idempotency-key: { type: string }
+    OrderPaidEvent:
+      payload: { $ref: 'contract.yaml#/messages/OrderPaidEvent/fields' }
+    OrderCancelledEvent:
+      payload: { $ref: 'contract.yaml#/messages/OrderCancelledEvent/fields' }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → doc-decision-check → doc-semantic-spotcheck
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → doc-decision-check → doc-semantic-spotcheck → contract-spec-check → tc-assert-check
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -16,8 +16,9 @@ HISTORY_LOG="Testing/self-check-history.log"
 usage() {
   cat <<'EOF'
 用法: hermes-e0-run.sh [--help]
-  执行 E0 静态验证五步骤，生成 results/<date>/E0-*.json/.log 与 summary.md，
+  执行 E0 静态验证六步骤，生成 results/<date>/E0-*.json/.log 与 summary.md，
   并追加一行到 Testing/self-check-history.log。
+  步骤 6 为契约 spec 校验（契约语义测试 L1-L2 层，批次71）。
 EOF
 }
 
@@ -171,9 +172,19 @@ step_spotcheck() {
   "./topics/scripts/doc-semantic-spotcheck.sh"
 }
 
+# 步骤 6: 契约 spec 静态校验（契约语义测试 L1-L2 层，批次71）
+step_contract_check() {
+  "./topics/scripts/contract-spec-check.sh"
+}
+
+# 步骤 7: 行为用例父用例静态校验（L6 层，批次75）
+step_tc_static() {
+  "./topics/scripts/tc-assert-check.sh"
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=5
+  local pass=0 fail=0 skip=0 total=7
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -214,6 +225,16 @@ main() {
     spotcheck_result="FAIL"
   fi
 
+  # 步骤 6
+  run_step "E0-contract" "contract-spec-check 契约 spec 校验" step_contract_check
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
+
+  # 步骤 7
+  run_step "E0-tc-static" "tc-assert-check 行为用例父用例校验" step_tc_static
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -240,6 +261,8 @@ main() {
 | E0-registry | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-registry.log" | cut -d' ' -f2) | results/$DATE/E0-registry.log |
 | E0-decision | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-decision.log" | cut -d' ' -f2) | results/$DATE/E0-decision.log |
 | E0-spotcheck | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spotcheck.log" | cut -d' ' -f2) | results/$DATE/E0-spotcheck.log |
+| E0-contract | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-contract.log" | cut -d' ' -f2) | results/$DATE/E0-contract.log |
+| E0-tc-static | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-static.log" | cut -d' ' -f2) | results/$DATE/E0-tc-static.log |
 EOF
 
   # 追加 history log

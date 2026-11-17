@@ -1,0 +1,92 @@
+# AsyncAPI 3.x AMQP 契约模板（订单通知示例，RabbitMQ）
+# 用法: asyncapi validate asyncapi-amqp-example.yaml
+# 绑定核实: AMQP binding v0.3.0（asyncapi/bindings 官方仓库）——
+#   server/message 保留为空；channel 有 is/exchange/queue；operation 有
+#   expiration/priority/deliveryMode/mandatory/replyTo/timestamp/ack 等字段。
+# 参考: topics/01-基础概念与对比分析/01-42-JMS-AMQP-与传统企业消息标准.md
+asyncapi: '3.0.0'
+info:
+  title: 订单通知契约（AMQP 示例）
+  version: 1.0.0
+  description: 订单通知 fan-out 契约模板，演示 AMQP channel/operation 绑定写法
+
+servers:
+  prod-rabbitmq:
+    host: 'rabbitmq:5672'
+    protocol: amqp
+    description: 生产 RabbitMQ 集群（模板值，按环境替换）
+
+channels:
+  orders.notifications:
+    address: orders.notifications      # routing key
+    messages:
+      OrderNotification:
+        $ref: '#/components/messages/OrderNotification'
+    bindings:
+      amqp:
+        is: routingKey                 # 本 channel 以 routingKey 寻址（v0.3.0）
+        exchange:
+          name: orders.events
+          type: topic                  # topic 交换器（02-14 路由模式衔接）
+          durable: true
+        queue:
+          name: ''                     # fan-out 时留空，由消费方声明私有队列
+          durable: false
+  orders.notifications.dlq:
+    address: orders.notifications.dlq
+    messages:
+      OrderNotification:
+        $ref: '#/components/messages/OrderNotification'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: orders.events.dlx      # 死信交换器（01-65 DLQ 模式）
+          type: topic
+          durable: true
+    description: 死信通道（x-dead-letter-exchange 在队列参数声明，见 03 系列部署模板）
+
+operations:
+  publishNotification:
+    action: send
+    channel:
+      $ref: '#/channels/orders.notifications'
+    bindings:
+      amqp:
+        deliveryMode: 2                # 2=persistent（RabbitMQ 持久化消息，12 维度之"持久化"）
+        mandatory: true                # 无队列匹配时退回（配合 publisher confirm）
+        timestamp: true                # 要求 broker 打时间戳
+        ack: true                      # publisher confirm 语义（01-42）
+        bindingVersion: '0.3.0'
+  consumeNotification:
+    action: receive
+    channel:
+      $ref: '#/channels/orders.notifications'
+    x-prefetch:
+      count: 50                        # QoS prefetch（01-66 背压：basic.qos，AMQP 绑定未覆盖）
+      global: false
+
+components:
+  messages:
+    OrderNotification:
+      name: OrderNotification
+      title: 订单通知
+      headers:
+        type: object
+        required: [trace-id]
+        properties:
+          trace-id: { type: string }
+          content-type: { type: string, const: application/json }
+      payload:
+        $ref: '#/components/schemas/OrderNotificationEvent'
+      contentType: application/json
+
+  schemas:
+    OrderNotificationEvent:
+      type: object
+      required: [eventType, orderId, occurredAt]
+      properties:
+        eventType: { type: string, enum: [ORDER_CREATED, ORDER_PAID, ORDER_SHIPPED] }
+        orderId: { type: string }
+        occurredAt: { type: string, format: date-time }
+        summary: { type: string, description: 通知摘要（通知广播场景，scenarios/04-notification） }

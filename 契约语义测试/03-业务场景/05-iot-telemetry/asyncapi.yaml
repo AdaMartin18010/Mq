@@ -1,0 +1,54 @@
+# IoT 遥测 AsyncAPI spec（主系统 MQTT 5.0；topic 参数化与 QoS 分级是核心）
+asyncapi: '3.0.0'
+info:
+  title: IoT 设备遥测契约
+  version: 1.0.0
+  description: 设备遥测/告警事件流（x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-mqtt:
+    host: 'broker:1883'
+    protocol: mqtt
+channels:
+  sensors.{siteId}.{deviceId}.telemetry:
+    address: sensors/{siteId}/{deviceId}/telemetry
+    parameters:
+      siteId: { description: 站点 ID }
+      deviceId: { description: 设备 ID }
+    messages:
+      TelemetryReadingEvent: { $ref: '#/components/messages/TelemetryReadingEvent' }
+    # mqtt channel binding 保留空（0.2.0）；QoS 在 operation 级
+  sensors.{siteId}.{deviceId}.alerts:
+    address: sensors/{siteId}/{deviceId}/alerts
+    parameters:
+      siteId: { description: 站点 ID }
+      deviceId: { description: 设备 ID }
+    messages:
+      DeviceAlertEvent: { $ref: '#/components/messages/DeviceAlertEvent' }
+    # 同上：channel 级保留空
+operations:
+  onTelemetry:
+    action: receive
+    channel: { $ref: '#/channels/sensors.{siteId}.{deviceId}.telemetry' }
+    bindings:
+      mqtt:
+        qos: 0                       # 遥测允许丢点（01-64 QoS 语义【定理】），operation 级
+        retain: false
+    x-semantics: [交付语义, 背压, 流控]
+  onAlert:
+    action: receive
+    channel: { $ref: '#/channels/sensors.{siteId}.{deviceId}.alerts' }
+    bindings:
+      mqtt:
+        qos: 1                       # 告警至少一次（01-64），operation 级
+        retain: true                 # 最新告警保留（新订阅立即可见）
+    x-semantics: [交付语义, TTL过期, 持久化]
+components:
+  messages:
+    TelemetryReadingEvent:
+      payload: { $ref: 'contract.yaml#/messages/TelemetryReadingEvent/fields' }
+      headers:
+        type: object
+        properties:
+          trace-id: { type: string }
+    DeviceAlertEvent:
+      payload: { $ref: 'contract.yaml#/messages/DeviceAlertEvent/fields' }

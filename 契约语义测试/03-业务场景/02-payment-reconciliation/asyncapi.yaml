@@ -1,0 +1,49 @@
+# 支付与对账 AsyncAPI spec（主系统 Kafka；对账差错事件高持久化要求）
+asyncapi: '3.0.0'
+info:
+  title: 支付与对账契约
+  version: 1.0.0
+  description: 支付指令/完成/对账差错三事件流（x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-kafka:
+    host: 'kafka:9092'
+    protocol: kafka
+channels:
+  payments.events:
+    address: payments.events
+    messages:
+      PaymentInitiatedCmd: { $ref: '#/components/messages/PaymentInitiatedCmd' }
+      PaymentCompletedEvent: { $ref: '#/components/messages/PaymentCompletedEvent' }
+      ReconciliationMismatchEvent: { $ref: '#/components/messages/ReconciliationMismatchEvent' }
+    bindings:
+      kafka:
+        partitions: 6
+        replicationFactor: 3
+  payments.mismatch:
+    address: payments.mismatch
+    messages:
+      ReconciliationMismatchEvent: { $ref: '#/components/messages/ReconciliationMismatchEvent' }
+    description: 对账差错通道（人工处理 SLA，不进自动 DLQ）
+operations:
+  onPaymentCompleted:
+    action: receive
+    channel: { $ref: '#/channels/payments.events' }
+    x-semantics: [交付语义, 幂等去重, 持久化]
+  onMismatch:
+    action: receive
+    channel: { $ref: '#/channels/payments.mismatch' }
+    x-semantics: [持久化, 顺序性]
+components:
+  messages:
+    PaymentInitiatedCmd:
+      payload: { $ref: 'contract.yaml#/messages/PaymentInitiatedCmd/fields' }
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string }
+          idempotency-key: { type: string }
+    PaymentCompletedEvent:
+      payload: { $ref: 'contract.yaml#/messages/PaymentCompletedEvent/fields' }
+    ReconciliationMismatchEvent:
+      payload: { $ref: 'contract.yaml#/messages/ReconciliationMismatchEvent/fields' }

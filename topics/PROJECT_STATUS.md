@@ -9,19 +9,19 @@
 **最近核实**: 2026-11-18
 **项目状态**: 🔄 深度治理与前沿对齐中（第六阶段）
 
-## 文档统计（2026-11-18 实地核实 · 批次59-63 后）
+## 文档统计（2026-11-18 实地核实 · 批次64-76 后）
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 213 | 01系列66篇 + 02系列58篇 + 03系列66篇 + 04系列5篇 + AI_Skills系列6篇 + Testing系列12篇 |
-| **主题README** | 7 | 6个主题目录说明 + topics/README.md（含 concept 映射表） |
+| **主题文档** | 226 | 01系列66篇 + 02系列58篇 + 03系列66篇 + 04系列5篇 + AI_Skills系列6篇 + Testing系列12篇 + 契约语义测试系列13篇 |
+| **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
 | **元文档** | 18 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
-| **运维脚本** | 115 | 含 scripts/README；部署、监控、巡检、演练、自检 + test-harness/registry/coverage/decision-check/semantic-spotcheck 五校验资产 |
+| **运维脚本** | 126 | 含 scripts/README；部署、监控、巡检、演练、自检 + test-harness/registry/coverage/decision-check/semantic-spotcheck 五校验 + hermes 七件套（env-precheck/diagnose/fix-l1/collect-failbundle/self-heal/e0-run/task-gen）+ contract 四校验（spec/drift/binding/tc-assert） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **508** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
+| **总计** | **578** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
 
 ### 各系列主题文件分布
 
@@ -31,6 +31,7 @@
 - **04-动态系统论与演化分析（5篇）**：系统动力学、时间演化、负载响应与故障传播、混沌工程、动态选型决策
 - **Testing-测试验证与修正（顶层目录，12 篇 + fixtures 夹具层，2026-11-18 提升重组）**：00-规范与计划（TEST-01/08/09/10/11）/01-部署用例/02-集成用例（含 TEST-12 企业场景端到端）/03-集群用例/04-可观测用例/05-体系与机制 六子目录 + fixtures 公共夹具层；TEST-11 hermes 自治执行与自愈排障体系（L0-L3 自愈授权）
 - **AI_Skills-AI技能体系与国际标准对齐（顶层目录，6 篇 + skills/ 7 技能实体，2026-11-18 提升重组）**：标准对齐/图谱/规范/模板/用例 + AI_SKILL-06 技能审计报告（7 技能全合规，漂移 WARN 15→0，国际对齐 AAIF 100 万 skills 生态）
+- **契约语义测试-六层契约与语义测试（顶层目录，2026-11-18 设立，批次 64-76）**：DSL→AsyncAPI→MQ 绑定→通信语义→业务场景→行为用例 六层模型；TEST-13 总纲/TEST-14 语义矩阵（12 维×6 系统）/TEST-15 场景规范；六系统 AsyncAPI spec + bindings 矩阵（官方版本核实）+ x- 扩展登记簿；8 业务场景契约包（contract+spec+SEMANTICS）；14 条 GWT 断言（assertions.tsv 机读）；registry 新 SEM/BUS 两域（TC-SEM 12 + TC-BUS 8）；六层追溯表（登记口径 95%）；E0 扩至七步（含契约 spec 校验 + 行为用例父用例校验）
 
 ### 元文档清单（25个）
 
@@ -74,8 +75,9 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次48-52 一致性+深度+前沿（2026-11-18：README/术语表 50 术语回灌/GLOSSARY/用例库豁免条款；02 系列 28 篇+01-01 旗舰+03 早期加厚；01-53~57 流处理/流库/数据契约/AIOps/Agent 五新篇）
 - ✅ 批次53-58 重组+思维表征一致性+自治体系（2026-11-18：Testing/AI_Skills 顶层化；01-58 概念卡片 108 概念/01-59 决策总树 28 节点+14 项一致性核对[01-19 已对齐]；01-02 导图/01-03 图网重绘；decision-registry+check 机制化；7 技能审计修订漂移清零；TEST-11 hermes 自治/TEST-12 企业用例/fixtures 夹具层）
 - ✅ 批次59-63 批判修正+深度旗舰+实证能力+机制可持续化（2026-11-18：01-58 反例深化+275 行/01-19 等对账；02-07/08/09 二手→一手来源 9 条+04 织补 15 节点；01-60~01-66 前沿瞭望与深度旗舰七篇 500-700 行；03-66 基准实测指南+fixtures 结果模板；registry 20→60 CONFLICTS=0；CHANGELOG 归档规则+archive/README；语义抽检脚本首跑 FAIL 1 项[01-12 互链]已闭环）
+- ✅ 批次64-76 hermes 执行底座+契约语义测试体系（2026-11-18：hermes 七件套[预检/诊断/L1修复/failbundle/自愈/任务包生成/E0入口]；E0 五步→七步全绿；顶层 契约语义测试/ 六层模型系列[TEST-13/14/15+六系统 spec+bindings 矩阵+8 场景契约包+14 GWT 断言+SEM/BUS 注册 20 条+追溯表 95%]；修正 mqtt 绑定层级违规 2 处；registry 151 行）
 
 ---
 
-**报告生成时间**: 2026-11-18（批次18-52 + 批次53-58 重组与一致性基线 + 批次59-63 深度旗舰与机制批次完成后）
+**报告生成时间**: 2026-11-18（批次18-52 + 批次53-58 + 批次59-63 + 批次64-76 契约语义测试体系完成后）
 **下次更新**: 每批次完成后更新

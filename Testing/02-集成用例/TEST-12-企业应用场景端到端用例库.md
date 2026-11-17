@@ -214,7 +214,20 @@ done
 ## T.12.7 参考来源
 
 - 项目内：[TEST-02](../01-部署用例/TEST-02-运维部署测试用例.md)、[TEST-03](TEST-03-集成测试用例.md)、[TEST-04](../03-集群用例/TEST-04-集群测试验证.md)、[02-47](../../topics/02-场景驱动架构设计/02-47-企业集成模式与事务消息模式.md)、[01-41](../../topics/01-基础概念与对比分析/01-41-工作流编排系统与消息协同.md)、[01-45](../../topics/01-基础概念与对比分析/01-45-产业领域消息标准纵览.md)、[01-46](../../topics/01-基础概念与对比分析/01-46-IoT与互联网领域消息标准纵览.md)、[Testing/fixtures](../fixtures/)
+
 - 外部：[ISO 20022 注册库](https://www.iso20022.org/)、[Sparkplug 规范](https://sparkplug.eclipse.org/specification/)、[EIP Saga 模式](https://www.enterpriseintegrationpatterns.com/patterns/conversation/Saga.html)
+
+## T.12.8 通用业务场景契约库（L5 互链）
+
+本文档三场景（电商订单/金融转账/IoT 遥测）的**契约视角**落在顶层 [契约语义测试/03-业务场景/](../../契约语义测试/03-业务场景/README.md)（批次74，TEST-15 规范）：
+
+| 本文档场景 | 契约包 | 输入断言源 |
+| ---- | ---- | ---- |
+| 电商订单全链路 | [01-order-lifecycle](../../契约语义测试/03-业务场景/01-order-lifecycle/contract.yaml) | invariants（幂等/有序/状态机） |
+| 金融转账 | [02-payment-reconciliation](../../契约语义测试/03-业务场景/02-payment-reconciliation/contract.yaml) | invariants（资损级幂等/证据指纹） |
+| IoT 遥测 | [05-iot-telemetry](../../契约语义测试/03-业务场景/05-iot-telemetry/contract.yaml) | invariants（QoS 分级/stale 丢弃） |
+
+用例执行以契约包 contract.yaml 的 invariants 为断言输入；契约变更经 contract-drift-check.sh 触发本文档用例 drift 重跑（见 [TEST-15](../../契约语义测试/00-模型与规划/TEST-15-业务场景契约库与用例规范.md) §T.15.5）。
 
 ---
 

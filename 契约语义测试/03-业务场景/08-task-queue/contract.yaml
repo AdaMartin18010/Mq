@@ -1,0 +1,32 @@
+# 场景 DSL 契约：异步任务队列（08-task-queue）
+# envelope 复用 topics/config-templates/task-envelope-template.yaml（02-57：task_id/trace/deadline/retry_budget）
+scenario: async-task-queue
+version: 1.0.0
+messages:
+  TaskEnvelope:                        # 命令：任务信封
+    type: command
+    required: [taskId, taskType, payloadRef, deadline, retryBudget]
+    fields:
+      taskId: { type: string, desc: 任务 ID=幂等键 }
+      taskType: { type: string }
+      payloadRef: { type: string, desc: 载荷引用（claim-check） }
+      deadline: { type: timestamp, desc: 截止时间，逾期执行无意义 }
+      retryBudget: { type: integer, desc: 剩余重试额度 }
+  TaskCompletedEvent:
+    type: event
+    required: [taskId, completedAt, resultRef]
+    fields:
+      taskId: { type: string }
+      completedAt: { type: timestamp }
+      resultRef: { type: string }
+  TaskFailedEvent:
+    type: event
+    required: [taskId, failReason, retryable]
+    fields:
+      taskId: { type: string }
+      failReason: { type: string }
+      retryable: { type: boolean }
+invariants:
+  - 同 taskId 至多一次执行成功（幂等去重核心场景）
+  - deadline 过期任务拒执行并标记 EXPIRED（延迟消息/TTL 联动）
+  - retryBudget 耗尽进死信（人工或终态处理，01-65）

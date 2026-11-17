@@ -21,17 +21,18 @@ channels:
     messages:
       TemperatureReading:
         $ref: '#/components/messages/TemperatureReading'
-    bindings:
-      mqtt:
-        qos: 1              # 至少一次（01-16 QoS 语义）
-        retain: false
-        expiryInterval: 300 # 消息过期秒数（MQTT 5.0 Message Expiry）
+    # mqtt channel binding 为保留空对象（binding 0.2.0）；QoS/保留/过期属 operation 级（见 bindings-matrix §四）
 
 operations:
   publishTelemetry:
     action: send
     channel:
       $ref: '#/channels/sensors.temperature'
+    bindings:
+      mqtt:
+        qos: 1                    # 至少一次（01-16 QoS 语义），operation 级（binding 0.2.0）
+        retain: false
+        messageExpiryInterval: 300 # 消息过期秒数（MQTT 5.0，operation 级）
 
 components:
   messages:

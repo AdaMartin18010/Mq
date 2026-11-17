@@ -1,0 +1,17 @@
+# GWT 行为断言库（TEST-14 §T.14.3 机读版）
+# 列：id	dim	system	given	when	then	verdict
+# 消费方：批次75 的 TC-SEM 脚本（按 id 引用断言）；修改断言须同步 TEST-14 文档示例
+ASE-001	交付语义	Kafka	生产者 acks=all、min.insync.replicas=2 的三 broker 集群	消息获 ISR 内两副本确认后其中一副本宕机	已确认消息不丢、消费者可见重复计数<=1	存在性断言+重复计数
+ASE-002	交付语义	NATS	Core（非 JetStream）subject 上生产后 broker 重启	消费者未在线期间 broker 重启	重启前未投递消息丢失不违反语义	反向用例：确认不承诺
+ASE-003	顺序性	Kafka	单分区 topic、并发生产者 3 个	持续生产 1000 条	单分区内消费顺序与生产偏移单调一致	全序比对
+ASE-004	幂等去重	Kafka	幂等生产者开启（enable.idempotence=true）	broker 故障转移触发重试	单分区日志无重复序列号消息	broker 日志审计
+ASE-005	幂等去重	NATS	JetStream 开启 dedup window、Msg-Id 重复发布	同 Msg-Id 在窗口内发布两次	仅第一条持久化	服务端去重计数
+ASE-006	重试退避	NATS	消费者 nak 且配置 backoff 序列	连续投递失败	重投间隔符合 backoff 序列直至 maxDeliver	重投时间戳序列断言
+ASE-007	死信	RabbitMQ	队列绑定 DLX、消费者 nack(requeue=false)	消息处理持续异常	消息进入 DLQ、原队列清空、DLQ 可再消费	DLQ 深度=1 且原队列=0
+ASE-008	死信	Pulsar	namespace 级 DLQ policy 配置、共享订阅	nack 超过 maxRedeliverCount	消息进入 DLQ topic 且原订阅游标推进	DLQ topic 深度断言
+ASE-009	事务	Kafka	事务生产者 initTransactions+send 两分区+commitOffsets	提交后消费隔离级别 read_committed	仅已提交消息对下游可见	read_committed 消费断言
+ASE-010	背压	NATS	pull consumer maxAckPending=100 且消费端不 ack	生产端持续投递	broker 在 100 条未确认处停推新批、进程无 OOM	未确认数平台期=100
+ASE-011	背压	RabbitMQ	消费者 prefetch=50 且不 ack	生产端持续投递	未确认消息数停于 50、内存曲线平稳	QoS 未确认数断言
+ASE-012	TTL过期	MQTT	v5 消息带 message expiry interval=2s、订阅者会话过期=0	订阅者 5 秒后重连	过期消息不投递	接收计数=0【定理】
+ASE-013	延迟消息	Pulsar	生产者 send(msg).deliverAfter(3s)	立即查询订阅 backlog	3 秒前不可见、3 秒后按序可见	时间窗可见性断言
+ASE-014	持久化	Redis	AOF everysec+Stream key 已有 100 条	重启 Redis 实例	Stream 长度与 ID 单调性保持	长度=100 且 last-ID 不回落

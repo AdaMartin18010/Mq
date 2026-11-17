@@ -1,0 +1,80 @@
+# AsyncAPI 3.x Pulsar 契约模板（订单事件示例）
+# 用法: asyncapi validate asyncapi-pulsar-example.yaml
+# 绑定核实: Pulsar binding v0.1.0（asyncapi/bindings 官方仓库）——
+#   server 有 tenant(默认 public)；channel 有 namespace*/persistence*/compaction/
+#   geo-replication/retention/ttl/deduplication；operation/message 保留为空。
+#   订阅类型（Exclusive/Shared/Key_Shared/Failover）官方绑定未覆盖，
+#   按 01-44 等价转换策略以 x-pulsar-subscription 扩展声明。
+# 参考: topics/01-基础概念与对比分析/01-62-Pulsar存算分离架构深度解析.md
+asyncapi: '3.0.0'
+info:
+  title: 订单事件契约（Pulsar 示例）
+  version: 1.0.0
+  description: 订单域事件契约模板，演示 Pulsar server/channel 绑定与订阅 x- 扩展写法
+
+servers:
+  prod-pulsar:
+    host: 'pulsar://pulsar:6650'
+    protocol: pulsar
+    description: 生产 Pulsar 集群（模板值，按环境替换）
+    bindings:
+      pulsar:
+        tenant: public               # server binding：租户（01-62 三层架构）
+        bindingVersion: '0.1.0'
+
+channels:
+  orders/order-events:
+    address: persistent://public/orders/order-events
+    messages:
+      OrderEvent:
+        $ref: '#/components/messages/OrderEvent'
+    bindings:
+      pulsar:
+        namespace: orders            # channel binding 必填（对标 kafka 的 topic 命名空间）
+        persistence: persistent      # 持久化 topic（12 维度之"持久化"）
+        retention:
+          time: 720                  # 保留 720 分钟（区别于 TTL，01-62 分层存储衔接）
+          size: 1024                 # 1GB
+        ttl: 3600                    # 消息 TTL 秒（12 维度之 TTL过期）
+        deduplication: true          # broker 端去重开关（12 维度之"幂等去重"，01-63 对照）
+    description: 订单事件流（01-62 读写路径与 Offload 语义）
+
+operations:
+  publishOrderEvent:
+    action: send
+    channel:
+      $ref: '#/channels/orders/order-events'
+  subscribeOrderEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/orders/order-events'
+    x-pulsar-subscription:
+      name: order-service-sub
+      type: Key_Shared               # 按键有序+并行（01-62/02-27 顺序性设计衔接）
+      receiverQueueSize: 1000        # 消费端队列（01-66 背压：receiver queue 默认 1000）
+
+components:
+  messages:
+    OrderEvent:
+      name: OrderEvent
+      title: 订单事件
+      headers:
+        type: object
+        required: [trace-id, event-type]
+        properties:
+          trace-id: { type: string }
+          event-type: { type: string, enum: [ORDER_CREATED, ORDER_UPDATED, ORDER_CANCELLED] }
+          event-time: { type: string, format: date-time }
+      payload:
+        $ref: '#/components/schemas/OrderEventPayload'
+      contentType: application/json
+
+  schemas:
+    OrderEventPayload:
+      type: object
+      required: [orderId, orderKey, status]
+      properties:
+        orderId: { type: string }
+        orderKey: { type: string, description: Key_Shared 分区键（12 维度之"顺序性"） }
+        status: { type: string }
+        amount: { type: number }

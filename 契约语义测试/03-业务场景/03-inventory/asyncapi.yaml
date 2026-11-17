@@ -1,0 +1,39 @@
+# 库存扣减 AsyncAPI spec（主系统 Kafka；TTL 过期语义由应用消费 ScheduledExpiry 实现，矩阵 ○ 格）
+asyncapi: '3.0.0'
+info:
+  title: 库存扣减契约
+  version: 1.0.0
+  description: 预留/确认两阶段库存事件流（x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-kafka:
+    host: 'kafka:9092'
+    protocol: kafka
+channels:
+  inventory.events:
+    address: inventory.events
+    messages:
+      StockReservedEvent: { $ref: '#/components/messages/StockReservedEvent' }
+      StockReservationExpiredEvent: { $ref: '#/components/messages/StockReservationExpiredEvent' }
+    bindings:
+      kafka:
+        partitions: 6          # sku 分区键
+operations:
+  onStockReserved:
+    action: receive
+    channel: { $ref: '#/channels/inventory.events' }
+    x-semantics: [事务, 幂等去重, 顺序性, 背压]
+  onReservationExpired:
+    action: receive
+    channel: { $ref: '#/channels/inventory.events' }
+    x-semantics: [TTL过期, 交付语义]
+components:
+  messages:
+    StockReservedEvent:
+      payload: { $ref: 'contract.yaml#/messages/StockReservedEvent/fields' }
+      headers:
+        type: object
+        required: [trace-id]
+        properties:
+          trace-id: { type: string }
+    StockReservationExpiredEvent:
+      payload: { $ref: 'contract.yaml#/messages/StockReservationExpiredEvent/fields' }

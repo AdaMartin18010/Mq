@@ -1,0 +1,73 @@
+# AsyncAPI 3.x Redis 契约模板（订单事件流示例，Redis Stream）
+# 用法: asyncapi validate asyncapi-redis-example.yaml
+# 绑定核实: Redis binding v0.1.0（asyncapi/bindings 官方仓库）——
+#   server/channel/operation/message 四级全部保留为空。
+#   Redis Stream 全部语义（stream key/consumer group/XAUTOCLAIM/MAXLEN）
+#   按 01-44 等价转换策略以 x-redis 扩展声明，本文件是"绑定全空+全扩展"的范例。
+# 参考: topics/01-基础概念与对比分析/01-58-全局核心概念卡片总表.md（Redis Stream 卡）
+asyncapi: '3.0.0'
+info:
+  title: 订单事件流契约（Redis 示例）
+  version: 1.0.0
+  description: Redis Stream 契约模板，演示绑定全保留时的 x- 扩展完整写法（01-44 边界情形范例）
+
+servers:
+  prod-redis:
+    host: 'redis:6379'
+    protocol: redis
+    description: 生产 Redis（模板值，按环境替换）
+    # bindings.redis 为保留空对象（binding v0.1.0），不写任何字段
+
+channels:
+  stream:orders:events:
+    address: stream:orders:events    # Stream key（XADD 目标）
+    messages:
+      OrderEvent:
+        $ref: '#/components/messages/OrderEvent'
+    bindings:
+      redis: {}                      # 保留空对象占位（binding v0.1.0 要求）
+    x-redis:
+      maxlen: 100000                 # MAXLEN ~ 上限（近似截断，01-65 对照持久化边界）
+      trimStrategy: almost-exact     # ~ 近似修剪策略
+
+operations:
+  appendOrderEvent:
+    action: send
+    channel:
+      $ref: '#/channels/stream:orders:events'
+    x-redis:
+      command: XADD
+      fields: [orderId, eventType, payload]  # XADD 显式字段（无 schema 强制的协议约束【定理】）
+  consumeOrderEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/stream:orders:events'
+    x-redis:
+      command: XREADGROUP
+      group: order-consumers         # 消费组（对标 Kafka consumer group）
+      consumer: order-service-{instance}
+      count: 100                     # 单次读取条数
+      block: 5000                    # 阻塞毫秒（12 维度之"流控"：无原生背压的轮询补偿，01-66）
+      noack: false                   # 显式 ACK；XPENDING 长度即积压观测指标（01-66 观测节）
+
+components:
+  messages:
+    OrderEvent:
+      name: OrderEvent
+      title: 订单事件
+      headers:
+        type: object
+        properties:
+          trace-id: { type: string }
+      payload:
+        $ref: '#/components/schemas/OrderEventEntry'
+      contentType: application/json
+
+  schemas:
+    OrderEventEntry:
+      type: object
+      required: [orderId, eventType]
+      properties:
+        orderId: { type: string }
+        eventType: { type: string, enum: [ORDER_CREATED, ORDER_UPDATED] }
+        payload: { type: string, description: JSON 序列化业务载荷（XADD 字段值） }

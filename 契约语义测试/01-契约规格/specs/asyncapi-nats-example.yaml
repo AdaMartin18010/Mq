@@ -1,0 +1,79 @@
+# AsyncAPI 3.x NATS 契约模板（异步任务队列示例）
+# 用法: asyncapi validate asyncapi-nats-example.yaml
+# 绑定核实: NATS binding v0.1.0（asyncapi/bindings 官方仓库）——
+#   server/channel/message 保留为空；operation 仅 queue(≤255 字符)+bindingVersion。
+#   JetStream 语义（stream/durable/maxAckPending/ackPolicy）官方绑定未覆盖，
+#   按 01-44 表达力边界的等价转换策略，以 x-jetstream 扩展声明并登记。
+# 参考: topics/01-基础概念与对比分析/01-40-应用层流协议与交互标准.md（NATS 节）
+asyncapi: '3.0.0'
+info:
+  title: 异步任务队列契约（NATS 示例）
+  version: 1.0.0
+  description: 任务队列场景契约模板，演示 NATS operation.queue 绑定与 JetStream x- 扩展写法
+
+servers:
+  prod-nats:
+    host: 'nats:4222'
+    protocol: nats
+    description: 生产 NATS 集群（模板值，按环境替换）
+
+channels:
+  tasks.orders.import:
+    address: tasks.orders.import
+    messages:
+      ImportTask:
+        $ref: '#/components/messages/ImportTask'
+    # NATS channel binding 为保留空对象（binding v0.1.0），队列语义在 operation 层
+  tasks.orders.import.dlq:
+    address: tasks.orders.import.dlq
+    messages:
+      ImportTask:
+        $ref: '#/components/messages/ImportTask'
+    description: 死信通道（01-65 DLQ 工程解析；JetStream maxDeliver 耗尽后投递）
+
+operations:
+  enqueueImportTask:
+    action: send
+    channel:
+      $ref: '#/channels/tasks.orders.import'
+    bindings:
+      nats:
+        queue: task-workers            # NATS queue group = 点对点分发（operation binding 唯一字段）
+        bindingVersion: '0.1.0'
+    x-jetstream:
+      stream: TASKS                    # JetStream stream 名（官方绑定未覆盖，x- 扩展）
+      retention: workqueue             # workQueue 保留策略（01-65 对照）
+  processImportTask:
+    action: receive
+    channel:
+      $ref: '#/channels/tasks.orders.import'
+    x-jetstream:
+      durable: task-workers-durable    # 持久消费者名
+      maxAckPending: 100               # 未确认上限（01-66 背压：pull consumer fetch/ack 等待）
+      ackPolicy: explicit              # explicit ack；nak 触发重投
+      maxDeliver: 5                    # 投递上限，耗尽转 DLQ 通道
+
+components:
+  messages:
+    ImportTask:
+      name: ImportTask
+      title: 订单导入任务
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string, description: 追踪 ID（01-50 OTel 语义） }
+          idempotency-key: { type: string, description: 幂等键（02-57 任务 envelope） }
+      payload:
+        $ref: '#/components/schemas/ImportTaskPayload'
+      contentType: application/json
+
+  schemas:
+    ImportTaskPayload:
+      type: object
+      required: [taskId, orderBatch, submittedAt]
+      properties:
+        taskId: { type: string, format: uuid, description: 任务 ID（幂等去重依据） }
+        orderBatch: { type: string, description: 订单批次引用（fixtures/test-data-orders.json） }
+        submittedAt: { type: string, format: date-time }
+        deadline: { type: string, format: date-time, description: 任务截止时间（02-57 envelope） }

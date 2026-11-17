@@ -3,23 +3,48 @@
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
 >
 > **归档规则**:
+>
 > - 触发条件：CHANGELOG.md 单文件行数超过 400 行。
 > - 归档对象：起始月份在 6 个月前的版本条目（按条目日期计算）。
 > - 归档路径：`topics/archive/changelog/YYYY-MM.md`，YYYY-MM 为被归档条目的起始月份。
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.21.0] - 2026-11-18
+
+### 批次64-76：hermes 执行底座 + 契约语义测试体系（顶层新系列，六层模型全链落地）
+
+**批次64-65 hermes 执行底座（TEST-11 示意脚本实化 + E0 首跑）**：
+- ✅ 五脚本落地：hermes-env-precheck（E0-E3 降级决策，实测本机 E0/E1/E2 可用 E3 缺 kubectl）/ hermes-diagnose（Git Bash netstat 回退）/ hermes-fix-l1（白名单+进程 Guard+七字段审计）/ hermes-collect-failbundle（T.11.5 结构）/ hermes-self-heal（L0-L3 分级，L3 只出审批单绝不自动修复）
+- ✅ hermes-task-gen 任务包生成器（T.09.3 四项校验，违规退出码 2 实测）+ nightly/weekly/pre-release 三真实任务包
+- ✅ hermes-e0-run E0 静态入口（产物五字段+日志尾三行正则严格满足 T.09.5）+ self-check-history.log + warn-ledger.tsv + .gitignore（results/ 不入库）
+- ✅ E0 首跑 5/5 PASS（103 脚本 bash -n 全过）
+
+**顶层主题文件夹 契约语义测试/（六层模型：DSL→AsyncAPI→绑定→语义→场景→用例）**：
+- ✅ TEST-13 总纲：背景证据（registry 无 SEM/BUS 域）、六层定义、命名编号规范（TC-SEM/TC-BUS）、批次 71-76 映射、人在回路边界
+- **批次71 契约静态层**：六系统 spec 集齐（新建 nats/amqp/pulsar/redis 四 spec；bindings 官方仓库逐一 WebSearch 核实——kafka 0.5.0/mqtt 0.2.0/amqp 0.3.0/nats·pulsar·redis 0.1.0）；contract-spec-check.sh（6/6 PASS）；contract-drift-check.sh（YAML 感知+绑定/x- 排除规则，DRIFT=0）；E0 增第 6 步
+- **批次72 绑定矩阵**：bindings-matrix.md（四级字段覆盖矩阵+x- 扩展登记簿 x-jetstream/x-prefetch/x-pulsar-subscription/x-redis/x-semantics）；contract-binding-check.sh 22/22 PASS；**修正 mqtt 绑定层级违规 2 处**（qos/retain/expiryInterval 属 operation 级 per binding 0.2.0，config-templates 示例与 05-iot-telemetry 场景同步修正）
+- **批次73 语义矩阵**：TEST-14（12 语义维度×6 系统能力矩阵，●◐○— 四级图例，论证引用 01-63~66 不重复论证）；assertions.tsv 机读 GWT 断言 14 条；registry 增 SEM 域 12 用例
+- **批次74 业务场景库**：8 场景×3 文件（contract.yaml DSL + asyncapi.yaml + SEMANTICS.md 语义标注）；TEST-15 规范（消息三分/invariants 可测/评审清单）；TEST-12 加 T.12.8 互链节；registry 增 BUS 域 8 用例
+- **批次66 dry-run 绑定**：test-harness E2 INT dry-run 11 例可解析；7 个引用脚本实地存在性核验；TC-INT-09/10b/10c 无脚本诚实转 pending
+- **批次75 行为用例**：tc-assert-check.sh 父用例引擎（断言库 14 行+8 场景包结构 22 检全过）入 E0 第 7 步；TC-SEM-05（RabbitMQ DLX）/TC-SEM-07（NATS maxAckPending）样例脚本（--live 门禁，默认 dry-run）；registry 流转（BUS 8 mapped、SEM-05/07 mapped）
+- **批次76 追溯闭环**：traceability.md 六层追溯表（登记口径覆盖 95%：L1→L2 10/10、L2→L3 6/6、L4→L5 8/8、L5→L6 10/20 含真实执行挂账 2/12）
+
+**治理同步**：E0 扩至七步全绿；INDEX 登记新系列；STATUS（主题 213→226、主题 README 7→10、运维脚本→126、总计 508→578 实地核实）；ROADMAP 批次64-76 勾记；AGENTS.md 目录结构与新系列口径同步
+
 ## [3.20.0] - 2026-11-18
 
 ### 批次59-63：批判修正 + 前沿瞭望 + 深度旗舰六篇 + 实证能力 + 机制可持续化（上个会话中断批次原规格恢复执行）
 
 **批次59 批判修正轮**：
+
 - ✅ 59-A 概念一致性对账：01-58 概念卡片反例抽检深化（+275 行六元组反例）+ 01-19/20/21 与 01-59 决策总树口径对账修正
 - ✅ 59-B 案例一手来源化：02-07/08/09 五处 factorhouse 二手综述改引官方一手工程博客（Robinhood/DoorDash/Netflix/LinkedIn 共 9 条一手 URL，核实可达）；1 处无一手来源（滴滴）保留并标注【二手综述】；04 动态系统论系列互链织补 15 节点/11 文件（每篇 04 被 ≥3 处回链）
 
 **批次60 前沿瞭望**：01-60 前沿瞭望：2026-11 技术扫描（332 行六域扫描备忘录）
 
 **批次61 深度旗舰工程（500-700 行旗舰六篇，全部 WebSearch 核实）**：
+
 - ✅ 01-61 Kafka 存储与复制内幕（587 行：segment 格式/复制协议/Leader Epoch/KRaft 元数据日志/分层存储 KIP-405/调优/故障推演）
 - ✅ 01-62 Pulsar 存算分离架构深度解析（656 行：Broker 无状态/BookKeeper 内幕/读写路径/Offload/Oxia/扩容再平衡；核实 Pulsar 5.0 GA 2026-10-05 为 LTS、Oxia 为推荐元数据）
 - ✅ 01-63 Exactly-once 语义全论证（572 行：幂等生产者/Kafka 事务/KIP-98/129/447/890/流处理 EOS/语义边界/六系统对照）
@@ -30,6 +55,7 @@
 **批次62 实证能力**：03-66 性能基准实测指南（318 行：OpenMessaging Benchmark 实操/避免 Coordinated Omission/置信区间/六系统矩阵模板/结果回灌规范）+ Testing/fixtures/benchmark-result-template.md（114 行，SAMPLE 占位防误用）
 
 **批次63 机制可持续化**：
+
 - ✅ decision-registry.tsv 扩容 20→60（dec-021~060 覆盖前沿瞭望/Kafka 存储/Pulsar/EOS/MQTT/DLQ/背压/基准/决策树补全九域；doc-decision-check CONFLICTS=0 WARN=0）
 - ✅ CHANGELOG 归档规则立规（超 400 行归档 6 个月前条目至 topics/archive/changelog/）+ topics/archive/README.md
 - ✅ doc-semantic-spotcheck.sh 语义抽检机制（月度种子确定性抽样 6 篇：置信标注/时效/互链/章节一致性四查，只读）
@@ -42,6 +68,7 @@
 ### 批次53-58：顶层重组 + 思维表征一致性基线 + hermes 自治体系（用户确认全部，7 代理并行）
 
 **批次53 顶层目录重组**：
+
 - ✅ Testing/ 提升顶层（六子目录：00-规范与计划/01-部署用例/02-集成用例/03-集群用例/04-可观测用例/05-体系与机制 + fixtures 夹具层）
 - ✅ AI_Skills/ 提升顶层（AI_SKILL-01~06 六文档 + skills/ 7 技能实体从根目录并入）
 - ✅ 34 文件 git mv 保留历史；全库 42 处死链批量修复；doc-self-check 计数适配（Testing 两级 glob）
@@ -55,6 +82,7 @@
 **批次57 一致性机制化**：decision-registry.tsv（20 条判定注册）+ doc-decision-check.sh（注册表冲突检测/出处回查/概念卡片六元组完整性，实测 CONFLICTS=0 WARN=0）并入 doc-self-check quick 模式
 
 **批次58 技能审计与自治体系**：
+
 - ✅ 7 技能全合规审计（AI_SKILL-06 报告 198 行）：触发词补 35+ 覆盖新域，**漂移 WARN 15→0**；国际对齐 AAIF 生态（约 100 万 skills/2.8 亿安装，Anthropic 2026-10 捐赠核实）
 - ✅ TEST-11 hermes 自治执行与自愈排障体系（259 行）：验证→诊断→修复→自愈→报告闭环、**自愈授权 L0-L3 白名单**、排障 runbook、自我修正流程
 - ✅ TEST-12 企业应用场景端到端用例库（221 行）：电商订单全链路/金融转账/IoT 遥测三场景（与 TEST-03 技术维度互补）

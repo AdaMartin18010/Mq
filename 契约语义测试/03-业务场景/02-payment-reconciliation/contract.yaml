@@ -1,0 +1,33 @@
+# 场景 DSL 契约：支付与对账（02-payment-reconciliation）
+# 衔接 02-50 合规（PII 最小化）与 01-45 金融域标准；对账=异步最终一致的经典验证场景
+scenario: payment-reconciliation
+version: 1.0.0
+messages:
+  PaymentInitiatedCmd:
+    type: command
+    required: [paymentId, idempotencyKey, amount, currency, accountRef]
+    fields:
+      paymentId: { type: string }
+      idempotencyKey: { type: string }
+      amount: { type: number }
+      currency: { type: string, enum: [CNY, USD, EUR] }
+      accountRef: { type: string, desc: 账户引用（不存明文账号，PII 最小化） }
+  PaymentCompletedEvent:
+    type: event
+    required: [paymentId, completedAt, settlementBatch]
+    fields:
+      paymentId: { type: string }
+      completedAt: { type: timestamp }
+      settlementBatch: { type: string, desc: 结算批次号（对账键） }
+  ReconciliationMismatchEvent:        # 对账差错的领域事件
+    type: event
+    required: [settlementBatch, paymentId, diffType, evidenceHash]
+    fields:
+      settlementBatch: { type: string }
+      paymentId: { type: string }
+      diffType: { enum: [MISSING_LOCAL, MISSING_EXTERNAL, AMOUNT_DIFF] }
+      evidenceHash: { type: string, desc: 证据指纹（不可篡改） }
+invariants:
+  - 同一 paymentId 仅一次 PaymentCompletedEvent（幂等去重）
+  - 对账事件携带 evidenceHash 且不可变（审计链衔接 07-audit-trail）
+  - 差错事件进入人工处理流（死信升级版，非自动重试）

@@ -1,0 +1,36 @@
+# 场景 DSL 契约：库存扣减（03-inventory）
+# 超卖防护的契约表达：预留(reserve)→确认(confirm)/释放(release) 两阶段
+scenario: inventory-deduction
+version: 1.0.0
+messages:
+  ReserveStockCmd:
+    type: command
+    required: [reservationId, sku, quantity, orderId, ttlSeconds]
+    fields:
+      reservationId: { type: string, desc: 预留单号（幂等键） }
+      sku: { type: string }
+      quantity: { type: integer }
+      orderId: { type: string }
+      ttlSeconds: { type: integer, desc: 预留 TTL，过期自动释放（T.14 TTL过期） }
+  StockReservedEvent:
+    type: event
+    required: [reservationId, sku, availableAfter]
+    fields:
+      reservationId: { type: string }
+      sku: { type: string }
+      availableAfter: { type: integer }
+  StockReservationExpiredEvent:
+    type: event
+    required: [reservationId, sku]
+    fields:
+      reservationId: { type: string }
+      sku: { type: string }
+  ConfirmDeductionCmd:
+    type: command
+    required: [reservationId]
+    fields:
+      reservationId: { type: string }
+invariants:
+  - availableAfter 永不为负（超卖防护断言）
+  - 预留与确认/释放严格配对（事务边界）
+  - 同一 reservationId 的确认至多一次（幂等去重）

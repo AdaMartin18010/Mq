@@ -1,0 +1,25 @@
+# 场景 DSL 契约：CDC 数据同步（06-cdc-sync）
+# 复用 topics/config-templates/cdc-debezium-event-template.yaml 的 envelope 结构（02-57）
+scenario: cdc-sync
+version: 1.0.0
+messages:
+  CdcChangeEvent:                      # envelope 遵循 Debezium 结构（02-57 已核实字段）
+    type: event
+    required: [before, after, op, source, tsMs]
+    fields:
+      before: { type: object, desc: 变更前镜像（op=d 时为非空） }
+      after: { type: object, desc: 变更后镜像（op=d 时为 null） }
+      op: { enum: [c, u, d, r], desc: create/update/delete/read(snapshot) }
+      source: { type: object, desc: 元数据源（connector/db/table/lsn 单调位点） }
+      tsMs: { type: integer, desc: broker 处理时间戳 }
+  SchemaChangeEvent:
+    type: event
+    required: [table, ddl, schemaVersion]
+    fields:
+      table: { type: string }
+      ddl: { type: string }
+      schemaVersion: { type: integer }
+invariants:
+  - 同表事件按 source.lsn 单调有序（顺序性；位点回放依据）
+  - op=d 后允许同主键 op=c（delete-then-recreate），消费端不可假设主键连续性
+  - schema 变更事件优先于该表首批新 schema 数据事件（SchemaChangeEvent 通道隔离或头部标记）

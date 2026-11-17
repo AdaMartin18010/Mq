@@ -1,0 +1,58 @@
+# 异步任务队列 AsyncAPI spec（主系统 NATS JetStream：workQueue 保留 + 原生退避是最佳匹配）
+asyncapi: '3.0.0'
+info:
+  title: 异步任务队列契约
+  version: 1.0.0
+  description: 任务信封/完成/失败事件流（x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-nats:
+    host: 'nats:4222'
+    protocol: nats
+channels:
+  tasks.generic:
+    address: tasks.generic
+    messages:
+      TaskEnvelope: { $ref: '#/components/messages/TaskEnvelope' }
+  tasks.results:
+    address: tasks.results
+    messages:
+      TaskCompletedEvent: { $ref: '#/components/messages/TaskCompletedEvent' }
+      TaskFailedEvent: { $ref: '#/components/messages/TaskFailedEvent' }
+operations:
+  enqueueTask:
+    action: send
+    channel: { $ref: '#/channels/tasks.generic' }
+    bindings:
+      nats:
+        queue: task-workers
+        bindingVersion: '0.1.0'
+    x-jetstream:
+      stream: TASKS
+      retention: workqueue
+  processTask:
+    action: receive
+    channel: { $ref: '#/channels/tasks.generic' }
+    x-jetstream:
+      durable: task-workers-durable
+      maxAckPending: 100
+      ackPolicy: explicit
+      maxDeliver: 5
+      backoff: [1s, 5s, 30s, 2m, 10m]   # 原生退避序列（T.14 重试退避 ● 格）
+  onTaskResult:
+    action: receive
+    channel: { $ref: '#/channels/tasks.results' }
+    x-semantics: [死信, 交付语义]
+components:
+  messages:
+    TaskEnvelope:
+      payload: { $ref: 'contract.yaml#/messages/TaskEnvelope/fields' }
+      headers:
+        type: object
+        required: [trace-id, idempotency-key]
+        properties:
+          trace-id: { type: string }
+          idempotency-key: { type: string }
+    TaskCompletedEvent:
+      payload: { $ref: 'contract.yaml#/messages/TaskCompletedEvent/fields' }
+    TaskFailedEvent:
+      payload: { $ref: 'contract.yaml#/messages/TaskFailedEvent/fields' }

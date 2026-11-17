@@ -1,0 +1,20 @@
+# 场景 DSL 契约：审计日志链（07-audit-trail）
+# 复用 02-57 审计契约模式（who/when/what/integrity hash）；与 02-payment-reconciliation 差错证据衔接
+scenario: audit-trail
+version: 1.0.0
+messages:
+  AuditRecordEvent:
+    type: event
+    required: [auditId, actor, action, targetRef, occurredAt, integrityHash, prevHash]
+    fields:
+      auditId: { type: string }
+      actor: { type: string, desc: 操作者（who） }
+      action: { type: string, desc: 操作类型（what） }
+      targetRef: { type: string, desc: 被操作对象引用 }
+      occurredAt: { type: timestamp, desc: when }
+      integrityHash: { type: string, desc: 本条内容指纹 }
+      prevHash: { type: string, desc: 上一条指纹（链式完整性） }
+invariants:
+  - prevHash 链不可断（顺序性+完整性：缺失即审计链被篡改）
+  - 审计事件只增不改（append-only；更新权=合规红线 02-50）
+  - integrityHash 覆盖 prevHash（递归完整性验证 O(n) 可全链回放）

@@ -1,0 +1,42 @@
+# CDC 同步 AsyncAPI spec（主系统 Kafka：Debezium 标准落地）
+asyncapi: '3.0.0'
+info:
+  title: CDC 数据同步契约
+  version: 1.0.0
+  description: 数据变更捕获事件流（envelope 复用 cdc-debezium-event-template.yaml；x-semantics 标注引用 TEST-14）
+servers:
+  prod-kafka:
+    host: 'kafka:9092'
+    protocol: kafka
+channels:
+  cdc.inventory.customers:
+    address: cdc.inventory.customers
+    messages:
+      CdcChangeEvent: { $ref: '#/components/messages/CdcChangeEvent' }
+    bindings:
+      kafka:
+        partitions: 3
+    description: 单表单 topic 划分（源表粒度的顺序保证单元）
+  cdc.schema.changes:
+    address: cdc.schema.changes
+    messages:
+      SchemaChangeEvent: { $ref: '#/components/messages/SchemaChangeEvent' }
+operations:
+  onCdcChange:
+    action: receive
+    channel: { $ref: '#/channels/cdc.inventory.customers' }
+    x-semantics: [顺序性, 持久化, 幂等去重, 背压]
+  onSchemaChange:
+    action: receive
+    channel: { $ref: '#/channels/cdc.schema.changes' }
+    x-semantics: [顺序性, 交付语义]
+components:
+  messages:
+    CdcChangeEvent:
+      payload: { $ref: 'contract.yaml#/messages/CdcChangeEvent/fields' }
+      headers:
+        type: object
+        properties:
+          trace-id: { type: string }
+    SchemaChangeEvent:
+      payload: { $ref: 'contract.yaml#/messages/SchemaChangeEvent/fields' }

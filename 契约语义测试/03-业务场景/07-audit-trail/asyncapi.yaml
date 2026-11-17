@@ -1,0 +1,41 @@
+# 审计日志链 AsyncAPI spec（主系统 Pulsar：持久化 topic + retention 契合审计保留要求）
+asyncapi: '3.0.0'
+info:
+  title: 审计日志链契约
+  version: 1.0.0
+  description: 审计事件链（append-only；x-semantics 标注引用 TEST-14 十二维度）
+servers:
+  prod-pulsar:
+    host: 'pulsar://pulsar:6650'
+    protocol: pulsar
+    bindings:
+      pulsar: { tenant: public, bindingVersion: '0.1.0' }
+channels:
+  audit/records:
+    address: persistent://public/audit/records
+    messages:
+      AuditRecordEvent: { $ref: '#/components/messages/AuditRecordEvent' }
+    bindings:
+      pulsar:
+        namespace: audit
+        persistence: persistent
+        retention: { time: 43200, size: 10240 }  # 30 天/10GB（合规保留期，02-50 衔接）
+        deduplication: false                       # 审计链不允许 broker 静默去重（重复=疑点须可见）
+operations:
+  appendAuditRecord:
+    action: send
+    channel: { $ref: '#/channels/audit/records' }
+    x-semantics: [持久化, 顺序性, 交付语义]
+  replayAuditChain:
+    action: receive
+    channel: { $ref: '#/channels/audit/records' }
+    x-semantics: [顺序性, 持久化]
+components:
+  messages:
+    AuditRecordEvent:
+      payload: { $ref: 'contract.yaml#/messages/AuditRecordEvent/fields' }
+      headers:
+        type: object
+        required: [trace-id]
+        properties:
+          trace-id: { type: string }

@@ -1,0 +1,25 @@
+# 场景 DSL 契约：IoT 设备遥测（05-iot-telemetry）
+# 衔接 01-46 Sparkplug/MQTT 域标准；高频小消息 + 弱网环境的典型语义组合
+scenario: iot-telemetry
+version: 1.0.0
+messages:
+  TelemetryReadingEvent:
+    type: event
+    required: [deviceId, siteId, metric, value, collectedAt]
+    fields:
+      deviceId: { type: string }
+      siteId: { type: string }
+      metric: { type: string, desc: 指标名（温度/压力/电量） }
+      value: { type: number }
+      collectedAt: { type: timestamp, desc: 设备采集时刻（broker 时间不可信，弱网延迟） }
+  DeviceAlertEvent:
+    type: event
+    required: [deviceId, alertType, severity]
+    fields:
+      deviceId: { type: string }
+      alertType: { type: string }
+      severity: { enum: [INFO, WARN, CRITICAL] }
+invariants:
+  - 遥测允许丢点（QoS0），告警必须达（QoS1+）——交付语义分级
+  - 采集时刻以设备为准（时钟语义），消费端乱序可合法
+  - 离线缓存重传消息带原始 collectedAt（TTL 过期后可丢弃 stale 数据）
