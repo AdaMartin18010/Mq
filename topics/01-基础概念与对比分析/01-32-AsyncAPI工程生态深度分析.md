@@ -1,5 +1,7 @@
 # 1.32 AsyncAPI 工程生态深度分析
 
+> **置信口径**: 协议/规范语义=【定理】（官方规范保证）；架构对比与工程推理=【论证】；正文未单独标注的具体数字按【估算】理解（AGENTS.md §4.1，P3 基线声明）。
+
 > **时效声明**: 本文事实基于 AsyncAPI 官方站点、GitHub 仓库与发布说明核实至 2026-11。规范当前稳定版 3.1.0（2026-01-31 发布）；工具链版本以官方仓库为准。
 
 ## 目录
@@ -31,7 +33,7 @@ AsyncAPI 的定位是"事件驱动 API 的契约描述"（与 OpenAPI 的兄弟�
 生态归属：AsyncAPI Initiative 是 Linux Foundation 旗下项目，核心工具多托管于 asyncapi GitHub 组织，许可证以 Apache 2.0 为主【论证：官方仓库】。
 
 | 环节 | 官方工具 | 作用 |
-|------|----------|------|
+| ------ | ---------- | ------ |
 | 编辑设计 | AsyncAPI Studio | 浏览器内编辑 + 实时校验 + 可视化 |
 | 校验/转换 | Parser / CLI | 文档解析、校验、bundle、转换旧版 |
 | Lint 治理 | Spectral（asyncapi 规则集） | 风格与治理规则检查 |
@@ -45,7 +47,7 @@ AsyncAPI 的定位是"事件驱动 API 的契约描述"（与 OpenAPI 的兄弟�
 代码生成是 AsyncAPI 工程生态的两大支柱之一，分两层能力：
 
 | 维度 | Generator | Modelina |
-|------|-----------|----------|
+| ------ | ----------- | ---------- |
 | 生成目标 | 完整工程产物（文档 HTML/Markdown、客户端/服务端脚手架） | 类型化数据模型（payload 的 struct/class） |
 | 机制 | 模板（Nunjucks）驱动，可自定义模板 | 库 API 调用，输入 AsyncAPI/OpenAPI/JSON Schema |
 | 输出语言 | 依模板（内置多语言客户端/服务端模板） | TypeScript/Java/Go/Python/C# 等多语言【论证：官方文档】 |
@@ -70,6 +72,7 @@ const models = await generator.generate(doc);  // doc 为 AsyncAPI 文档对象
 ```
 
 **生成代码的质量边界【论证】**：
+
 1. 生成物是"类型安全的起点"而非成品——重试、死信、幂等等横切逻辑仍需按 02-12~46 模式手工补充；
 2. 客户端模板的 broker 特性覆盖（如 Kafka 消费者组、分区策略）依模板而异，需逐项核对生成配置；
 3. 与 Schema Registry 的联动需额外集成（生成模型 ≠ 注册兼容校验）。
@@ -77,7 +80,7 @@ const models = await generator.generate(doc);  // doc 为 AsyncAPI 文档对象
 **多语言生成物对照**（Modelina 能力边界，以官方文档为准【论证】）：
 
 | 语言 | 生成物 | 项目对照资产 |
-|------|--------|--------------|
+| ------ | -------- | -------------- |
 | TypeScript | interface/class + 序列化辅助 | examples/*-example.rs 之外的 TS 场景 |
 | Java | POJO/record | examples/kafka-producer-example.java |
 | Python | dataclass | examples/asyncapi-generated-producer-example.py（生成风格+手工横切） |
@@ -121,7 +124,7 @@ rules:
 **协议绑定（bindings）速查**（绑定即"该通道在该 broker 上的部署参数"，独立于核心规范演进）：
 
 | 绑定 | 关键字段（示例） | 项目基线衔接 |
-|------|------------------|--------------|
+| ------ | ------------------ | -------------- |
 | kafka | partitions、replicationFactor、topicConfiguration | 03-16 加固基线（RF≥2）；02-27 分区设计 |
 | mqtt | qos、retain、expiryInterval（MQTT 5.0） | 01-16 QoS 语义 |
 | amqp | isRoutingKeyString、exchange/queue 参数 | 01-15 exchange 类型 |
@@ -168,12 +171,14 @@ asyncapi generate fromTemplate contracts/orders/asyncapi.yaml @asyncapi/react-te
 
 每一步的失败处理：② 失败 → 回改文档（最常见是 binding 缺失）；③ 失败 → 检查 schema 是否含生成器不支持的关键字（以 Modelina 报错为准）；⑤ 阻断 → 按 02-48 的 major 评审流程走。
 
+**与项目 AI 技能的衔接**：契约模板的日常问题（"这个 binding 怎么写""生成模型缺字段"）适合收敛为 `mq-asyncapi-contract` 技能（D3 域，批次13 之后的 P2 队列）；其 source-doc 即本文档 + 02-48 + config-templates 三处。
+
 ## 1.32.4 交互：文档、事件目录与 Mock
 
 交互层的核心问题："契约如何被人消费"【论证】：
 
 | 需求 | 工具/方式 | 说明 |
-|------|-----------|------|
+| ------ | ----------- | ------ |
 | 交互式 API 文档 | react-template / html-template | 本地生成静态站点，可发布到内部门户 |
 | 在线编辑协作 | AsyncAPI Studio（studio.asyncapi.com） | 分享链接即可协作评审 |
 | 事件目录 | EventCatalog 等 | 按域组织事件/服务拓扑，跨团队发现 |
@@ -185,7 +190,7 @@ Mock 的价值在测试体系中的位置：对应 TEST-03 的契约用例（TC-
 **Mock 与契约测试的落地组合**：
 
 | 场景 | 工具组合 | 说明 |
-|------|----------|------|
+| ------ | ---------- | ------ |
 | 前端/联调期无环境 | CLI mock（按文档起模拟端点） | 仅验证消息格式往返 |
 | 契约回归 | Microcks 测试用例（example 驱动） | example payload 成为可执行断言 |
 | CI 契约门禁 | Spectral + Diff + validate 串行 | 对应 02-48 工作流的 3/6 步 |
@@ -196,7 +201,7 @@ Mock 的价值在测试体系中的位置：对应 TEST-03 的契约用例（TC-
 反向路径（代码 → 契约）由框架集成承担，适合"实现先行"的团队：
 
 | 框架 | 语言/平台 | 机制 |
-|------|-----------|------|
+| ------ | ----------- | ------ |
 | Springwolf | Java/Spring Boot | 注解扫描自动生成 AsyncAPI 文档 |
 | FastStream | Python | 基于类型注解的 AsyncAPI 生成 + 消息代理抽象 |
 | nestjs-asyncapi | Node.js/NestJS | 装饰器生成文档 |
@@ -211,7 +216,7 @@ Mock 的价值在测试体系中的位置：对应 TEST-03 的契约用例（TC-
 ## 1.32.6 落地路线与选型建议
 
 | 阶段 | 动作 | 验收标志 |
-|------|------|----------|
+| ------ | ------ | ---------- |
 | 1 起步 | 选 1 个边界清晰的业务 topic 写 AsyncAPI 文档 | 文档通过 `asyncapi validate` + Spectral lint |
 | 2 生成 | Modelina 生成消息模型并接入现有客户端 | 编译通过，人工核对字段映射 |
 | 3 治理 | bundle + 版本库管理 + Diff 入 CI | 破坏性变更被 CI 拦截 |
@@ -225,7 +230,7 @@ Mock 的价值在测试体系中的位置：对应 TEST-03 的契约用例（TC-
 **常见问题（FAQ）**：
 
 | 问题 | 回答口径 |
-|------|----------|
+| ------ | ---------- |
 | 2.x 文档存量怎么办 | `asyncapi convert` 升 3.x 后人工核对 operation 语义（3.0 把 operation 与 channel 解耦是最大变化） |
 | 一份文档能描述多 broker 吗 | 可以：servers 声明多实例，channel 用 bindings 区分协议；建议按 broker 拆分文档更利于治理 |
 | 生成代码能直接上生产吗 | 不能（质量边界见 1.32.2）；需补横切逻辑并经 TEST-03 验证 |

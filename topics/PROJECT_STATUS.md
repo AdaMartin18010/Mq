@@ -9,22 +9,24 @@
 **最近核实**: 2026-11-17
 **项目状态**: 🔄 深度治理与前沿对齐中（第六阶段）
 
-## 文档统计（2026-11-17 实地核实）
+## 文档统计（2026-11-17 实地核实 · 批次14 后）
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 156 | 01系列31篇 + 02系列47篇 + 03系列62篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列6篇 |
+| **主题文档** | 158 | 01系列32篇 + 02系列48篇 + 03系列62篇 + 04系列5篇 + AI_Skill系列5篇 + Testing系列6篇 |
 | **主题README** | 7 | 6个主题目录说明 + topics/README.md |
-| **元文档** | 20 | topics根目录：索引、规范、快速参考、术语表、路线图、状态等；根目录另有 AGENTS.md（协作宪法） |
-| **代码示例** | 52 | Python/Go/Rust/C++/C/Java，覆盖Kafka/MQTT/NATS/Pulsar/RabbitMQ/Redis Stream |
-| **配置模板** | 58 | 服务器/客户端配置、Prometheus/Grafana、Docker Compose、专项配置 |
-| **运维脚本** | 110 | 部署、监控、巡检、演练、安全审计、治理检查、自我验证等 |
-| **总计** | **410** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode |
+| **元文档** | 18 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等，不含 topics/README.md） |
+| **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
+| **配置模板** | 61 | 服务器/客户端配置、Prometheus/Grafana、Docker Compose、AsyncAPI 契约模板与 Spectral 规则集 |
+| **运维脚本** | 110 | 含 scripts/README；部署、监控、巡检、演练、安全审计、治理检查、自我验证 |
+| **Agent Skills** | 17 文件 | skills/：mq-selection、mq-doc-lint、mq-ops-kafka-upgrade、mq-pattern-dlq、mq-ops-dlq、mq-mqtt/mq-nats-deep-dive（各含 SKILL.md 与 references/scripts） |
+| **原始概念** | 6 | concept/concept01~06（历史资产） |
+| **总计** | **433** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实） |
 
 ### 各系列主题文件分布
 
-- **01-基础概念与对比分析（31篇）**：新增01-25~31专章（Kafka 4.0、NATS 2.x、RocketMQ 5.x、Redpanda、S3解耦、事件互操作标准、数据集成与流处理）：概念矩阵、思维导图、决策图网、形式化证明框架、设计模式、架构深度分析、Pulsar/KRaft/RabbitMQ/MQTT 5.0/Redis Stream 深度分析、安全性、性能基准、选型矩阵、FAQ/术语表/学习路径
-- **02-场景驱动架构设计（47篇）**：场景矩阵、决策图网、场景化证明、案例研究（02-01~02-11）+ 36个消息专项设计模式（02-12~02-47，含 02-47 EIP与Outbox/Saga事务模式）
+- **01-基础概念与对比分析（32篇）**：新增01-25~31专章（Kafka 4.0、NATS 2.x、RocketMQ 5.x、Redpanda、S3解耦、事件互操作标准、数据集成与流处理）+ 01-32 AsyncAPI 工程生态（2026-11，代码生成/治理/交互）：概念矩阵、思维导图、决策图网、形式化证明框架、设计模式、架构深度分析、Pulsar/KRaft/RabbitMQ/MQTT 5.0/Redis Stream 深度分析、安全性、性能基准、选型矩阵、FAQ/术语表/学习路径
+- **02-场景驱动架构设计（48篇）**：场景矩阵、决策图网、场景化证明、案例研究（02-01~02-11）+ 37个消息专项设计模式（02-12~02-48，含 02-47 EIP与Outbox/Saga事务模式、02-48 契约设计工作流与事件 API 治理）
 - **03-架构与运维实践（62篇）**：部署/成本/故障/可观测性/SRE/集群/K8s（03-01~03-14）+ 专项运维指南（03-15~03-38）+ 消息运维实践指南（03-39~03-62，与02系列一一对应）
 - **04-动态系统论与演化分析（5篇）**：系统动力学、时间演化、负载响应与故障传播、混沌工程、动态选型决策
 - **AI_Skill-AI技能体系与国际标准对齐（5篇，2026-11 新增）**：Agent Skills 开放标准对齐、项目技能图谱、制作规范、模板与模型、用例与用法（对齐 agentskills.io，AAIF 治理）
@@ -54,7 +56,7 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - **P1 时效更新**：Kafka 4.0/KIP-932、Pulsar 4.x/Oxia、RabbitMQ 4.x、Redis 8、NATS 2.11
 - **P2 前沿补章**：RocketMQ、Redpanda、S3解耦架构、CloudEvents/AsyncAPI、CDC/Debezium、流式湖仓
 - **P3 严谨性升级**：三级置信标注、引用规范化、形式化资产链接（Jepsen/TLA+）、案例可溯源化
-- **P4 持续机制**：版本追踪清单例行更新；完整性检查脚本 ✅ 已落地（doc-self-check.sh，批次12，2026-11-17 自检 ERROR=0）
+- **P4 持续机制**：版本追踪清单 ✅ 已核实更新至 2026-11（ROADMAP，批次15）；完整性检查脚本 ✅ 已落地（doc-self-check.sh，批次12，2026-11-17 自检 ERROR=0）
 
 ## 质量保证
 

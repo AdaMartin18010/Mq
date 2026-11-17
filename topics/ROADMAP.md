@@ -4,7 +4,7 @@
 
 ## 当前阶段：第六阶段 - 深度治理与前沿对齐（2026-01 启动）
 
-**进度**：P0 治理 ✅ · P1 时效 ✅ · P2 前沿 ✅ · 规范体系 ✅ · P5 扩展体系 ✅ → 剩 P3 严谨性、P4 版本追踪清单（批次10/11）
+**进度**：P0 治理 ✅ · P1 时效 ✅ · P2 前沿 ✅ · 规范体系 ✅ · P5 扩展体系（批次12-14）✅ · 版本追踪基线（批次15）✅ → 剩 P3 严谨性（批次16a/16b/17）、深度补齐（18）、结构治理（19）
 
 ## 波次任务清单
 
@@ -71,8 +71,8 @@
 | 批次 | 内容 | 状态 |
 | ------ | ------ | ------ |
 | 批次13 | 首批技能制作 6 个：mq-selection、mq-doc-lint、mq-ops-kafka-upgrade、mq-pattern-dlq、mq-ops-dlq、mq-mqtt-deep-dive（+mq-nats-deep-dive）；验收=AI_SKILL-03 清单+用例回放+--skill-drift | ✅ 完成（7 技能，2026-11-17） |
-| 批次14 | AsyncAPI 工程生态专批：01-32（spec 3.x/bindings/Generator/Modelina/Studio/Spectral/Diff 生态深度，WebSearch 核实至执行月）+ 02-48（契约设计工作流：design-first/review/版本治理/事件目录）+ config-templates 契约模板 + examples 生成代码样例 | ⬜ 待做 |
-| 批次15 | 版本追踪清单核实更新：8 系统 release 基线核实至执行月（WebSearch 双源），ROADMAP 基线表与相关文档时效声明同步 | ⬜ 待做 |
+| 批次14 | AsyncAPI 工程生态专批：01-32（spec 3.x/bindings/Generator/Modelina/Studio/Spectral/Diff 生态深度，WebSearch 核实至执行月）+ 02-48（契约设计工作流：design-first/review/版本治理/事件目录）+ config-templates 契约模板 + examples 生成代码样例 | ✅ 完成（2026-11-17） |
+| 批次15 | 版本追踪清单核实更新：8 系统 release 基线核实至执行月（WebSearch 双源），ROADMAP 基线表与相关文档时效声明同步 | ✅ 完成（2026-11-17 全表重写，含来源链接与例行更新规则） |
 | 批次16a/16b | P3 严谨性上半/下半：三级置信标注 retroactive（01+04 系列 62 篇 / 02+03 系列 105 篇） | ⬜ 待做 |
 | 批次17 | P3 收尾：定量声明引用规范化 + 形式化资产链接补全 + 案例可溯源化 | ⬜ 待做 |
 | 批次18 | 深度补齐：02-07~09、03-15~38 加厚；01-23 术语表充实；Testing 覆盖矩阵 ○ 格转化（RocketMQ/Redpanda 优先） | ⬜ 待做 |
@@ -80,18 +80,22 @@
 
 滚动项（随批执行，不单独成批）：WARN 顺手修、TEST-05 月度回顾、技能季度对账、CHANGELOG 每批一记。
 
-## 版本追踪清单（各系统当前版本基线）
+## 版本追踪清单（各系统当前版本基线，2026-11-17 WebSearch 核实）
 
-| 系统 | 项目文档基线 | 最新发布（截至2025年底） | 差距 |
-| ------ | ------------ | ------------------------ | ------ |
-| Kafka | KRaft过渡模式 | 4.0（2025-03，移除ZK）、4.1（2025-09，KIP-932 Preview） | ✅ 已补（01-25）；4.2 GA 后例行更新 |
-| Pulsar | 3.x 时代 | 4.x、Oxia | 需更新 |
-| RabbitMQ | 3.x | 4.x（streams/quorum增强） | 需更新 |
-| MQTT | 5.0 | 5.0（QUIC传输推进中） | 基本持平 |
-| NATS | 2.9/2.10 | 2.11（KV/ObjectStore成熟） | 需更新 |
-| Redis | 7.x Stream | 8.x（AGPL，Stream增强） | 需更新 |
-| RocketMQ | 未覆盖 | 5.x | 需新增 |
-| Redpanda | 未覆盖 | 24.x/25.x | 需新增 |
+| 系统 | 项目文档基线 | 最新发布（核实至 2026-11） | 关键变化 | 差距与行动 |
+| ------ | ------------ | -------------------------- | -------- | ----------- |
+| Kafka | 4.0 专章（01-25） | **4.4.0（2026-10-22）**；4.3.2（2026-10-23）；4.2（2026-02-17，KIP-932 Share Groups 生产就绪）；支持策略=最近三个大版本 | 4.1 的 KIP-932 预览在 4.2 转 GA | 01-25 补充 4.2-4.4 演进段（批次16a 置信标注时合并处理） |
+| Pulsar | 4.x/Oxia（01-12） | **4.1.3（2026-02-19，Oxia 0.7.2）**；4.0.14（2026-10-05）；5.0.0-M1（2026-06-23），社区资料显示 5.0 于 2026-10 GA（以官网 download 页为准） | 5.0 大版本演进中；Oxia 成新集群推荐元数据存储（Helm 默认） | 01-12 补 4.1/5.0-M1 段；GA 确认后更新选型口径 |
+| RabbitMQ | 4.x（01-15） | **4.4.0（2026-10-20）**；4.3.x 社区支持至 2027-01-31（最低 Erlang 27）；4.2 EOL 2026-07-31；官方要求 3.13/4.0/4.1 先迁 4.2 再向上 | 版本跳转需经 4.2 迁移；支持窗口收紧 | 01-15/03-27 补升级路径硬约束 |
+| MQTT | 5.0（01-16） | **5.0 仍为现行 OASIS 标准**（截至 2026-05 目录无 5.1）；QUIC 传输未入标准 | 协议层稳定 | 无紧急行动；关注 QUIC 标准化 |
+| NATS | 2.10/2.11（01-26） | **2.15（2026-09-17，最新）**；2.14（2026-04-30，维护中）；2.13 跳过未发布；2.12 EOL（终版 2.12.15，2026-08-12）；2.11 EOL（终版 2.11.17，2026-04-27）；支持策略=最新+上一小版本双线 | 版本节奏约半年一小版本；JetStream 功能按 API level 门控 | 01-26 版本表大改（2.12~2.15）；03-27 NATS 升级段更新 |
+| Redis | 8.x/AGPL（01-17） | **8.x 为当前线**（8.6.0 2026-02、8.8.0 2026-05、8.10 2026-07 等季度节奏）；8.0+ 三许可证 RSALv2/SSPLv1/AGPLv3；Valkey 分叉 9.x（BSD，云厂商默认） | 许可证与分叉生态是选型核心变量 | 01-17 补许可证决策段；选型口径加 Valkey 对照 |
+| RocketMQ | 5.x（01-27） | **5.5.1（2026-08-20）**；5.3.4（2025-11-26） | 5.5 系列持续演进 | 01-27 版本表更新至 5.5.1 |
+| Redpanda | 24.x/25.x（01-28） | **v26.2（2026-07，支持至 2027-07-28）**；26.1 引入 Shadowing；25.3 起 Iceberg topic 有破坏性 schema 变更；GitHub 止于 26.2.2，后续发版仅 docs 站 | 改用 CalVer 风格版本号；发版渠道变更 | 01-28 版本口径更新；Iceberg 变更警示入 03-27 |
+
+来源（2026-11-17 核实）：[Kafka 官方下载页](https://kafka.apache.org/community/downloads/)、[Kafka EOL](https://endoflife.date/apache-kafka)、[Confluent 4.2 公告](https://www.confluent.io/blog/apache-kafka-4-2-release/)、[Pulsar 4.1.3](https://pulsar.apache.org/release-notes/versioned/pulsar-4.1.3/)、[Pulsar 5.0.0-M1](https://pulsar.apache.org/release-notes/versioned/pulsar-5.0.0-M1/)、[RabbitMQ 下载](https://www.rabbitmq.com/docs/download)、[RabbitMQ 升级](https://www.rabbitmq.com/docs/upgrade)、[NATS Release Notes](https://docs.nats.io/release-notes/)、[Redis AGPL 公告](https://redis.io/blog/agplv3/)、[RocketMQ Release Notes](https://rocketmq.apache.org/release-notes/)、[Redpanda Releases](https://docs.redpanda.com/streaming/current/reference/releases/)、[OASIS MQTT](https://mqtt.org/mqtt-specification/)
+
+**例行更新规则**：每季度按上表来源逐系统复核一次（并入 TEST-06 月度回顾）；出现大版本 GA（如 Pulsar 5.0、Kafka 4.5）时 30 天内更新对应专章。
 
 ---
 

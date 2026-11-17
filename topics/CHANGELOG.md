@@ -2,6 +2,24 @@
 
 > **归并说明**: 2026-01-06 治理批次中，原 2.x–6.4.x 共 30+ 个版本（均标注 2025-12-31 同日、每个仅新增 1-2 个文件）已按语义归并为下述版本。历史细节见 Git 提交记录。
 
+## [3.6.0] - 2026-11-17
+
+### 批次15：版本追踪清单核实更新（P4 机制落地）
+
+- ✅ ROADMAP 版本追踪清单全表重写并核实至 2026-11（WebSearch 多源）：Kafka 4.4.0（2026-10-22，三版本支持策略）、Pulsar 4.1.3 + 5.0.0-M1（5.0 预计 10 月 GA）、RabbitMQ 4.4.0（3.13/4.0/4.1 须先迁 4.2）、NATS 2.15（2.11/2.12 已 EOL）、Redis 8.x 三许可证 + Valkey 9.x 对照、RocketMQ 5.5.1、Redpanda v26.2（CalVer + 发版渠道变更）、MQTT 5.0 仍为现行标准
+- ✅ 每系统附"差距与行动"列 + 例行更新规则（季度复核，大版本 GA 30 天内更新专章）
+- 波及说明：专章正文演进段更新（01-12/01-15/01-17/01-25/01-26/01-27/01-28/03-27）并入批次16a 置信标注批一并执行
+
+## [3.5.0] - 2026-11-17
+
+### 批次14：AsyncAPI 工程生态专批（前沿补章扩展）
+
+- ✅ 新建 01-32 AsyncAPI 工程生态深度分析：Generator/Modelina 代码生成能力与质量边界、Spectral/Parser/CLI/Diff 治理链、Studio/事件目录/Mock 交互层、Springwolf/FastStack 框架集成、绑定版本史与端到端流程（版本事实 WebSearch 核实至 2026-11：规范 3.1.0/2026-01-31、Solace 2.3.0、Pulsar 2.6.0、ROS 2 3.1.0）
+- ✅ 新建 02-48 契约设计工作流与事件 API 治理（02 系列设计层）：契约先行 vs 实现先行、六步工作流+RACI、版本治理与删除公告期、与 02-12~46 模式的契约表达衔接、契约-Schema Registry 双门禁
+- ✅ config-templates 新增 3 项：asyncapi-kafka-example.yaml、asyncapi-mqtt-example.yaml、spectral-asyncapi-ruleset.yaml
+- ✅ examples 新增 asyncapi-generated-producer-example.py（Modelina 生成风格模型 + 手工横切逻辑对照，py_compile 通过）
+- ✅ 四件套同步：INDEX/PROJECT_STATUS 统计更新（415 文件）、ROADMAP 批次14 勾记
+
 ## [3.4.0] - 2026-11-17
 
 ### 批次13：首批 Agent Skills 制作 + 批次编排确认
