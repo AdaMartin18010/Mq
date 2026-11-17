@@ -1,0 +1,5 @@
+warn_id	date	file	line	type	disposition	notes
+W001	2026-11-18	topics/COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md	38	historical_archive_completion_claim	historical	历史档案含完成度宣称(允许保留但需知情): 38:### 1.1 高优先级改进（✅ 100%完成）
+W002	2026-11-18	topics/COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md	58	historical_archive_completion_claim	historical	历史档案含完成度宣称(允许保留但需知情): 58:### 1.2 中优先级改进（✅ 100%完成）
+W003	2026-11-18	topics/COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md	90	historical_archive_completion_claim	historical	历史档案含完成度宣称(允许保留但需知情): 90:### 1.3 文档更新（✅ 100%完成）
+W004	2026-11-18	topics/COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md	299	historical_archive_completion_claim	historical	历史档案含完成度宣称(允许保留但需知情): 299:**当前状态**: ✅ **生产就绪，持续优化中**
