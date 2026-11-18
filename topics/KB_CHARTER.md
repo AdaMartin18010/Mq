@@ -72,6 +72,8 @@ agent 引用时若知识版本戳超过其等级周期，回答中须加"（知�
 
 ## 七、与其他规范的关系
 
+**治理族文件索引**：K1 本文 · K2/K3 [KB_ENDORSEMENT](KB_ENDORSEMENT.md) · K4 [KB_REF_AUDIT](KB_REF_AUDIT.md) · K5 [KB_GOVERNANCE](KB_GOVERNANCE.md) · K6 分工 [KB_DIVISION](KB_DIVISION.md)
+
 - 本宪章与 AGENTS.md §4（P3 体系）、§6（红线）为同一治理体系：§4 定义标注，本文定义 agent 如何使用标注；
 - 测试体系（TEST-13 状态机/TEST-16 闭环）是本文 §4 闭环的执行机制；
 - 冲突条款裁决顺序：数学事实 > 官方规范 > 本宪章 > 其他治理文档【论证】。
