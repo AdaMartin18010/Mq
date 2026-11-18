@@ -164,13 +164,18 @@ step_registry_check() {
   python3 "./topics/scripts/matrix-check.py" || rc=1
   # mapped 准入自动核验（批次127：TEST-17 挂账落地）——script 非"-"的 mapped 行须脚本实地存在
   local miss=0
+  declare -A SCR=()
+  local d f
+  for d in topics/scripts Testing/06-契约语义测试/04-行为用例 Testing/06-契约语义测试/06-行为验证 Testing/07-集成矩阵 Testing/08-运维行为测试; do
+    for f in "$d"/*; do [[ -f "$f" ]] && SCR["$f"]=1; done
+  done
   while IFS=$'\t' read -r rid rdom rscript renv rdocs rstat; do
     [[ "$rstat" == "mapped" && "$rscript" != "-" && "$rscript" != "" ]] || continue
     local found=0 s
     for s in ${rscript//,/ }; do
-      s="$(echo "$s" | xargs)"
+      s="${s//[[:space:]]/}"
       for d in topics/scripts Testing/06-契约语义测试/04-行为用例 Testing/06-契约语义测试/06-行为验证 Testing/07-集成矩阵 Testing/08-运维行为测试; do
-        [[ -f "$d/$s" ]] && { found=1; break; }
+        [[ -n "${SCR[$d/$s]:-}" ]] && { found=1; break; }
       done
       [[ $found -eq 1 ]] && break
     done
