@@ -1,0 +1,11 @@
+# conversion-rules：契约转换规则机读版（01-88 镜像）；列: rule_id chain priority src_pattern tgt_pattern condition loss
+R1-01	R1	10	messages.*.type=command	operation.action=send+channel=*.cmds	-	none
+R1-03	R1	20	messages.*.fields	message.payload=$ref contract.yaml	字段无嵌套	desc-truncated
+R1-05	R1	20	quality[]	payload.required[]	type in {not_null,freshness}	temporal-static
+R1-06	R1	5	sla	x-sla-ref 指针（不转换）	-	none
+R2-02	R2	30	operation.action	客户端方法签名	-	binding-not-in-signature
+R2-03	R2	30	x-*	配置注释块	无模板钩子	extension-comment
+R3-02	R3	10	invariants	customProperties.x-invariants	-	judg-dependency
+R4-01	R4	10	kafka.partitions=N	num.partitions/创建参数	-	none
+R5-01	R5	40	注解 handler	operation.action=receive	元数据完整	behavior-opaque
+R5-03	R5	1	无注解代码	拒绝逆向	-	-
