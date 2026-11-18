@@ -2,6 +2,13 @@
 
 > 唯一写者：hermes；主控梳理前必读。在域标记=当前正执行区域（主控规划避让依据）。
 
+## 移交注记（主控 seeding——hermes 启动后可删本节）
+
+**H1 起点状态**：Microcks 未就绪。mongo 4.4→7.0-jammy 升级失败（exit 62=**旧卷 featureCompatibility 不兼容**——microcks-mongo-data 卷仍持 4.4 格式数据）。
+**H1 第一步**：`docker compose -f Testing/fixtures/docker-compose-microcks.yml down -v && up -d`（清旧卷重建），随后按 H1 判据推进（API 200→导入 01-order-lifecycle→contract test）。
+**已就位**：镜像齐（microcks/mongo 7.0 已拉）；compose 已含 JAVA_OPTIONS mongo URI 修复。
+**A2 已 verified（主控执行期）**：TC-SEM-05/07+Kafka 耐久，verified=23，详见 results/phase-A2-2026-11-18/。
+
 ## 当前在域
 （hermes 执行时填写，如：Testing/08/cases/nats/ — A4 GAME DAY 准备）
 
