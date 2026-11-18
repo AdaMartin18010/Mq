@@ -1,0 +1,26 @@
+# Sparkplug B 主题命名空间契约模板（IoT 域缺口清单项）
+# 遵循 Sparkplug 规范主题结构：spBv1.0/{groupId}/{messageType}/{edgeNodeId}/{deviceId}
+scenario: sparkplug-telemetry
+version: 1.0.0
+messages:
+  SparkplugMetricEvent:
+    type: event
+    required: [groupId, edgeNodeId, metricName, value, timestamp]
+    fields:
+      groupId: { type: string, desc: Sparkplug 组标识 }
+      edgeNodeId: { type: string }
+      deviceId: { type: string, desc: 可空（EON 级指标时为空） }
+      metricName: { type: string }
+      value: { type: number }
+      timestamp: { type: timestamp, desc: 指标采集时间（Sparkplug 时戳语义） }
+invariants:
+  - 主题须符合 spBv1.0/{group}/{NBIRTH|NDATA|...}/{edgeNode}[/{device}]（Sparkplug 规范【论证：以官方 spec 为准】）
+  - NBIRTH 先于该节点的 NDATA（会话建立序）
+quality:
+  - column: SparkplugMetricEvent.edgeNodeId
+    type: not_null
+    severity: error
+sla:
+  freshness: PT1M
+  availability: 99.9%
+  retention: P30D

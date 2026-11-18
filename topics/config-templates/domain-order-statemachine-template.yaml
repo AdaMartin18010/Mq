@@ -1,0 +1,56 @@
+# 订单状态机通用契约模板（电商域）——从 01-order-lifecycle 场景实例泛化
+# 使用约定：替换状态/事件名为业务域等价物；状态机不变式（单调/幂等）保持
+# 场景 DSL 契约：订单全链路（01-order-lifecycle）
+# 字段组织遵循 01-43 设计→DSL 转换规则；消息类型遵循 02-57 命令/事件/查询三分
+scenario: order-lifecycle
+version: 1.0.0
+messages:
+  OrderCreateCmd:                     # 命令：携带幂等键
+    type: command
+    required: [orderId, idempotencyKey, items, totalAmount]
+    fields:
+      orderId: { type: string, desc: 订单号（业务键） }
+      idempotencyKey: { type: string, desc: 幂等键，重试不重复建单 }
+      items: { type: array, desc: 明细行 }
+      totalAmount: { type: number }
+  OrderCreatedEvent:                  # 事件：领域事实
+    type: event
+    required: [orderId, occurredAt, orderKey]
+    fields:
+      orderId: { type: string }
+      orderKey: { type: string, desc: 顺序键=orderId（Kafka 分区键） }
+      occurredAt: { type: timestamp }
+  OrderPaidEvent:
+    type: event
+    required: [orderId, paidAt]
+    fields:
+      orderId: { type: string }
+      paidAt: { type: timestamp }
+  OrderCancelledEvent:
+    type: event
+    required: [orderId, reason]
+    fields:
+      orderId: { type: string }
+      reason: { type: string }
+stateMachine:                         # 订单状态机（事件溯源回放依据）
+  states: [CREATED, PAID, SHIPPED, CANCELLED]
+  transitions:
+    - { from: null,   event: OrderCreatedEvent,     to: CREATED }
+    - { from: CREATED, event: OrderPaidEvent,       to: PAID }
+    - { from: CREATED, event: OrderCancelledEvent,  to: CANCELLED }
+invariants:
+  - 同一 orderId 的 OrderCreatedEvent 至多一次（幂等去重）
+  - 同一 orderId 事件按 occurredAt 单调有序（顺序性）
+  - PAID 不可回退（状态机断言）
+# ODCS v3.1.0 对齐段（odcs-alignment.md §三范例；quality/sla 为治理维度，与消息语义互补）
+quality:
+  - column: OrderCreatedEvent.orderId
+    type: not_null
+    severity: error
+  - column: OrderCreatedEvent.occurredAt
+    type: freshness
+    maximum: PT5M
+sla:
+  freshness: PT1M
+  availability: 99.95%
+  retention: P30D

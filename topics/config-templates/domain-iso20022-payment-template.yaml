@@ -1,0 +1,28 @@
+# ISO 20022 支付指令契约模板（pacs.008 子集——金融域缺口清单首项，CONTRACT_DESIGN_SPEC §五）
+# 字段子集取自 ISO 20022 pacs.008（FI-to-FI Customer Credit Transfer）核心要素【论证：以 ISO 20022 官方目录为准，执行时须核实现行版】
+scenario: iso20022-payment-instruction
+version: 1.0.0
+messages:
+  PaymentInstructionCmd:              # 对应 pacs.008 头+交易信息子集
+    type: command
+    required: [msgId, endToEndId, amount, currency, debtorAgent, creditorAgent]
+    fields:
+      msgId: { type: string, desc: 消息标识（ISO MsgId，全局唯一） }
+      endToEndId: { type: string, desc: 端到端标识（ISO EndToEndId，对账键） }
+      amount: { type: number, desc: 金额（ISO TxAmt，配合 currency） }
+      currency: { type: string, enum: [CNY, USD, EUR, JPY] }
+      debtorAgent: { type: string, desc: 付款行 BIC/LEI }
+      creditorAgent: { type: string, desc: 收款行 BIC/LEI }
+      settlementDate: { type: timestamp, desc: 清算日（ISO IntrBkSttlmDt） }
+invariants:
+  - endToEndId 全程不变（对账追踪键，ISO 核心语义）
+  - amount+currency 变更必须新指令（禁止覆盖）
+quality:
+  - column: PaymentInstructionCmd.endToEndId
+    type: not_null
+    severity: error
+sla:
+  freshness: PT1M
+  availability: 99.99%
+  retention: P7Y
+# 挂账：完整 pacs/pain/mx 族映射、ISO 现行版核实——按域需求优先级排期
