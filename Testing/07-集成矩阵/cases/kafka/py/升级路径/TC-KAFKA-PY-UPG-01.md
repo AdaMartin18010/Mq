@@ -1,27 +1,21 @@
-# TC-KAFKA-PY-UPG-01：Python 客户端的 Kafka 升级路径 用例骨架
+# TC-KAFKA-PY-UPG-01：PY 客户端的 KAFKA 升级路径 用例
 
 > **维度**：系统=KAFKA | 语言=PY | 特性=UPG(升级路径) | 转换链=T3,T4
-> **依据**：03-67 升级路径+03-68 启动序列
-> **环境**：E2；**状态**：pending
+> **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 Kafka；PY 客户端见 languages.tsv 代表客户端
+- 滚动升级路径
 
 ## When
-
-- （骨架）按 升级路径 特性标准动作触发（充实批细化）
+- 版本跳转
 
 ## Then
-
-- 运维特性断言（画像对标，逐批充实）
+- 升级预检（skill mq-ops-kafka-upgrade）
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/kafka/py/升级路径/TC-KAFKA-PY-UPG-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/03-67/03-68；充实批回填真 GWT 后流转 mapped
+- 03-67/AI_Skills

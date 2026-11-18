@@ -1,28 +1,23 @@
-# TC-NATS-C-DLY-01：C(C++) 客户端的 NATS JetStream 延迟消息 用例骨架
+# TC-NATS-C-DLY-01：C 客户端的 NATS 延迟消息 用例
 
 > **维度**：系统=NATS | 语言=C | 特性=DLY(延迟消息) | 转换链=T4
 > **矩阵等级**：○ app-level（应用层模式用例（契约兜底））| **断言源**：TEST-C2 延迟消息格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 NATS JetStream；C 客户端见 languages.tsv 代表客户端
+- 无原生延迟
 
 ## When
-
-- （骨架）按 延迟消息 特性标准动作触发（充实批细化）
+- 定时需求
 
 ## Then
-
-- 应用层模式用例（契约兜底）：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 NATS JetStream×延迟消息=○
+- 应用层调度模式
+- 等级依据：TEST-C2 NATS×延迟消息=○
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/nats/c/延迟消息/TC-NATS-C-DLY-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- TEST-C2 ○

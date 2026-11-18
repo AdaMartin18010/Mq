@@ -1,18 +1,18 @@
-# TC-RABBITMQ-PY-TTL-01：Python 客户端的 RabbitMQ TTL过期 用例骨架
+# TC-RABBITMQ-PY-TTL-01：PY 客户端的 RABBITMQ TTL过期 用例
 
 > **维度**：系统=RABBITMQ | 语言=PY | 特性=TTL(TTL过期) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 TTL过期格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RabbitMQ；PY 客户端见 languages.tsv 代表客户端
+- per-message TTL+队列 TTL
 
 ## When
-- （骨架）按 TTL过期 特性标准动作触发（充实批细化）
+- 过期消息
 
 ## Then
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 RabbitMQ×TTL过期=●
+- 过期即清理可观测
+- 等级依据：TEST-C2 RABBITMQ×TTL过期=●
 
 ## Dry-run 验证
 ```bash
@@ -20,4 +20,4 @@ bash Testing/07-集成矩阵/cases/rabbitmq/py/TTL过期/TC-RABBITMQ-PY-TTL-01.s
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- TEST-C2 ●

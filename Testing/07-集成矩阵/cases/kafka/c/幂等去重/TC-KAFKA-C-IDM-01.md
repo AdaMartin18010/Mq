@@ -1,28 +1,23 @@
-# TC-KAFKA-C-IDM-01：C(C++) 客户端的 Kafka 幂等去重 用例骨架
+# TC-KAFKA-C-IDM-01：C 客户端的 KAFKA 幂等去重 用例
 
 > **维度**：系统=KAFKA | 语言=C | 特性=IDM(幂等去重) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 幂等去重格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 Kafka；C 客户端见 languages.tsv 代表客户端
+- enable.idempotence=true
 
 ## When
-
-- （骨架）按 幂等去重 特性标准动作触发（充实批细化）
+- broker 故障转移触发重试
 
 ## Then
-
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 Kafka×幂等去重=●
+- 单分区日志无重复序列号
+- 等级依据：TEST-C2 KAFKA×幂等去重=●
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/kafka/c/幂等去重/TC-KAFKA-C-IDM-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-63 KIP-98

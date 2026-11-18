@@ -1,28 +1,23 @@
-# TC-NATS-RS-BCK-01：Rust 客户端的 NATS JetStream 背压 用例骨架
+# TC-NATS-RS-BCK-01：RS 客户端的 NATS 背压 用例
 
 > **维度**：系统=NATS | 语言=RS | 特性=BCK(背压) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 背压格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 NATS JetStream；RS 客户端见 languages.tsv 代表客户端
+- maxAckPending=100 不 ack
 
 ## When
-
-- （骨架）按 背压 特性标准动作触发（充实批细化）
+- 持续投递
 
 ## Then
-
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 NATS JetStream×背压=●
+- 平台期=100（ASE-010）
+- 等级依据：TEST-C2 NATS×背压=●
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/nats/rs/背压/TC-NATS-RS-BCK-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-66/TC-NATS-GO-BCK-01

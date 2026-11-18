@@ -1,18 +1,19 @@
-# TC-RABBITMQ-TS-DLV-01：TypeScript-JavaScript 客户端的 RabbitMQ 交付语义 用例骨架
+# TC-RABBITMQ-TS-DLV-01：TS 客户端的 RABBITMQ 交付语义 用例
 
 > **维度**：系统=RABBITMQ | 语言=TS | 特性=DLV(交付语义) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 交付语义格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RabbitMQ；TS 客户端见 languages.tsv 代表客户端
+- durable queue+persistent 消息+confirm
 
 ## When
-- （骨架）按 交付语义 特性标准动作触发（充实批细化）
+- broker 重启
 
 ## Then
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 RabbitMQ×交付语义=●
+- 消息存活（ASE-015 族）
+- confirm 返回即承诺
+- 等级依据：TEST-C2 RABBITMQ×交付语义=●
 
 ## Dry-run 验证
 ```bash
@@ -20,4 +21,4 @@ bash Testing/07-集成矩阵/cases/rabbitmq/ts/交付语义/TC-RABBITMQ-TS-DLV-0
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-65

@@ -1,17 +1,16 @@
-# TC-ROCKETMQ-GO-UPG-01：Go 客户端的 RocketMQ 升级路径 用例骨架
+# TC-ROCKETMQ-GO-UPG-01：GO 客户端的 ROCKETMQ 升级路径 用例
 
 > **维度**：系统=ROCKETMQ | 语言=GO | 特性=UPG(升级路径) | 转换链=T3,T4
-> **依据**：03-67 升级路径+03-68 启动序列
-> **环境**：E2；**状态**：pending
+> **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RocketMQ；GO 客户端见 languages.tsv 代表客户端
+- broker 升级
 
 ## When
-- （骨架）按 升级路径 特性标准动作触发（充实批细化）
+- 升级
 
 ## Then
-- 运维特性断言（画像对标，逐批充实）
+- 升级路径断言
 
 ## Dry-run 验证
 ```bash
@@ -19,4 +18,4 @@ bash Testing/07-集成矩阵/cases/rocketmq/go/升级路径/TC-ROCKETMQ-GO-UPG-0
 ```
 
 ## 关联
-- 维度定义源：features.tsv/03-67/03-68；充实批回填真 GWT 后流转 mapped
+- 【论证】

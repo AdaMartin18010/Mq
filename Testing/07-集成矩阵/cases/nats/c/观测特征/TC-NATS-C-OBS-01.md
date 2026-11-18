@@ -1,27 +1,21 @@
-# TC-NATS-C-OBS-01：C(C++) 客户端的 NATS JetStream 观测特征 用例骨架
+# TC-NATS-C-OBS-01：C 客户端的 NATS 观测特征 用例
 
 > **维度**：系统=NATS | 语言=C | 特性=OBS(观测特征) | 转换链=T3,T4
-> **依据**：03-68 观测特征+01-33
-> **环境**：E2；**状态**：pending
+> **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 NATS JetStream；C 客户端见 languages.tsv 代表客户端
+- /varz+consumer info
 
 ## When
-
-- （骨架）按 观测特征 特性标准动作触发（充实批细化）
+- 常态
 
 ## Then
-
-- 运维特性断言（画像对标，逐批充实）
+-  JetStream 指标基线
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/nats/c/观测特征/TC-NATS-C-OBS-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/03-68/01-33；充实批回填真 GWT 后流转 mapped
+- 03-68

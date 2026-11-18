@@ -1,27 +1,21 @@
-# TC-MQTT-GO-FTB-01：Go 客户端的 MQTT 5.0 故障行为 用例骨架
+# TC-MQTT-GO-FTB-01：GO 客户端的 MQTT 故障行为 用例
 
 > **维度**：系统=MQTT | 语言=GO | 特性=FTB(故障行为) | 转换链=T3,T4
-> **依据**：03-68 故障默认行为
-> **环境**：E2；**状态**：pending
+> **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 MQTT 5.0；GO 客户端见 languages.tsv 代表客户端
+- 连接风暴
 
 ## When
-
-- （骨架）按 故障行为 特性标准动作触发（充实批细化）
+- 注入
 
 ## Then
-
-- 运维特性断言（画像对标，逐批充实）
+- 连接数上限行为
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/go/故障行为/TC-MQTT-GO-FTB-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/03-68；充实批回填真 GWT 后流转 mapped
+- 03-68

@@ -1,28 +1,24 @@
-# TC-KAFKA-GO-PST-01：Go 客户端的 Kafka 持久化 用例骨架
+# TC-KAFKA-GO-PST-01：GO 客户端的 KAFKA 持久化 用例
 
 > **维度**：系统=KAFKA | 语言=GO | 特性=PST(持久化) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 持久化格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 Kafka；GO 客户端见 languages.tsv 代表客户端
+- segment+副本持久化
 
 ## When
-
-- （骨架）按 持久化 特性标准动作触发（充实批细化）
+- broker 重启
 
 ## Then
-
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 Kafka×持久化=●
+- 已提交段完整
+- 页缓存依赖声明
+- 等级依据：TEST-C2 KAFKA×持久化=●
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/kafka/go/持久化/TC-KAFKA-GO-PST-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-61

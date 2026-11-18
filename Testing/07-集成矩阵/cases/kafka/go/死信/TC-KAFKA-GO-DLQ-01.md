@@ -2,7 +2,7 @@
 
 > **维度**：系统=KAFKA | 语言=GO | 特性=DLQ（死信） | 转换链=T4
 > **断言源**：01-65 DLQ 工程解析（KIP-1191 Share Groups DLQ，Kafka 4.4）
-> **环境**：E2 docker；**状态**：pending（**前置挂账**：需 Kafka ≥4.4 镜像，fixtures 当前未锁定 4.4——升级批次处理）
+> **环境**：E2 docker；**状态**：pending。**镜像基线**：fixtures 已锁 apache/kafka:4.4.0（KIP-1191 解锁）
 
 ## Given
 

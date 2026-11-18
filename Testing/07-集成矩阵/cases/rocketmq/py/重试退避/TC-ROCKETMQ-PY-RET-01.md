@@ -1,22 +1,28 @@
-# TC-ROCKETMQ-PY-RET-01：Python 客户端的 RocketMQ 重试退避 用例骨架
+# TC-ROCKETMQ-PY-RET-01：PY 客户端的 ROCKETMQ 重试退避 用例
 
 > **维度**：系统=ROCKETMQ | 语言=PY | 特性=RET(重试退避) | 转换链=T4
-> **前置挂账**：TEST-C2 矩阵未覆盖该系统——待图谱补边后回填断言
-> **环境**：E2；**状态**：pending
+> **矩阵等级**：◐ config（配置启用后正例）| **断言源**：TEST-C2 重试退避格
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RocketMQ；PY 客户端见 languages.tsv 代表客户端
+
+- consumer 重试等级（%RETRY%）
 
 ## When
-- （骨架）按 重试退避 特性标准动作触发（充实批细化）
+
+- 消费失败
 
 ## Then
-- （挂账）矩阵覆盖后回填断言
+
+- 重试 16 次梯度（◐）
+- 等级依据：TEST-C2 ROCKETMQ×重试退避=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/py/重试退避/TC-ROCKETMQ-PY-RET-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+
+- 【论证】

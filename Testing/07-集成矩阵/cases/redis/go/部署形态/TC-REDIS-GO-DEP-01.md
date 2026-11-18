@@ -1,17 +1,16 @@
-# TC-REDIS-GO-DEP-01：Go 客户端的 Redis Stream 部署形态 用例骨架
+# TC-REDIS-GO-DEP-01：GO 客户端的 REDIS 部署形态 用例
 
 > **维度**：系统=REDIS | 语言=GO | 特性=DEP(部署形态) | 转换链=T3,T4
-> **依据**：03-67 部署形态画像
-> **环境**：E2；**状态**：pending
+> **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 Redis Stream；GO 客户端见 languages.tsv 代表客户端
+- 单节点/副本
 
 ## When
-- （骨架）按 部署形态 特性标准动作触发（充实批细化）
+- 起停
 
 ## Then
-- 运维特性断言（画像对标，逐批充实）
+- 启动行为
 
 ## Dry-run 验证
 ```bash
@@ -19,4 +18,4 @@ bash Testing/07-集成矩阵/cases/redis/go/部署形态/TC-REDIS-GO-DEP-01.sh  
 ```
 
 ## 关联
-- 维度定义源：features.tsv/03-67；充实批回填真 GWT 后流转 mapped
+- 03-67

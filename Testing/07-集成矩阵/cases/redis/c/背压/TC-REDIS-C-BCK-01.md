@@ -1,18 +1,18 @@
-# TC-REDIS-C-BCK-01：C(C++) 客户端的 Redis Stream 背压 用例骨架
+# TC-REDIS-C-BCK-01：C 客户端的 REDIS 背压 用例
 
 > **维度**：系统=REDIS | 语言=C | 特性=BCK(背压) | 转换链=T4
 > **矩阵等级**：○ app-level（应用层模式用例（契约兜底））| **断言源**：TEST-C2 背压格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 Redis Stream；C 客户端见 languages.tsv 代表客户端
+- 无原生背压
 
 ## When
-- （骨架）按 背压 特性标准动作触发（充实批细化）
+- 洪峰
 
 ## Then
-- 应用层模式用例（契约兜底）：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 Redis Stream×背压=○
+- 轮询补偿模式（01-66）
+- 等级依据：TEST-C2 REDIS×背压=○
 
 ## Dry-run 验证
 ```bash
@@ -20,4 +20,4 @@ bash Testing/07-集成矩阵/cases/redis/c/背压/TC-REDIS-C-BCK-01.sh   # 计�
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- ○

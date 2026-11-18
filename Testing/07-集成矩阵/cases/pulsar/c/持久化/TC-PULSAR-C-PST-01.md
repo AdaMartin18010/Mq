@@ -1,18 +1,18 @@
-# TC-PULSAR-C-PST-01：C(C++) 客户端的 Pulsar 持久化 用例骨架
+# TC-PULSAR-C-PST-01：C 客户端的 PULSAR 持久化 用例
 
 > **维度**：系统=PULSAR | 语言=C | 特性=PST(持久化) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 持久化格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 Pulsar；C 客户端见 languages.tsv 代表客户端
+- 持久/非持久 topic 对照
 
 ## When
-- （骨架）按 持久化 特性标准动作触发（充实批细化）
+- 重启
 
 ## Then
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 Pulsar×持久化=●
+- 持久 topic 存活
+- 等级依据：TEST-C2 PULSAR×持久化=●
 
 ## Dry-run 验证
 ```bash
@@ -20,4 +20,4 @@ bash Testing/07-集成矩阵/cases/pulsar/c/持久化/TC-PULSAR-C-PST-01.sh   # 
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-62

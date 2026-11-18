@@ -1,28 +1,23 @@
-# TC-NATS-PY-RET-01：Python 客户端的 NATS JetStream 重试退避 用例骨架
+# TC-NATS-PY-RET-01：PY 客户端的 NATS 重试退避 用例
 
 > **维度**：系统=NATS | 语言=PY | 特性=RET(重试退避) | 转换链=T4
 > **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 重试退避格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-
-- （骨架）fixtures compose 起 NATS JetStream；PY 客户端见 languages.tsv 代表客户端
+- maxDeliver+backoff 序列
 
 ## When
-
-- （骨架）按 重试退避 特性标准动作触发（充实批细化）
+- 持续失败
 
 ## Then
-
-- 正例断言：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 NATS JetStream×重试退避=●
+- 退避逐档断言（ASE-006）
+- 等级依据：TEST-C2 NATS×重试退避=●
 
 ## Dry-run 验证
-
 ```bash
 bash Testing/07-集成矩阵/cases/nats/py/重试退避/TC-NATS-PY-RET-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
-
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 01-66 ●

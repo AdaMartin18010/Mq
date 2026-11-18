@@ -1,18 +1,18 @@
-# TC-REDIS-PY-FLW-01：Python 客户端的 Redis Stream 流控 用例骨架
+# TC-REDIS-PY-FLW-01：PY 客户端的 REDIS 流控 用例
 
 > **维度**：系统=REDIS | 语言=PY | 特性=FLW(流控) | 转换链=T4
 > **矩阵等级**：○ app-level（应用层模式用例（契约兜底））| **断言源**：TEST-C2 流控格
-> **环境**：E2；**状态**：pending
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 Redis Stream；PY 客户端见 languages.tsv 代表客户端
+- 无流控
 
 ## When
-- （骨架）按 流控 特性标准动作触发（充实批细化）
+- 过载
 
 ## Then
-- 应用层模式用例（契约兜底）：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
-- 等级依据：TEST-C2 矩阵 Redis Stream×流控=○
+- 应用层限流模式
+- 等级依据：TEST-C2 REDIS×流控=○
 
 ## Dry-run 验证
 ```bash
@@ -20,4 +20,4 @@ bash Testing/07-集成矩阵/cases/redis/py/流控/TC-REDIS-PY-FLW-01.sh   # 计
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- ○

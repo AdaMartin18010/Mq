@@ -1,17 +1,18 @@
-# TC-ROCKETMQ-GO-DLY-01：Go 客户端的 RocketMQ 延迟消息 用例骨架
+# TC-ROCKETMQ-GO-DLY-01：GO 客户端的 ROCKETMQ 延迟消息 用例
 
 > **维度**：系统=ROCKETMQ | 语言=GO | 特性=DLY(延迟消息) | 转换链=T4
-> **前置挂账**：TEST-C2 矩阵未覆盖该系统——待图谱补边后回填断言
-> **环境**：E2；**状态**：pending
+> **矩阵等级**：● native（正例断言）| **断言源**：TEST-C2 延迟消息格
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RocketMQ；GO 客户端见 languages.tsv 代表客户端
+- 18 级延迟等级原生
 
 ## When
-- （骨架）按 延迟消息 特性标准动作触发（充实批细化）
+- 延迟投递
 
 ## Then
-- （挂账）矩阵覆盖后回填断言
+- 等级时间窗断言
+- 等级依据：TEST-C2 ROCKETMQ×延迟消息=●
 
 ## Dry-run 验证
 ```bash
@@ -19,4 +20,4 @@ bash Testing/07-集成矩阵/cases/rocketmq/go/延迟消息/TC-ROCKETMQ-GO-DLY-0
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 【论证】●

@@ -1,17 +1,18 @@
-# TC-ROCKETMQ-PY-TTL-01：Python 客户端的 RocketMQ TTL过期 用例骨架
+# TC-ROCKETMQ-PY-TTL-01：PY 客户端的 ROCKETMQ TTL过期 用例
 
 > **维度**：系统=ROCKETMQ | 语言=PY | 特性=TTL(TTL过期) | 转换链=T4
-> **前置挂账**：TEST-C2 矩阵未覆盖该系统——待图谱补边后回填断言
-> **环境**：E2；**状态**：pending
+> **矩阵等级**：○ app-level（应用层模式用例（契约兜底））| **断言源**：TEST-C2 TTL过期格
+> **环境**：E2 docker；**状态**：pending
 
 ## Given
-- （骨架）fixtures compose 起 RocketMQ；PY 客户端见 languages.tsv 代表客户端
+- 保留期 7 天（无消息级 TTL）
 
 ## When
-- （骨架）按 TTL过期 特性标准动作触发（充实批细化）
+- 超期
 
 ## Then
-- （挂账）矩阵覆盖后回填断言
+- 清理可观测；消息级需应用层
+- 等级依据：TEST-C2 ROCKETMQ×TTL过期=○
 
 ## Dry-run 验证
 ```bash
@@ -19,4 +20,4 @@ bash Testing/07-集成矩阵/cases/rocketmq/py/TTL过期/TC-ROCKETMQ-PY-TTL-01.s
 ```
 
 ## 关联
-- 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
+- 【论证】
