@@ -66,6 +66,24 @@ def check(graph, by_id):
                 if tid in by_id and n["id"] in (by_id[tid].get("mutuallyExclusiveWith") or []):
                     if n["id"] < tid:  # 只报一次
                         print(f"ERROR 互斥不自反对称: {n['id']} <-> {tid}"); errs += 1
+    # 规则3：partOf 无环（DFS 三色标记）
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {nid: WHITE for nid in by_id}
+    def dfs(u, stack):
+        color[u] = GRAY
+        for tgt in (by_id[u].get("partOf") or []):
+            tid = tgt.get("id") if isinstance(tgt, dict) else tgt
+            if tid not in by_id: continue
+            if color.get(tid) == GRAY:
+                return True
+            if color.get(tid) == WHITE and dfs(tid, stack + [tid]):
+                return True
+        color[u] = BLACK
+        return False
+    for nid in by_id:
+        if color[nid] == WHITE and dfs(nid, [nid]):
+            print(f"ERROR partOf 环 detected near {nid}"); errs += 1
+            break
     print(f"CHECK {'FAIL' if errs else 'OK'} nodes={len(graph)} errors={errs}")
     sys.exit(1 if errs else 0)
 
