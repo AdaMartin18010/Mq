@@ -13,17 +13,17 @@
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 273 | 01系列85篇 + 02系列59篇 + 03系列68篇 + 04系列10篇 + AI_Skills系列6篇 + Testing系列41篇（00-06 子目录）（含 06-契约语义测试 21 篇 + 07-集成矩阵）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计） |
+| **主题文档** | 273 | 01系列88篇 + 02系列59篇 + 03系列68篇 + 04系列10篇 + AI_Skills系列6篇 + Testing系列41篇（00-06 子目录）（含 06-契约语义测试 21 篇 + 07-集成矩阵）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计） |
 | **运维行为用例** | 411 | Testing/08（22 行为+七小域 ERR70/FAL15/SYN35/PST40/CLU40/SCL45/ALT35/OPS131；断言面 CLI/admin/metrics） |
 | **契约治理族** | 6 | topics/KB_CHARTER·ENDORSEMENT·REF_AUDIT·GOVERNANCE·DIVISION（宪章族，K5 禁改区） |
 | **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
-| **元文档** | 26 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
+| **元文档** | 27 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
 | **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1679** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物） |
+| **总计** | **1705** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物） |
 
 ### 各系列主题文件分布
 
