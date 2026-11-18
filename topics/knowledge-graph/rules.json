@@ -5,13 +5,15 @@
    "description": "判定需求概念时展开 implies 闭包（规则5）",
    "type": "closure",
    "relation": "implies",
-   "transitive": true
+   "transitive": true,
+   "implemented": true
   },
   {
    "id": "mutex-conflict",
    "description": "场景闭包互斥对=CONFLICT（规则6）",
    "type": "mutex-check",
-   "relation": "mutuallyExclusiveWith"
+   "relation": "mutuallyExclusiveWith",
+   "implemented": true
   },
   {
    "id": "capability-lookup",
@@ -21,52 +23,63 @@
     "native": "SUPPORTED",
     "config": "SUPPORTED",
     "app-level": "SUPPORTED_WITH_APP_EFFORT"
-   }
+   },
+   "implemented": true
   },
   {
    "id": "specializes-transitive",
    "description": "规则1：a S b ∧ b S c ⇒ a S c",
    "type": "closure",
    "relation": "specializes",
-   "transitive": true
+   "transitive": true,
+   "implemented": false,
+   "implement_note": "需人工/内核判定，图谱级仅登记（06 §五 开放问题）"
   },
   {
    "id": "partof-transitive",
    "description": "规则2：a P b ∧ b P c ⇒ a P c",
    "type": "closure",
    "relation": "partOf",
-   "transitive": true
+   "transitive": true,
+   "implemented": false,
+   "implement_note": "需人工/内核判定，图谱级仅登记（06 §五 开放问题）"
   },
   {
    "id": "partof-acyclic",
    "description": "规则3：a P+ a ⇒ ERROR（E0 校验）",
    "type": "acyclicity",
-   "relation": "partOf"
+   "relation": "partOf",
+   "implemented": true
   },
   {
    "id": "mutex-symmetric",
    "description": "规则4：a M b 须 b M a 存在（kg --check 已实施）",
    "type": "symmetry",
-   "relation": "mutuallyExclusiveWith"
+   "relation": "mutuallyExclusiveWith",
+   "implemented": true
   },
   {
    "id": "implies-mutex-cascade",
    "description": "规则7：x I y 且 y M z ⇒ x M z（kg --judge CONFLICT 族扩展）",
    "type": "cascade",
    "from": "implies",
-   "to": "mutuallyExclusiveWith"
+   "to": "mutuallyExclusiveWith",
+   "implemented": true
   },
   {
    "id": "realizes-coverage",
    "description": "规则8：概念 R6 实现边目标系统须有 supportedBy 反向或挂账",
    "type": "coverage",
-   "relation": "supportedBy"
+   "relation": "supportedBy",
+   "implemented": true
   },
   {
    "id": "negates-complement",
    "description": "规则10：a N b 要求存在场景二者不可同声明（防过度否定）",
    "type": "complement",
-   "relation": "negates"
+   "relation": "negates",
+   "implemented": false,
+   "implement_note": "互补存在性检查依赖场景语料，挂账"
   }
  ]
 }

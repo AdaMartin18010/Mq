@@ -6,14 +6,20 @@
    "type": "skos:Concept",
    "name": "Topic",
    "definition": "消息逻辑分类标识，发布者按主题投递、订阅者按主题过滤【定理】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-queue",
    "type": "skos:Concept",
    "name": "Queue",
    "definition": "点对点模型中的消息容器，每条消息通常只被一个消费者处理【定理】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-partition",
@@ -35,7 +41,10 @@
    ],
    "documentedIn": [
     "mq:doc-01-67"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-consumer-group",
@@ -48,7 +57,10 @@
      "id": "mq:concept-consumer",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-offset",
@@ -61,28 +73,40 @@
      "id": "mq:concept-message",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-producer",
    "type": "skos:Concept",
    "name": "Producer",
    "definition": "向消息系统发送消息的客户端",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-consumer",
    "type": "skos:Concept",
    "name": "Consumer",
    "definition": "从消息系统接收并处理消息的客户端",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-broker",
    "type": "skos:Concept",
    "name": "Broker",
    "definition": "消息中间件服务端节点，负责接收、路由、存储消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-at-most-once",
@@ -101,7 +125,10 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-at-least-once",
@@ -114,7 +141,10 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-exactly-once",
@@ -137,28 +167,40 @@
    "documentedIn": [
     "mq:doc-01-63",
     "mq:doc-jepsen"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-qos-0",
    "type": "skos:Concept",
    "name": "QoS 0",
    "definition": "MQTT 最多一次投递，无确认",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-qos-1",
    "type": "skos:Concept",
    "name": "QoS 1",
    "definition": "MQTT 至少一次投递，PUBACK 确认",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-qos-2",
    "type": "skos:Concept",
    "name": "QoS 2",
    "definition": "MQTT 恰好一次协议语义，四次握手【定理：OASIS 规范】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-dead-letter",
@@ -171,7 +213,10 @@
      "id": "mq:concept-message",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-idempotency",
@@ -184,7 +229,10 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-transaction",
@@ -208,7 +256,10 @@
     "mq:doc-01-63",
     "mq:doc-TESTC2",
     "mq:doc-jepsen"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-backpressure",
@@ -225,14 +276,20 @@
    "documentedIn": [
     "mq:doc-01-66",
     "mq:doc-TESTC2"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-ordering",
    "type": "skos:Concept",
    "name": "Ordering",
    "definition": "消息按发送顺序被投递和处理的保证",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-persistence",
@@ -252,7 +309,10 @@
    ],
    "partOf": [
     "mq:concept-reliability-semantics"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-retention",
@@ -265,28 +325,40 @@
      "id": "mq:concept-compaction",
      "source": "01-78"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-compaction",
    "type": "skos:Concept",
    "name": "Compaction",
    "definition": "按 Key 保留最新值，删除旧记录以节省空间",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-schema",
    "type": "skos:Concept",
    "name": "Schema",
    "definition": "消息 payload 的结构化契约定义",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-binding",
    "type": "skos:Concept",
    "name": "Binding",
    "definition": "消息路由规则中 Channel 与具体协议/传输的绑定",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-exchange",
@@ -299,14 +371,20 @@
      "id": "mq:concept-broker",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-stream",
    "type": "skos:Concept",
    "name": "Stream",
    "definition": "持久化的追加式消息序列，可重放、可分片",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-share-group",
@@ -319,14 +397,20 @@
      "id": "mq:concept-consumer-group",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-tiered-storage",
    "type": "skos:Concept",
    "name": "Tiered Storage",
    "definition": "热数据本地盘、冷数据卸载对象存储的分层架构",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-dead-letter-queue",
@@ -345,7 +429,10 @@
    ],
    "implies": [
     "mq:concept-reliability-semantics"
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-poison-message",
@@ -358,21 +445,30 @@
      "id": "mq:concept-message",
      "source": "01-78"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-backlog",
    "type": "skos:Concept",
    "name": "Backlog",
    "definition": "已发布但尚未被消费者处理的消息累积量",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-kraft",
    "type": "skos:Concept",
    "name": "KRaft",
    "definition": "Kafka 基于 Raft 的内置元数据管理，替代 ZooKeeper【定理：KRaft 协议】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-controller",
@@ -385,105 +481,150 @@
      "id": "mq:concept-broker",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-kip-932",
    "type": "skos:Concept",
    "name": "KIP-932",
    "definition": "Kafka 共享消费组协议提案，引入 Share Group 语义",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-idempotent-producer",
    "type": "skos:Concept",
    "name": "生产者幂等",
    "definition": "Kafka Producer 通过 PID+Sequence Number 去重【定理】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-isr",
    "type": "skos:Concept",
    "name": "ISR",
    "definition": "In-Sync Replicas，与 Leader 保持同步的副本集合【定理：Kafka 协议语义】",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-high-watermark",
    "type": "skos:Concept",
    "name": "High Watermark",
    "definition": "已提交到 ISR 的最大 offset，消费者只能读到 HW 之前",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-log-segment",
    "type": "skos:Concept",
    "name": "Log Segment",
    "definition": "Kafka 分区日志的物理分段文件（.log + .index + .timeindex）",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-rebalance-protocol",
    "type": "skos:Concept",
    "name": "Rebalance Protocol",
    "definition": "消费者组成员变化时重新分配分区的协议",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-leader",
    "type": "skos:Concept",
    "name": "Leader",
    "definition": "分区的读写主副本",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-follower",
    "type": "skos:Concept",
    "name": "Follower",
    "definition": "从 Leader 拉取数据并同步的副本",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-consumer-group-coordinator",
    "type": "skos:Concept",
    "name": "Consumer Group Coordinator",
    "definition": "负责消费者组位点与成员管理的事务协调器",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-record-batch",
    "type": "skos:Concept",
    "name": "Record Batch",
    "definition": "Kafka 生产端批量发送的消息集合，压缩与高效网络单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-broker-pulsar",
    "type": "skos:Concept",
    "name": "Broker (Pulsar)",
    "definition": "Pulsar 无状态计算层节点，处理协议与路由",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-bookie",
    "type": "skos:Concept",
    "name": "Bookie",
    "definition": "Apache BookKeeper 存储节点，以 Ledger 模型持久化消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-oxia",
    "type": "skos:Concept",
    "name": "Oxia",
    "definition": "Pulsar 新一代元数据存储，替代 ZooKeeper",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-tenant",
    "type": "skos:Concept",
    "name": "Tenant",
    "definition": "Pulsar 多租户一级隔离单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-namespace",
@@ -496,28 +637,40 @@
      "id": "mq:concept-tenant",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-subscription-type",
    "type": "skos:Concept",
    "name": "Subscription Type",
    "definition": "消费者订阅模式：Exclusive/Shared/Failover/Key_Shared",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-geo-replication",
    "type": "skos:Concept",
    "name": "Geo-Replication",
    "definition": "跨地域数据中心异步复制 Topic 数据",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-ledger",
    "type": "skos:Concept",
    "name": "Ledger",
    "definition": "BookKeeper 中追加写的最小存储单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-exchange-types",
@@ -530,7 +683,10 @@
      "id": "mq:concept-exchange",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-quorum-queue",
@@ -543,7 +699,10 @@
      "id": "mq:concept-queue",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-classic-queue",
@@ -556,203 +715,290 @@
      "id": "mq:concept-queue",
      "source": "01-58"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-federation",
    "type": "skos:Concept",
    "name": "Federation",
    "definition": "跨 RabbitMQ 集群/节点按需拉取消息复制",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-vhost",
    "type": "skos:Concept",
    "name": "vhost",
    "definition": "Virtual Host，RabbitMQ 逻辑隔离单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-confirm",
    "type": "skos:Concept",
    "name": "Confirm",
    "definition": "Publisher Confirm 机制，Broker 异步 ack 消息入队",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-binding-rabbitmq",
    "type": "skos:Concept",
    "name": "Binding (RabbitMQ)",
    "definition": "Exchange 到 Queue 的路由绑定关系",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-dead-letter-exchange",
    "type": "skos:Concept",
    "name": "Dead Letter Exchange",
    "definition": "接收被拒绝/过期/超限消息的特殊 Exchange",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-jetstream",
    "type": "skos:Concept",
    "name": "JetStream",
    "definition": "NATS 持久化消息层，提供流存储与 exactly-once 语义",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-stream-nats",
    "type": "skos:Concept",
    "name": "Stream (NATS)",
    "definition": "JetStream 中按 subject 集合持久化存储的消息序列",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-consumer-nats",
    "type": "skos:Concept",
    "name": "Consumer (NATS)",
    "definition": "JetStream 中从 Stream 读取消息的视图",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-leafnode",
    "type": "skos:Concept",
    "name": "Leafnode",
    "definition": "NATS 边缘 leaf 节点，与上游 hub 建立单向/双向联邦",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-supercluster",
    "type": "skos:Concept",
    "name": "Supercluster",
    "definition": "多个 NATS 集群通过 Gateway 互联形成更大联邦",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-kv",
    "type": "skos:Concept",
    "name": "KV",
    "definition": "JetStream Key-Value 存储抽象",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-object-store",
    "type": "skos:Concept",
    "name": "Object Store",
    "definition": "JetStream 对象存储抽象，用于大文件/二进制",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-session",
    "type": "skos:Concept",
    "name": "Session",
    "definition": "MQTT 客户端与 Broker 之间的持久化状态关联",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-will",
    "type": "skos:Concept",
    "name": "Will",
    "definition": "客户端异常断开时由 Broker 代发的遗嘱消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-retain",
    "type": "skos:Concept",
    "name": "Retain",
    "definition": "主题上保留的最后一条消息，新订阅者立即收到",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-shared-subscription",
    "type": "skos:Concept",
    "name": "Shared Subscription",
    "definition": "MQTT 5.0 共享订阅，组内多个订阅者负载均衡",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-enhanced-auth",
    "type": "skos:Concept",
    "name": "Enhanced Auth",
    "definition": "MQTT 5.0 增强认证，支持 Challenge-Response",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-user-properties",
    "type": "skos:Concept",
    "name": "User Properties",
    "definition": "MQTT 5.0 用户自定义键值对报文属性",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-topic-alias",
    "type": "skos:Concept",
    "name": "Topic Alias",
    "definition": "MQTT 5.0 用短整数映射长主题名以减少报文大小",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-stream-redis",
    "type": "skos:Concept",
    "name": "Stream (Redis)",
    "definition": "Redis 追加式日志结构，消息按 ID 顺序存储",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-consumer-group-redis",
    "type": "skos:Concept",
    "name": "Consumer Group (Redis)",
    "definition": "Redis Stream 消费组，组内成员分摊消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-xack",
    "type": "skos:Concept",
    "name": "XACK",
    "definition": "消费者确认已处理 Stream 消息的命令",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-pending-entries",
    "type": "skos:Concept",
    "name": "Pending Entries",
    "definition": "已投递但未 ACK 的消息集合（PEL）",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-stream-id",
    "type": "skos:Concept",
    "name": "Stream ID",
    "definition": "消息在 Stream 中的唯一时间序列 ID",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-asyncapi",
    "type": "skos:Concept",
    "name": "AsyncAPI",
    "definition": "异步 API 描述规范（OpenAPI 的异步对应物）",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-cloudevents",
    "type": "skos:Concept",
    "name": "CloudEvents",
    "definition": "CNCF 事件数据标准，统一事件元数据",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-schema-dsl",
    "type": "skos:Concept",
    "name": "Schema (DSL)",
    "definition": "消息 payload 的结构化契约",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-binding-dsl",
    "type": "skos:Concept",
    "name": "Binding (DSL)",
    "definition": "AsyncAPI 中 Channel/Operation 到具体协议/传输的绑定",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-channel",
@@ -771,7 +1017,10 @@
      "id": "mq:concept-asyncapi",
      "source": "01-78"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-operation",
@@ -784,84 +1033,120 @@
      "id": "mq:concept-asyncapi",
      "source": "01-78"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-correlationid",
    "type": "skos:Concept",
    "name": "correlationId",
    "definition": "用于关联请求与响应/因果链的标识",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-specification-extensions",
    "type": "skos:Concept",
    "name": "Specification Extensions",
    "definition": "AsyncAPI/OpenAPI 中 `x-` 前缀的自定义扩展字段",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-message",
    "type": "skos:Concept",
    "name": "Message",
    "definition": "AsyncAPI 中描述一次传输的数据单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-server",
    "type": "skos:Concept",
    "name": "Server",
    "definition": "AsyncAPI 中消息中间件/代理的端点定义",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-command-message",
    "type": "skos:Concept",
    "name": "Command Message",
    "definition": "EIP 消息构造族：封装调用/指令的消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-publish-subscribe-channel",
    "type": "skos:Concept",
    "name": "Publish-Subscribe Channel",
    "definition": "EIP 消息通道族：一条消息广播给多个接收者",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-content-based-router",
    "type": "skos:Concept",
    "name": "Content-Based Router",
    "definition": "EIP 路由族：按消息内容选择目标通道",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-message-translator",
    "type": "skos:Concept",
    "name": "Message Translator",
    "definition": "EIP 转换族：转换消息格式/协议",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-competing-consumers",
    "type": "skos:Concept",
    "name": "Competing Consumers",
    "definition": "EIP 端点族：多个消费者竞争同队列消息",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-wire-tap",
    "type": "skos:Concept",
    "name": "Wire Tap",
    "definition": "EIP 管理族：在通道上旁路复制消息用于监控",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-outbox",
    "type": "skos:Concept",
    "name": "Outbox",
    "definition": "事务内写业务表+Outbox 表，由 relay 异步投递 MQ",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-saga",
@@ -874,91 +1159,130 @@
      "id": "mq:concept-transaction",
      "source": "01-78"
     }
-   ]
+   ],
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-cqrs",
    "type": "skos:Concept",
    "name": "CQRS",
    "definition": "命令查询职责分离，读写模型独立",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-event-sourcing",
    "type": "skos:Concept",
    "name": "Event Sourcing",
    "definition": "以事件流为真相源持久化状态变更",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-keda",
    "type": "skos:Concept",
    "name": "KEDA",
    "definition": "Kubernetes Event-driven Autoscaler，按事件指标扩缩容",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-otel-span",
    "type": "skos:Concept",
    "name": "OTel Span",
    "definition": "OpenTelemetry 追踪中的一个工作单元",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-semconv",
    "type": "skos:Concept",
    "name": "SemConv",
    "definition": "OpenTelemetry 语义约定，标准化属性命名",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-zero-trust",
    "type": "skos:Concept",
    "name": "Zero Trust",
    "definition": "永不信任、持续验证的安全架构",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-spiffe",
    "type": "skos:Concept",
    "name": "SPIFFE",
    "definition": "安全身份框架，为工作负载发放可验证身份",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-mirrormaker-2",
    "type": "skos:Concept",
    "name": "MirrorMaker 2",
    "definition": "Kafka 集群间数据镜像与元数据同步工具",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-cluster-linking",
    "type": "skos:Concept",
    "name": "Cluster Linking",
    "definition": "Confluent Kafka 集群间 topic 级联邦复制",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-leader-election",
    "type": "skos:Concept",
    "name": "Leader Election",
    "definition": "分布式系统中选出唯一协调者/主节点的过程",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-prometheus",
    "type": "skos:Concept",
    "name": "Prometheus",
    "definition": "指标收集与告警系统，广泛用于 MQ 监控",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-health-check",
    "type": "skos:Concept",
    "name": "Health Check",
    "definition": "探针机制判断服务是否存活/就绪",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:concept-flow-control",
@@ -976,7 +1300,10 @@
    "type": "skos:Concept",
    "name": "可靠性语义族",
    "definition": "交付语义/死信/重试/幂等的概念聚合",
-   "source": "01-58"
+   "source": "01-58",
+   "kb_layer": "L0/L1",
+   "kb_argument_type": "归纳",
+   "kb_confidence_ceiling": "论证"
   },
   {
    "id": "mq:dim-delivery",

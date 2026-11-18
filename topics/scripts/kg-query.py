@@ -84,6 +84,20 @@ def check(graph, by_id):
         if color[nid] == WHITE and dfs(nid, [nid]):
             print(f"ERROR partOf 环 detected near {nid}"); errs += 1
             break
+    # 规则8：realizes 覆盖（概念 R6 边目标系统须 supportedBy 反向或 note）
+    cov_warn = 0
+    for n in graph:
+        for rtgt in (n.get("realizes") or []):
+            rid = rtgt.get("id") if isinstance(rtgt, dict) else rtgt
+            tgt = by_id.get(rid)
+            if not tgt: continue
+            backs = [ (c.get("id") if isinstance(c,dict) else c) for c in (tgt.get("supportedBy") or []) ]
+            has_back = n["id"] in backs
+            has_note = bool(tgt.get("note") or n.get("note"))
+            if not (has_back or has_note):
+                cov_warn += 1
+    if cov_warn:
+        print(f"WARN realizes-coverage: {cov_warn} 条实现边缺反向/挂账（规则8，WARN 不阻断）")
     print(f"CHECK {'FAIL' if errs else 'OK'} nodes={len(graph)} errors={errs}")
     sys.exit(1 if errs else 0)
 
@@ -211,6 +225,20 @@ def judge(sname, sysname, graph, by_id, by_name, rules, explain=False):
         caps[cid] = c.get("degree", "native")
         cap_meta[cid] = c
     verdicts = []
+    # 规则7：implies-mutex 级联（x I y 且 y M z ⇒ x M z）
+    cascade_mx = []
+    for rid in list(expanded):
+        rn = by_id.get(rid)
+        if not rn: continue
+        for im in (rn.get("implies") or []):
+            iid = im.get("id") if isinstance(im, dict) else im
+            inode = by_id.get(iid)
+            if not inode: continue
+            for mx in (inode.get("mutuallyExclusiveWith") or []):
+                mxid = mx.get("id") if isinstance(mx, dict) else mx
+                if mxid in expanded:
+                    pair = tuple(sorted([rid, mxid]))
+                    if pair not in cascade_mx: cascade_mx.append(pair)
     mutex_pairs = []
     exp_list = sorted(expanded)
     if explain:
@@ -245,9 +273,11 @@ def judge(sname, sysname, graph, by_id, by_name, rules, explain=False):
         if explain and meta:
             detail += f", source={meta.get('source','-')}"
         print(f"  {status:24s} {name} ({detail})")
-    if mutex_pairs:
-        for a, b in mutex_pairs:
-            print(f"  CONFLICT {by_id[a].get('name')} ⟂ {by_id[b].get('name')}")
+    all_conflicts = mutex_pairs + cascade_mx
+    if all_conflicts:
+        for a, b in all_conflicts:
+            tag = "级联" if any(tuple(sorted(x)) == tuple(sorted((a,b))) for x in cascade_mx) and tuple(sorted((a,b))) not in mutex_pairs else ""
+            print(f"  CONFLICT{tag} {by_id[a].get('name')} ⟂ {by_id[b].get('name')}")
         sys.exit(1)
     missing = [v for v in verdicts if v[2] == "MISSING"]
     if missing:
