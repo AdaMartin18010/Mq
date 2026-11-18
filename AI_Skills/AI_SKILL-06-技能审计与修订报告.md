@@ -196,3 +196,7 @@ git diff --stat AI_Skills/skills/ AI_Skills/AI_SKILL-01*.md topics/INDEX.md
 ---
 
 **最后更新**: 2026-11-18
+
+## 追加：批次 125 触发回放执行（2026-11-18）
+
+TC-SKL-01~21 首次全量回放：**21/21 verified**（一次通过 17，漂移候选 4 修复后通过）。修复=4 个 SKILL.md 补"行为约束"行（mq-selection 无约束回问/mq-doc-lint 无输入索取/mq-ops-dlq 破坏性请求拒绝/mq-pattern-dlq 范围边界声明）。详见 Testing/05-体系与机制/TEST-18-skill触发回放执行记录.md。漂移 WARN 维持 0；模板规范（AI_SKILL-04）建议增设"行为约束"段落（挂账随触及更新）。

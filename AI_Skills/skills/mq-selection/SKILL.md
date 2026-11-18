@@ -3,7 +3,8 @@ name: mq-selection
 description: >
   论证并推荐消息队列技术选型方案：按场景（日志聚合/IoT/微服务/任务队列/事件流/
   实时通信/大数据/移动推送）、硬约束（吞吐/延迟/顺序/事务/持久化/多租户/运维成本）
-  输出带置信标注的选型建议与备选方案。Use when 技术选型、选 Kafka 还是
+  输出带置信标注的选型建议与备选方案。
+  行为约束：用户未提供场景与硬约束时，必须先回问约束清单（禁止在无约束输入下直接给单一推荐）。Use when 技术选型、选 Kafka 还是
   Pulsar/NATS/RabbitMQ/Redis/MQTT、message broker selection、MQ 对比论证、
   消息队列选型、替换成替代方案评估、broker comparison、数据契约选型、
   流处理选型、事件驱动架构选型、AsyncAPI 选型、AI Agent 消息层。

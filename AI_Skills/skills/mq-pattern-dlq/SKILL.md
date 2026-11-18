@@ -2,7 +2,8 @@
 name: mq-pattern-dlq
 description: >
   死信队列（DLQ）设计论证：六系统死信机制（DLX/TTL/重试上限/重投策略）对比，
-  按消息价值等级与业务约束给出 DLQ 方案选型建议。Use when 死信队列、DLQ、
+  按消息价值等级与业务约束给出 DLQ 方案选型建议。
+  行为约束：触发词超出 DLQ 机制域（如 saga/延迟消息整体设计）时，先声明范围边界再给出 DLQ 视角内的建议。Use when 死信队列、DLQ、
   dead letter、重试上限、retry exhaustion、毒消息、poison message、
   消息堆积处理、重试次数设计、死信监控、消息存储、备份恢复、可观测性。
 license: Apache-2.0

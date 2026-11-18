@@ -10,6 +10,14 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.32.0] - 2026-11-18
+
+### 批次124-126：测试资产整合对账 + skill 回放首跑（首个 verified 域）+ 静态域推进
+
+**批次124 整合对账**（TEST-17）：956 行全量机读审计——5 行 mapped 脚本缺失转 pending（TC-DEP-12/13/TC-INT-04/TC-CLU-10/TC-OBS-01，违反 TEST-13 准入）；两代域重叠以"动作层（旧域 DEP/INT/CLU/OBS/CHK）vs 断言层（三维 SEM/BUS/OPS/MAT）"分工消解不合并；治理规则 3 条（mapped 准入脚本化挂账/旧域新增须先找三维位/季度对账并入 TEST-06）
+**批次125 skill 回放**（TEST-18）：TC-SKL-01~21 **首次全量执行 21/21 verified**——一次通过 17，漂移候选 4（指令缺口类：无约束回问/无输入索取/破坏性拒绝/范围边界）修复对应 SKILL.md 后全过；AI_SKILL-06 追加记录；**测试体系首个 verified 域**；模板"行为约束"段落建议挂账
+**批次126 静态域推进**：SEC 20 条绑 sec-baseline-scan.sh 转 mapped（实测 8 PASS/0 HIGH/6 WARN——WARN 为模板硬化缺口清单）；AIG/CON 维持 pending（待 Microcks/A2A 实跑，口径入档）
+
 ## [3.31.0] - 2026-11-18
 
 ### 批次121-123：Testing/08-运维行为测试——系统特性运维用例体系（用户纠偏落地）

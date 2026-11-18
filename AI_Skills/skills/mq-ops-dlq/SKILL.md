@@ -3,6 +3,7 @@ name: mq-ops-dlq
 description: >
   死信队列落地操作：DLX 声明、死信监控告警、死信重投（redrive）与清理的
   标准流程与检查清单，覆盖 Kafka/RabbitMQ/NATS/Pulsar 四系统。
+  行为约束：对删除/清空类破坏性请求必须先拒绝并给出安全流程（先消费/转储后清理）。
   Use when DLQ 声明、死信监控、dlq redrive、死信重投、死信清理、
   dead letter queue 运维、死信处理流程、DLX 配置、poison message 处理、
   消息存储、备份恢复。

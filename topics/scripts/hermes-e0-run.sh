@@ -144,7 +144,7 @@ step_registry_check() {
       rc=1
     fi
 
-    if [[ ",mapped,pending,deprecated,blocked," != *",$status,"* ]]; then
+    if [[ ",mapped,pending,deprecated,blocked,verified," != *",$status,"* ]]; then
       echo "[FAIL] 第 $line_no 行 status 枚举非法: $status (id=$id)"
       bad_status=$((bad_status + 1))
       rc=1
