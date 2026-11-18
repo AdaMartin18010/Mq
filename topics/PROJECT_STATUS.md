@@ -14,6 +14,7 @@
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
 | **主题文档** | 266 | 01系列84篇 + 02系列59篇 + 03系列68篇 + 04系列10篇 + AI_Skills系列6篇 + Testing系列35篇（含 06-契约语义测试 21 篇 + 07-集成矩阵）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计） |
+| **运维行为用例** | 131 | Testing/08（7 类 22 行为 × 7 系统适用矩阵，OPS 域注册；断言面 CLI/admin/metrics 语言无关） |
 | **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
 | **元文档** | 20 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
