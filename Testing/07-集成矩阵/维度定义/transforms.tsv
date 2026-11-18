@@ -1,0 +1,6 @@
+# 转换链维度（4）：契约到运行时的四级验证链
+code	name	定义	现有工具
+T1	DSL→AsyncAPI	contract.yaml 字段 → asyncapi.yaml 结构一致（外部 $ref 解析）	contract-dsl-check + dsl-schema.json
+T2	AsyncAPI→代码	spec → 各语言类型与客户端骨架（binding 保留度见 01-82 断点#1）	modelina 类生成器
+T3	binding→配置	binding 参数 → 框架配置 → 部署模板 三层命名与值一致	contract-binding-check + drift-check
+T4	契约→运行时验证	场景 invariants/ASE 断言 → 真实流量断言	tc-assert + tc-sem-XX（--live 挂账）

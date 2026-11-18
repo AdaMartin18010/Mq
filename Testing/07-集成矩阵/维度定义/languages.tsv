@@ -1,0 +1,7 @@
+# 语言维度（5）：运行时版本为种子批次基线，118 批起入 fixtures 校验
+code	name	runtime	代表客户端
+GO	Go	1.23+	sarama(v1.61.1)/segmentio(v0.4.51)/confluent-kafka-go(v2.16.1)
+PY	Python	3.11+	aiokafka(0.15.0)/confluent-kafka(2.16.1)/paho(2.2.0)
+TS	TypeScript-JavaScript	Node 20+	kafkajs(2.2.4 维护风险)/mqtt(5.16.1)/amqplib(2.4.0)
+RS	Rust	1.75+	rdkafka(0.25.0)/async-nats(0.53.0)/lapin(4.12.3)
+C	C(C++)	librdkafka 2.16+	librdkafka/nng/nanomq 客户端

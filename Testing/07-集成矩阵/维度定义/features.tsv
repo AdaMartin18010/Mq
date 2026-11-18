@@ -1,0 +1,19 @@
+# 特性维度（16）：12 语义维度（TEST-C2）+ 4 运维特性（03-67/68 画像）
+# code=三字母码（用例 ID 用）; source=权威定义源
+code	name	type	source
+DLV	交付语义	semantic	TEST-C2
+ORD	顺序性	semantic	TEST-C2
+IDM	幂等去重	semantic	TEST-C2
+RET	重试退避	semantic	TEST-C2
+DLQ	死信	semantic	TEST-C2
+TRX	事务	semantic	TEST-C2
+BCK	背压	semantic	TEST-C2
+TTL	TTL过期	semantic	TEST-C2
+DLY	延迟消息	semantic	TEST-C2
+FLT	消息过滤	semantic	TEST-C2
+FLW	流控	semantic	TEST-C2
+PST	持久化	semantic	TEST-C2
+DEP	部署形态	ops	03-67
+UPG	升级路径	ops	03-67/03-68
+FTB	故障行为	ops	03-68
+OBS	观测特征	ops	03-68/01-33

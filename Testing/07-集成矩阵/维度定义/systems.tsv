@@ -1,0 +1,9 @@
+# 系统维度（7）
+code	name	binding	config_template	compose_profile
+KAFKA	Kafka	kafka	kafka-server.properties.template	kafka
+RABBITMQ	RabbitMQ	amqp	rabbitmq.conf.template	rabbitmq
+NATS	NATS JetStream	nats+x-jetstream	nats-server.conf.template	nats
+PULSAR	Pulsar	pulsar	pulsar-broker-config.conf	pulsar
+ROCKETMQ	RocketMQ	-	-	rocketmq
+REDIS	Redis Stream	redis(保留空)+x-redis	redis-stream-config.conf	redis
+MQTT	MQTT 5.0	mqtt	mqtt-broker-config.conf	mqtt
