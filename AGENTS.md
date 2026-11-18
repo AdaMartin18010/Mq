@@ -131,7 +131,9 @@ Mq/
 - ✅ 批次87-93（行业格局与前沿）：IBM 收购 Confluent 影响落地 4 文档、01-70 流表一体（Kafka 4.x 无原生 Iceberg 结论核实）、01-71 wire protocol（Jepsen KAFKA-17754 解读）、pre-commit+CI、04-06 演化动力学、LEARNING_PATH+MCP 评估、测试数据工厂（2026-11-18）
 - ✅ 批次94-105（五方向旗舰群+测试体系统一）：03-67/68 运维画像、01-72 编码矩阵、02-60 演化策略、04-07 控制回路、01-73~77 语言深耕群+跨语言集成、01-78/79/80 概念三表征、knowledge-graph+kg-query（E0 第 8 步）、Testing/06-契约语义测试 重组+TEST-C+TEST-00（2026-11-18）
 - ✅ 批次106-109（concept总集+DSL审计+图谱扩容）：concept/ 2.0 人类阅读层（红线同步修订）、dsl-schema.json P0+全链六环审计、图谱 155 节点+kg-query --path/--explain/--stats（2026-11-18）
-- ✅ 批次108+110（自检收口+MCP MVP）：doc-self-check %20 解码+全库普查坏链 0、AI_Skills/mcp-server FastMCP 7 只读 tools+2 resources（2026-11-18）——**批次 106-110 全部闭环**，剩滚动例行项与真实执行集中批（挂账）
+- ✅ 批次108+110（自检收口+MCP MVP）：doc-self-check %20 解码+全库普查坏链 0、AI_Skills/mcp-server FastMCP 7 只读 tools+2 resources（2026-11-18）
+- ✅ 批次111-116（全量消化+地基+映射+用例扩展+闭环）：concept 8 卷 257 篇逐篇消化、01-83~86 地基+01-82 六维映射、ASE 89 条、TEST-16 三模板闭环（2026-11-18）
+- ✅ 批次117-120（测试矩阵维度化）：Testing/07-集成矩阵 560 用例（7 系统×5 语言×16 特性全覆盖）+matrix-check 入 E0（2026-11-18）——**批次 1-120 全部闭环**，剩滚动例行项与真实执行集中批（挂账：场景包映射自动化/560 格 GWT 充实/Kafka 4.4 镜像/RocketMQ 矩阵补边）
 
 ### 7.2 AI 代理协作协议
 

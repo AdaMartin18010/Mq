@@ -10,6 +10,15 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.28.0] - 2026-11-18
+
+### 批次117-120：Testing/07-集成矩阵——四维维度化用例库（系统×语言×特性×转换链）
+
+**批次117 骨架+种子**：四维模型（systems 7/languages 5+运行时/features 16 三字母码/transforms 4 链）+ 用例模板 + **25 条种子**（3 手写标杆：KAFKA-GO-DLV[ASE-001]/KAFKA-GO-DLQ[KIP-1191 挂账]/NATS-GO-BCK[ASE-010 平台期] + 22 手工内容格）；矩阵等级如实标注（Redis/MQTT DLQ=应用层模式用例）；matrix-registry 唯一事实源
+**批次118 批量展开**：535 格 dry-run 骨架（TEST-C2 矩阵等级驱动文案：●正例/◐配置正例/○模式用例/—反向用例）；**560 用例文件全覆盖**（7×5×16）；RocketMQ 语义格如实挂账
+**批次119 harness 集成**：matrix-check.py（结构/枚举/ID 唯一/文件存在/matrix↔test-registry 双向同步）入 E0 第 3 步；test-harness.sh 增 --sys/--lang 过滤（KAFKA×GO 实测选中 16 例）；test-registry 825 行；MATRIX_CHECK 560/560 OK
+**批次120 收口**：场景包→矩阵格映射关系入 07 README（全量自动化脚本挂账）；四件套同步
+
 ## [3.27.0] - 2026-11-18
 
 ### 批次111-116：concept 全量消化层 + DSL 地基 + 六维映射 + 用例全面扩展 + hermes 闭环（本轮"全面梳理"四诉求闭环）

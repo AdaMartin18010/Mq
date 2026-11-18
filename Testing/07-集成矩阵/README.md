@@ -37,7 +37,7 @@ registry: 由 matrix-registry 生成 test-registry.tsv 行（119 批自动化，
 
 - **断言源**：Testing/06-契约语义测试/02-语义矩阵/semantics/assertions.tsv（ASE-xxx 直接引用到 GWT 的 then 行）
 - **环境**：Testing/fixtures/compose（每系统片段）+ 本目录 fixtures/（每语言客户端骨架）
-- **场景包**：Testing/06-03-业务场景 的 invariants 映射为对应格用例的断言输入（120 批自动化）
+- **场景包映射**（120 批）：Testing/06-03-业务场景 8 包的 invariants 是矩阵用例的断言输入——对应关系：订单/支付/库存→KAFKA 格；通知→RABBITMQ 格；IoT→MQTT 格；CDC→KAFKA-ORD/IDM 格；审计→PULSAR-PST 格；任务→NATS-RET/DLQ 格。全量自动映射脚本列入挂账（场景包增删时执行）
 - **转换链测试**：dsl-schema/binding-check/contract-to-odcs 的集成面在 transforms.tsv 四链定义
 
 ---
