@@ -45,7 +45,8 @@ while IFS= read -r f; do
   d=$(dirname "$f")
   while IFS= read -r link; do
     case "$link" in http*|*'-NN-'*) continue ;; esac
-    [ -e "$d/$link" ] || err "死链: $f -> $link"
+    link_dec="${link//%20/ }"
+    [ -e "$d/$link_dec" ] || err "死链: $f -> $link"
   done < <(grep -oE '\]\(([^)[:space:]]+\.md)(#[^)]*)?\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//; s/#.*$//')
 done < <(find topics AI_Skills Testing -type f -name '*.md'; echo README.md)
 
