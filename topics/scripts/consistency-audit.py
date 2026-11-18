@@ -37,7 +37,7 @@ for name, (cmd, pat) in checks.items():
     check(f"元数据.{name}", mm and int(mm.group(1)) == actual, f"STATUS={mm.group(1) if mm else '?'} find={actual}")
 
 # 元文档数
-meta_actual = cnt("ls topics/*.md | wc -l")
+meta_actual = cnt("ls topics/*.md | grep -v '^topics/README.md$' | wc -l")
 mm = re.search(r"\| \*\*元文档\*\* \| (\d+) \|", status)
 check("元数据.元文档", mm and int(mm.group(1)) == meta_actual, f"STATUS={mm.group(1) if mm else '?'} find={meta_actual}（注：含README口径见明细）")
 
