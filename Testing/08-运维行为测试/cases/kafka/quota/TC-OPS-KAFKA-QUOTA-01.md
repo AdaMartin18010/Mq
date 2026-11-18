@@ -5,19 +5,24 @@
 > **环境**：E2 docker + 故障注入；**状态**：pending（真实执行=用户在场集中批）
 
 ## Given
+
 - 生产/消费超 produce/fetch 配额
 
 ## When
+
 - 压测
 
 ## Then
+
 - throttle 时间可观测（QuotaManager 指标）
 - 超限报错而非静默
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/08-运维行为测试/cases/kafka/quota/TC-OPS-KAFKA-QUOTA-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-61/03-68；与 GAME DAY 关系：TC-CHA 为动作层，本用例为断言层

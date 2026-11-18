@@ -5,18 +5,23 @@
 > **环境**：E2 docker + 故障注入；**状态**：pending（真实执行=用户在场集中批）
 
 ## Given
+
 - 主从切换重启
 
 ## When
+
 - 服务连续
 
 ## Then
+
 - failover 窗口
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/08-运维行为测试/cases/redis/rolling/TC-OPS-REDIS-ROLLING-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 03-68；与 GAME DAY 关系：TC-CHA 为动作层，本用例为断言层

@@ -5,18 +5,23 @@
 > **环境**：E2 docker + 故障注入；**状态**：pending（真实执行=用户在场集中批）
 
 ## Given
+
 - broker 重启
 
 ## When
+
 - 客户端
 
 ## Then
+
 - 自动重连
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/08-运维行为测试/cases/mqtt/rolling/TC-OPS-MQTT-ROLLING-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 03-68；与 GAME DAY 关系：TC-CHA 为动作层，本用例为断言层
