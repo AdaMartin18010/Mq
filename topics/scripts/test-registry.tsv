@@ -133,9 +133,9 @@ TC-SEM-01	SEM	-	E2	06-语义矩阵/TEST-14	pending
 TC-SEM-02	SEM	-	E2	06-语义矩阵/TEST-14	pending
 TC-SEM-03	SEM	-	E2	06-语义矩阵/TEST-14	pending
 TC-SEM-04	SEM	-	E2	06-语义矩阵/TEST-14	pending
-TC-SEM-05	SEM	tc-sem-05-dlq-rabbitmq.sh	E2	06-语义矩阵/TEST-14	mapped
+TC-SEM-05	SEM	tc-sem-05-dlq-rabbitmq.sh	E2	06-语义矩阵/TEST-14	verified
 TC-SEM-06	SEM	-	E2	06-语义矩阵/TEST-14	pending
-TC-SEM-07	SEM	tc-sem-07-backpressure-nats.sh	E2	06-语义矩阵/TEST-14	mapped
+TC-SEM-07	SEM	tc-sem-07-backpressure-nats.sh	E2	06-语义矩阵/TEST-14	verified
 TC-SEM-08	SEM	-	E2	06-语义矩阵/TEST-14	pending
 TC-SEM-09	SEM	-	E2	06-语义矩阵/TEST-14	pending
 TC-SEM-10	SEM	-	E2	06-语义矩阵/TEST-14	pending
