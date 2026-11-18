@@ -5,19 +5,24 @@
 > **环境**：E2；**状态**：pending
 
 ## Given
+
 - （骨架）fixtures compose 起 Kafka；C 客户端见 languages.tsv 代表客户端
 
 ## When
+
 - （骨架）按 死信 特性标准动作触发（充实批细化）
 
 ## Then
+
 - 配置启用后正例：承诺/模式/不承诺的行为可判定（GWT 充实挂账——逐批回填 ASE）
 - 等级依据：TEST-C2 矩阵 Kafka×死信=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/kafka/c/死信/TC-KAFKA-C-DLQ-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 维度定义源：features.tsv/TEST-C2；充实批回填真 GWT 后流转 mapped
