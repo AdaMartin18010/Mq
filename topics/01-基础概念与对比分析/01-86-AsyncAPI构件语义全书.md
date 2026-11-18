@@ -6,13 +6,15 @@
 
 ## 目录
 
-- [1.86.1 info 与 servers](#1861-info-与-servers)
-- [1.86.2 channels：地址与参数](#1862-channels地址与参数)
-- [1.86.3 operations：action/reply/traits 的精确语义](#1863-operationsactionreplytraits-的精确语义)
-- [1.86.4 messages：payload/headers/correlationId 的分界](#1864-messagespayloadheaderscorrelationid-的分界)
-- [1.86.5 components 与引用规则](#1865-components-与引用规则)
-- [1.86.6 语义陷阱集（8 个）](#1866-语义陷阱集8-个)
-- [1.86.7 参考来源](#1867-参考来源)
+- [01-86 AsyncAPI 构件语义全书](#01-86-asyncapi-构件语义全书)
+  - [目录](#目录)
+  - [1.86.1 info 与 servers](#1861-info-与-servers)
+  - [1.86.2 channels：地址与参数](#1862-channels地址与参数)
+  - [1.86.3 operations：action/reply/traits 的精确语义](#1863-operationsactionreplytraits-的精确语义)
+  - [1.86.4 messages：payload/headers/correlationId 的分界](#1864-messagespayloadheaderscorrelationid-的分界)
+  - [1.86.5 components 与引用规则](#1865-components-与引用规则)
+  - [1.86.6 语义陷阱集（8 个）](#1866-语义陷阱集8-个)
+  - [1.86.7 参考来源](#1867-参考来源)
 
 ---
 

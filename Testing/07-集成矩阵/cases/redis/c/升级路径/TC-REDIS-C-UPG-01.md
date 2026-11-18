@@ -1,0 +1,22 @@
+# TC-REDIS-C-UPG-01：C(C++) 客户端的 Redis Stream 升级路径 用例骨架
+
+> **维度**：系统=REDIS | 语言=C | 特性=UPG(升级路径) | 转换链=T3,T4
+> **依据**：03-67 升级路径+03-68 启动序列
+> **环境**：E2；**状态**：pending
+
+## Given
+- （骨架）fixtures compose 起 Redis Stream；C 客户端见 languages.tsv 代表客户端
+
+## When
+- （骨架）按 升级路径 特性标准动作触发（充实批细化）
+
+## Then
+- 运维特性断言（画像对标，逐批充实）
+
+## Dry-run 验证
+```bash
+bash Testing/07-集成矩阵/cases/redis/c/升级路径/TC-REDIS-C-UPG-01.sh   # 计划打印（挂账）
+```
+
+## 关联
+- 维度定义源：features.tsv/03-67/03-68；充实批回填真 GWT 后流转 mapped

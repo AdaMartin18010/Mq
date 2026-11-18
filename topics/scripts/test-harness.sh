@@ -22,6 +22,8 @@ OUT_DIR="$PROJECT_ROOT/results"
 ENV_FILTER=""
 DOMAIN_FILTER=""
 ID_FILTER=""
+SYS_FILTER=""     # 批次119：集成矩阵系统过滤（匹配 TC-<SYS>- 前缀）
+LANG_FILTER=""    # 批次119：语言过滤（匹配 -<LANG>- 段）
 DRY_RUN=0
 TIMEOUT_SEC=300
 
@@ -46,6 +48,8 @@ while [[ $# -gt 0 ]]; do
       DOMAIN_FILTER="${2:-}"; shift 2 ;;
     --id)
       ID_FILTER="${2:-}"; shift 2 ;;
+    --sys) SYS_FILTER="${2:-}"; shift 2 ;;
+    --lang) LANG_FILTER="${2:-}"; shift 2 ;;
     --dry-run)
       DRY_RUN=1; shift ;;
     --registry)
@@ -77,6 +81,12 @@ row_matches() {
     return 1
   fi
   if [[ -n "$ID_FILTER" && "$id" != "$ID_FILTER" ]]; then
+    return 1
+  fi
+  if [[ -n "$SYS_FILTER" && "$id" != TC-"$SYS_FILTER"-* ]]; then
+    return 1
+  fi
+  if [[ -n "$LANG_FILTER" && "$id" != *-"$LANG_FILTER"-* ]]; then
     return 1
   fi
   if [[ -n "$ENV_FILTER" ]]; then

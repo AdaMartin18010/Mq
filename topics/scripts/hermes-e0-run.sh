@@ -111,10 +111,11 @@ step_bash_syntax() {
   return "$rc"
 }
 
-# 步骤 3: test-registry.tsv TSV 校验
+# 步骤 3: test-registry.tsv TSV 校验（含集成矩阵一致性，批次 119）
 step_registry_check() {
   local registry="topics/scripts/test-registry.tsv"
   local rc=0
+  # ... existing checks ...
   local line_no=0
   local ids=""
   local bad_cols=0 bad_env=0 bad_status=0 dup=0
@@ -159,6 +160,8 @@ step_registry_check() {
   done < "$registry"
 
   echo "SUMMARY: bad_cols=$bad_cols bad_env=$bad_env bad_status=$bad_status duplicate=$dup"
+  # 集成矩阵一致性（批次119）
+  python3 "./topics/scripts/matrix-check.py" || rc=1
   return "$rc"
 }
 
