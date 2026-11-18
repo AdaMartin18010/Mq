@@ -13,7 +13,7 @@
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
-| **主题文档** | 257 | 01系列79篇 + 02系列59篇 + 03系列68篇 + 04系列7篇 + AI_Skills系列6篇 + Testing系列34篇（含 06-契约语义测试 21 篇）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计；口径对账细化列入批次 108） |
+| **主题文档** | 262 | 01系列84篇 + 02系列59篇 + 03系列68篇 + 04系列7篇 + AI_Skills系列6篇 + Testing系列34篇（含 06-契约语义测试 21 篇）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计） |
 | **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
 | **元文档** | 20 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
@@ -80,7 +80,8 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次87-93 行业格局与前沿（2026-11-18：IBM 收购 Confluent 影响落地 4 文档、01-70 流表一体（15 来源核实，Kafka 4.x 无原生 Iceberg 结论）、01-71 wire protocol（Jepsen KAFKA-17754 解读）、pre-commit+CI workflow、04-06 演化动力学、LEARNING_PATH+MCP 评估、测试数据工厂三生成器）
 - ✅ 批次94-105 五方向旗舰群+测试体系统一（2026-11-18：03-67/68 运维画像、01-72 编码矩阵、02-60 演化策略、04-07 控制回路、01-73~77 五语言深耕+跨语言集成、01-78/79/80 概念三表征、knowledge-graph JSON-LD 图谱+kg-query 三态判定（E0 第 8 步）、Testing/06-契约语义测试 重组+TEST-C 重编号+TEST-00 总规划）
 - ✅ 批次106-109 concept总集+DSL审计+图谱扩容（2026-11-18：concept/ 2.0 五文件 857 行+红线修订、dsl-schema.json P0+SERIES_DIR 修复、图谱 155 节点 168 边+kg-query 三新命令；108/110 接续）
-- ✅ 批次108+110 自检收口+MCP MVP（2026-11-18：%20 解码盲区修复+全库普查坏链 0、口径闭合；AI_Skills/mcp-server FastMCP 7 tools+2 resources 只读纪律）——**批次 106-110 全部闭环**，剩滚动例行项与真实执行集中批（挂账）
+- ✅ 批次108+110 自检收口+MCP MVP（2026-11-18：%20 解码盲区修复+全库普查坏链 0、口径闭合；AI_Skills/mcp-server FastMCP 7 tools+2 resources 只读纪律）
+- ✅ 批次111-116 全量消化+地基+映射+用例扩展+闭环（2026-11-18：concept 8 卷 257 篇逐篇消化、01-83~86 地基四篇+01-82 六维映射、ASE 89 条/registry 284 行、TEST-16 hermes 执行规划与问题闭环三模板）——批次 1-116 全部闭环，剩滚动例行项与真实执行集中批（挂账）
 
 ---
 
