@@ -1,0 +1,4 @@
+# Mq 知识库 MCP Server 依赖
+# 说明：FastMCP 已并入 python mcp 包（mcp.server.fastmcp），无需单独安装 fastmcp。
+# 如早期文档仍引用 fastmcp，请使用 mcp>=1.0.0 替代。
+mcp>=1.0.0
