@@ -2236,7 +2236,8 @@
      "id": "mq:concept-asyncapi",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-servers",
@@ -2261,7 +2262,8 @@
      "id": "mq:concept-server",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-channels",
@@ -2290,7 +2292,8 @@
      "id": "mq:concept-channel",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-parameters",
@@ -2309,7 +2312,8 @@
      "id": "mq:concept-channel",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-operations",
@@ -2344,7 +2348,8 @@
      "id": "mq:concept-operation",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-messages",
@@ -2377,7 +2382,8 @@
      "id": "mq:dim-delivery",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-headers",
@@ -2396,7 +2402,8 @@
      "id": "mq:concept-message",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-payload",
@@ -2415,7 +2422,8 @@
      "id": "mq:concept-schema-dsl",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-correlationId",
@@ -2434,7 +2442,8 @@
      "id": "mq:concept-correlationid",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-components",
@@ -2463,7 +2472,8 @@
      "id": "mq:concept-asyncapi",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   },
   {
    "id": "mq:asyncapi-traits",
@@ -2486,7 +2496,8 @@
      "id": "mq:concept-operation",
      "source": "concept/08-AsyncAPI概念本体与论证模型.md"
     }
-   ]
+   ],
+   "note": "构件级 realizes 实现（规则8 覆盖声明：构件实现概念，系统能力 degree 另见 supportedBy 边）"
   }
  ]
 }
