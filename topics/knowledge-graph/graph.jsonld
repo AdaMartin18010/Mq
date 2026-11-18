@@ -32,6 +32,9 @@
      "id": "mq:concept-topic",
      "source": "01-78"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-67"
    ]
   },
   {
@@ -130,6 +133,10 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-63",
+    "mq:doc-jepsen"
    ]
   },
   {
@@ -196,6 +203,11 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-63",
+    "mq:doc-TESTC2",
+    "mq:doc-jepsen"
    ]
   },
   {
@@ -209,6 +221,10 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-66",
+    "mq:doc-TESTC2"
    ]
   },
   {
@@ -229,6 +245,13 @@
      "id": "mq:concept-retention",
      "source": "01-78"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-67",
+    "mq:doc-TESTC2"
+   ],
+   "partOf": [
+    "mq:concept-reliability-semantics"
    ]
   },
   {
@@ -316,6 +339,12 @@
      "id": "mq:concept-reliability-semantics",
      "source": "concept-reliability-semantics"
     }
+   ],
+   "documentedIn": [
+    "mq:doc-01-65"
+   ],
+   "implies": [
+    "mq:concept-reliability-semantics"
    ]
   },
   {
@@ -936,7 +965,11 @@
    "type": "skos:Concept",
    "name": "流控",
    "definition": "传输/协议层的速率与窗口控制",
-   "source": "TEST-C2"
+   "source": "TEST-C2",
+   "documentedIn": [
+    "mq:doc-01-66",
+    "mq:doc-TESTC2"
+   ]
   },
   {
    "id": "mq:concept-reliability-semantics",
@@ -1710,6 +1743,16 @@
     "mq:dim-dedup",
     "mq:dim-dlq",
     "mq:dim-transaction"
+   ],
+   "validatedBy": [
+    "mq:ase-001",
+    "mq:ase-002",
+    "mq:ase-003",
+    "mq:ase-004",
+    "mq:ase-005",
+    "mq:ase-007",
+    "mq:ase-008",
+    "mq:ase-009"
    ]
   },
   {
@@ -1794,7 +1837,51 @@
     "mq:dim-dlq",
     "mq:dim-delayed",
     "mq:dim-dedup"
+   ],
+   "validatedBy": [
+    "mq:ase-007",
+    "mq:ase-008",
+    "mq:ase-010",
+    "mq:ase-011",
+    "mq:ase-001",
+    "mq:ase-002"
    ]
+  },
+  {
+   "id": "mq:doc-01-63",
+   "type": "mq:Evidence",
+   "name": "01-63 Exactly-once语义全论证",
+   "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:doc-01-65",
+   "type": "mq:Evidence",
+   "name": "01-65 死信队列完整工程解析",
+   "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:doc-01-66",
+   "type": "mq:Evidence",
+   "name": "01-66 背压机制全谱系",
+   "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:doc-01-67",
+   "type": "mq:Evidence",
+   "name": "01-67 存储解耦与队列化收敛",
+   "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:doc-TESTC2",
+   "type": "mq:Evidence",
+   "name": "TEST-C2 语义矩阵",
+   "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:doc-jepsen",
+   "type": "mq:Evidence",
+   "name": "Jepsen 报告集",
+   "source": "批次C3 扩边"
   }
  ]
 }
