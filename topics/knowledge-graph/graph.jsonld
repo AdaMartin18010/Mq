@@ -1891,6 +1891,275 @@
    "source": "decision-registry dec-036",
    "degree": "argument",
    "documentedIn": "mq:doc-01-63"
+  },
+  {
+   "id": "mq:asyncapi-info",
+   "type": "mq:SpecComponent",
+   "name": "info",
+   "definition": "AsyncAPI 3.x 契约文档元数据实体，title+version 唯一标识文档描述",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-servers",
+   "type": "mq:SpecComponent",
+   "name": "servers",
+   "definition": "AsyncAPI 3.x 部署端点集合，host+protocol+protocolVersion 三元组确定身份",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "associates": [
+    {
+     "id": "mq:asyncapi-channels",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-server",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-channels",
+   "type": "mq:SpecComponent",
+   "name": "channels",
+   "definition": "AsyncAPI 3.x 消息传输抽象地址实体，name 与 address 分离",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "associates": [
+    {
+     "id": "mq:asyncapi-operations",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:asyncapi-servers",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-channel",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-parameters",
+   "type": "mq:SpecComponent",
+   "name": "parameters",
+   "definition": "AsyncAPI 3.x 地址模板变量属性，绑定在地址解析阶段",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:asyncapi-channels",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-channel",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-operations",
+   "type": "mq:SpecComponent",
+   "name": "operations",
+   "definition": "AsyncAPI 3.x 应用动作实体，含 action/reply/traits 子结构",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "associates": [
+    {
+     "id": "mq:asyncapi-channels",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "implies": [
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-operation",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-messages",
+   "type": "mq:SpecComponent",
+   "name": "messages",
+   "definition": "AsyncAPI 3.x 传输数据单元实体，由 payload/headers/correlationId 组成",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "associates": [
+    {
+     "id": "mq:asyncapi-operations",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:asyncapi-components",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-message",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:dim-delivery",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-headers",
+   "type": "mq:SpecComponent",
+   "name": "headers",
+   "definition": "AsyncAPI 3.x 消息协议级信封属性",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-message",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-payload",
+   "type": "mq:SpecComponent",
+   "name": "payload",
+   "definition": "AsyncAPI 3.x 业务载荷属性，承载 schema 引用或内联 schema",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-schema-dsl",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-correlationId",
+   "type": "mq:SpecComponent",
+   "name": "correlationId",
+   "definition": "AsyncAPI 3.x 关联提取表达式属性，声明从消息何处取关联键",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-correlationid",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-components",
+   "type": "mq:SpecComponent",
+   "name": "components",
+   "definition": "AsyncAPI 3.x 可复用构件命名空间实体，$ref 解析根容器",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "partOf": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "associates": [
+    {
+     "id": "mq:asyncapi-operations",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-asyncapi",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
+  },
+  {
+   "id": "mq:asyncapi-traits",
+   "type": "mq:SpecComponent",
+   "name": "traits",
+   "definition": "AsyncAPI 3.x 横切模板/关系型构件，浅合并语义，非运行时实体",
+   "source": "concept/08-AsyncAPI概念本体与论证模型.md",
+   "specializes": [
+    {
+     "id": "mq:asyncapi-operations",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    },
+    {
+     "id": "mq:asyncapi-messages",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ],
+   "realizes": [
+    {
+     "id": "mq:concept-operation",
+     "source": "concept/08-AsyncAPI概念本体与论证模型.md"
+    }
+   ]
   }
  ]
 }
