@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → doc-decision-check → doc-semantic-spotcheck → contract-spec-check → tc-assert-check → kg-check
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency（九步）
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -213,9 +213,14 @@ step_kg_check() {
   python3 "./topics/scripts/kg-query.py" --check
 }
 
+# 步骤 9: 全库一致性审计（批次166，consistency-audit 机器红线入门禁）
+step_consistency() {
+  python3 "./topics/scripts/consistency-audit.py"
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=8
+  local pass=0 fail=0 skip=0 total=9
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -271,6 +276,11 @@ main() {
   step_rc=$?
   if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
 
+  # 步骤 9
+  run_step "E0-consistency" "consistency-audit 全库一致性" step_consistency
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -300,6 +310,7 @@ main() {
 | E0-contract | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-contract.log" | cut -d' ' -f2) | results/$DATE/E0-contract.log |
 | E0-tc-static | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-static.log" | cut -d' ' -f2) | results/$DATE/E0-tc-static.log |
 | E0-kg | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-kg.log" | cut -d' ' -f2) | results/$DATE/E0-kg.log |
+| E0-consistency | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-consistency.log" | cut -d' ' -f2) | results/$DATE/E0-consistency.log |
 EOF
 
   # 追加 history log

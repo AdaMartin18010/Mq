@@ -109,6 +109,10 @@ topics/01-基础概念与对比分析/01-83-DSL通论：语言设计基础.md	L1
 topics/01-基础概念与对比分析/01-84-消息DSL通用模式全集.md	L1/L3	模式元模型+语义定律	12 大通用模式是 L3 模式的元模型，同时定义 L1 语义契约的最小表达
 topics/01-基础概念与对比分析/01-85-数据描述语言谱系.md	L1/L2	语言模型	数据描述语言谱系提供 L2 语言演化模型，并支撑 L1 Schema 定律
 topics/01-基础概念与对比分析/01-86-AsyncAPI构件语义全书.md	L1	规范语义定律	AsyncAPI 构件语义是 L1 层规范定律的完整展开
+topics/01-基础概念与对比分析/01-87-AsyncAPI规范族全景与符合性栈.md	L1	概念语义	基础概念、对比分析、系统专章属 L1 语义/概念定律层
+topics/01-基础概念与对比分析/01-88-契约转换规则全集.md	L1	概念语义	基础概念、对比分析、系统专章属 L1 语义/概念定律层
+topics/01-基础概念与对比分析/01-89-构件设计论证模板.md	L1	概念语义	基础概念、对比分析、系统专章属 L1 语义/概念定律层
+topics/01-基础概念与对比分析/01-90-AsyncAPI技术栈全景2026.md	L1	概念语义	基础概念、对比分析、系统专章属 L1 语义/概念定律层
 topics/01-基础概念与对比分析/README.md	L4	导航实例	子目录 README 是阅读导航与实例入口
 topics/02-场景驱动架构设计/02-01-场景化功能架构矩阵.md	L3	设计模式	02 系列按 AGENTS.md 分工为设计原理与选型论证，属 L3 模式层
 topics/02-场景驱动架构设计/02-02-多场景架构决策图网.md	L3	设计模式	02 系列按 AGENTS.md 分工为设计原理与选型论证，属 L3 模式层
@@ -253,6 +257,7 @@ topics/04-动态系统论与演化分析/README.md	L2/L4	模型导航+实例	04 
 topics/BEST_PRACTICES.md	L3/L4	最佳实践模式+实例	最佳实践总结跨 L3 模式与 L4 实例
 topics/CHANGELOG.md	L0	演化公理	知识版本变更的时序公理
 topics/COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md	L3/L4	审查模式+实例	审查报告跨 L3 模式建议与 L4 实例清单
+topics/CONTRACT_DESIGN_SPEC.md	L0	治理公理	topics 根级元文档承载项目治理、状态、路线公理
 topics/CONTRIBUTING.md	L0	协作公理	贡献者与 Agent 协作的治理公理
 topics/CROSS_REFERENCES.md	L0	关系公理	文档间交叉引用关系，防止双源漂移的治理公理
 topics/DSL_ASYNCAPI_AUDIT.md	L1/L4	审计定律+实例	DSL/AsyncAPI 审计兼具 L1 规范定律与 L4 审计实例
@@ -284,9 +289,9 @@ topics/examples/README.md	L4	代码实例	多语言代码示例目录的 L4 导�
 topics/knowledge-graph/README.md	L2/L4	图谱模型+实例	知识图谱是 L2 机读模型，亦是 L4 查询实例
 topics/scripts/README.md	L4	导航实例	子目录 README 是阅读导航与实例入口
 # --- 统计 ---
-# TOTAL	281	-	全库归档文档总数
-# L0	21	-	主归属 L0 文档数
-# L1	77	-	主归属 L1 文档数
+# TOTAL	286	-	全库归档文档总数
+# L0	22	-	主归属 L0 文档数
+# L1	81	-	主归属 L1 文档数
 # L2	12	-	主归属 L2 文档数
 # L3	75	-	主归属 L3 文档数
 # L4	96	-	主归属 L4 文档数
