@@ -31,3 +31,12 @@ invariants:
   - 每通道至多一次成功投递记录（幂等去重）
   - retryable=false 的失败不进入重试（直接死信/人工）
   - 用户偏好过滤在 fan-out 前应用（消息过滤维度）
+
+quality:
+  - column: NotificationRequestedCmd.notifyId
+    type: not_null
+    severity: error
+sla:
+  freshness:  PT2M
+  availability:  99.5%
+  retention: P30D

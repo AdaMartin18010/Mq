@@ -30,3 +30,15 @@ invariants:
   - 同 taskId 至多一次执行成功（幂等去重核心场景）
   - deadline 过期任务拒执行并标记 EXPIRED（延迟消息/TTL 联动）
   - retryBudget 耗尽进死信（人工或终态处理，01-65）
+
+quality:
+  - column: TaskEnvelope.taskId
+    type: not_null
+    severity: error
+  - column: TaskEnvelope.deadline
+    type: not_null
+    severity: error
+sla:
+  freshness:  PT1M
+  availability:  99.5%
+  retention: P30D

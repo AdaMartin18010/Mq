@@ -23,3 +23,15 @@ invariants:
   - 遥测允许丢点（QoS0），告警必须达（QoS1+）——交付语义分级
   - 采集时刻以设备为准（时钟语义），消费端乱序可合法
   - 离线缓存重传消息带原始 collectedAt（TTL 过期后可丢弃 stale 数据）
+
+quality:
+  - column: TelemetryReadingEvent.deviceId
+    type: not_null
+    severity: error
+  - column: TelemetryReadingEvent.collectedAt
+    type: not_null
+    severity: warning
+sla:
+  freshness:  PT5M
+  availability:  99.0%
+  retention: P7D

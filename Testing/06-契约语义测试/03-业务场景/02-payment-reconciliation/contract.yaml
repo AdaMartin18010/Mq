@@ -31,3 +31,15 @@ invariants:
   - 同一 paymentId 仅一次 PaymentCompletedEvent（幂等去重）
   - 对账事件携带 evidenceHash 且不可变（审计链衔接 07-audit-trail）
   - 差错事件进入人工处理流（死信升级版，非自动重试）
+
+quality:
+  - column: PaymentInitiatedCmd.paymentId
+    type: not_null
+    severity: error
+  - column: PaymentCompletedEvent.settlementBatch
+    type: not_null
+    severity: error
+sla:
+  freshness:  PT30S
+  availability:  99.99%
+  retention: P7Y

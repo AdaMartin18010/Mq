@@ -59,6 +59,30 @@ for oid, o in ops.items():
         name = ref[len("#/channels/"):]
         if name not in chs: errs.append(f"OP_REF_DANGLING: {oid}->{name}")
 msgs = ((d.get("components") or {}).get("messages")) or {}
+# 外部 $ref 解析（批次163b）：contract.yaml#/... 引用须可解析
+import os as _os
+ext_errs = []
+def walk_ext(node):
+    if isinstance(node, dict):
+        ref = node.get("$ref", "")
+        if isinstance(ref, str) and ref.startswith("contract.yaml#"):
+            tgt_file = _os.path.join(_os.path.dirname(sys.argv[1]), "contract.yaml")
+            frag = ref.split("#", 1)[1]
+            try:
+                ctgt = yaml.safe_load(open(tgt_file, encoding="utf-8"))
+                cur = ctgt
+                for part in [x for x in frag.split("/") if x]:
+                    cur = cur[part] if isinstance(cur, dict) and part in cur else None
+                    if cur is None: break
+                if cur is None:
+                    ext_errs.append(f"EXT_REF_DANGLING: {ref}")
+            except FileNotFoundError:
+                ext_errs.append(f"EXT_REF_NO_FILE: {ref}")
+        for v in node.values(): walk_ext(v)
+    elif isinstance(node, list):
+        for v in node: walk_ext(v)
+walk_ext(d)
+errs.extend(ext_errs)
 for cid, c in chs.items():
     for mname, m in ((c or {}).get("messages") or {}).items():
         ref = (m or {}).get("$ref", "") if isinstance(m, dict) else ""

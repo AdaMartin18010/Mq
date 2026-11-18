@@ -34,3 +34,15 @@ invariants:
   - availableAfter 永不为负（超卖防护断言）
   - 预留与确认/释放严格配对（事务边界）
   - 同一 reservationId 的确认至多一次（幂等去重）
+
+quality:
+  - column: StockReservedEvent.sku
+    type: not_null
+    severity: error
+  - column: StockReservedEvent.availableAfter
+    type: freshness
+    maximum: PT1M
+sla:
+  freshness: PT10S
+  availability: 99.9%
+  retention: P90D

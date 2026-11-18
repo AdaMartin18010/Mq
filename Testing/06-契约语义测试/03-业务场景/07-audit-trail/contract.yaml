@@ -18,3 +18,15 @@ invariants:
   - prevHash 链不可断（顺序性+完整性：缺失即审计链被篡改）
   - 审计事件只增不改（append-only；更新权=合规红线 02-50）
   - integrityHash 覆盖 prevHash（递归完整性验证 O(n) 可全链回放）
+
+quality:
+  - column: AuditRecordEvent.integrityHash
+    type: not_null
+    severity: error
+  - column: AuditRecordEvent.prevHash
+    type: not_null
+    severity: error
+sla:
+  freshness:  PT5M
+  availability:  99.99%
+  retention: P7Y

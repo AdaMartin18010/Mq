@@ -23,3 +23,12 @@ invariants:
   - 同表事件按 source.lsn 单调有序（顺序性；位点回放依据）
   - op=d 后允许同主键 op=c（delete-then-recreate），消费端不可假设主键连续性
   - schema 变更事件优先于该表首批新 schema 数据事件（SchemaChangeEvent 通道隔离或头部标记）
+
+quality:
+  - column: CdcChangeEvent.source
+    type: not_null
+    severity: error
+sla:
+  freshness:  PT1M
+  availability:  99.9%
+  retention: P30D
