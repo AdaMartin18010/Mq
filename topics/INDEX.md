@@ -754,7 +754,7 @@
 
 - 195个主题文件（01系列52篇 + 02系列58篇 + 03系列65篇 + 04系列5篇 + AI_Skills系列5篇 + Testing系列10篇）
 - 7个README文件（各主题和总目录说明）
-- 24个元文档（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/KB_* 治理族/QUICK_* 等）
+- 24个元文档（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/KB_*治理族/QUICK_* 等）
 - 53个代码示例文件（Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例，覆盖六大系统）
 - 69个配置模板文件（服务器/客户端 + Prometheus/Grafana + Docker Compose + AsyncAPI 契约与事件契约模板）
 - 112个运维脚本文件（含脚本目录 README；部署、监控、巡检、演练、治理、自检、test-harness 执行框架与 test-registry 注册表）
