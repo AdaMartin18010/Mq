@@ -134,7 +134,8 @@ Mq/
 - ✅ 批次108+110（自检收口+MCP MVP）：doc-self-check %20 解码+全库普查坏链 0、AI_Skills/mcp-server FastMCP 7 只读 tools+2 resources（2026-11-18）
 - ✅ 批次111-116（全量消化+地基+映射+用例扩展+闭环）：concept 8 卷 257 篇逐篇消化、01-83~86 地基+01-82 六维映射、ASE 89 条、TEST-16 三模板闭环（2026-11-18）
 - ✅ 批次117-120（测试矩阵维度化）：Testing/07-集成矩阵 560 用例（7 系统×5 语言×16 特性全覆盖）+matrix-check 入 E0（2026-11-18）
-- ✅ 挂账清零批（2026-11-18）：RocketMQ 12 语义格补定+560 格 GWT 全量充实（matrix-enrich.py 112 格知识库）+fixtures Kafka 4.4.0 镜像（KIP-1191 解锁）+scenario-map.py 场景映射（首跑 OK）——**批次 1-120 全部闭环、挂账仅剩真实执行集中批（等用户在场）**
+- ✅ 挂账清零批（2026-11-18）：RocketMQ 12 语义格补定+560 格 GWT 全量充实（matrix-enrich.py 112 格知识库）+fixtures Kafka 4.4.0 镜像（KIP-1191 解锁）+scenario-map.py 场景映射（首跑 OK）
+- ✅ Phase C 全选落地（2026-11-18）：04 系 8-10 篇（演化博弈/采纳量化/反脆弱）+examples 十链示例+图谱 161 节点 182 边——**Phase C 闭环；Phase A（真实执行集中批）用户暂缓随时可约**
 
 ### 7.2 AI 代理协作协议
 
