@@ -15,6 +15,7 @@ channels:
       CdcChangeEvent: { $ref: '#/components/messages/CdcChangeEvent' }
     bindings:
       kafka:
+        bindingVersion: '0.5.0'
         partitions: 3
     description: 单表单 topic 划分（源表粒度的顺序保证单元）
   cdc.schema.changes:

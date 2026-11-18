@@ -17,6 +17,7 @@ channels:
       OrderCancelledEvent: { $ref: '#/components/messages/OrderCancelledEvent' }
     bindings:
       kafka:
+        bindingVersion: '0.5.0'
         partitions: 6            # orderKey 分区
         replicationFactor: 3
 operations:

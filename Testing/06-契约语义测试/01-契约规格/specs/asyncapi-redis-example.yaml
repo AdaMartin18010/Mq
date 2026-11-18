@@ -25,7 +25,7 @@ channels:
       OrderEvent:
         $ref: '#/components/messages/OrderEvent'
     bindings:
-      redis: {}                      # 保留空对象占位（binding v0.1.0 要求）
+      redis: {}                      # 保留空对象（v0.1.0 全保留，bindingVersion 亦不可出现）
     x-redis:
       maxlen: 100000                 # MAXLEN ~ 上限（近似截断，01-65 对照持久化边界）
       trimStrategy: almost-exact     # ~ 近似修剪策略

@@ -31,6 +31,7 @@ operations:
     channel: { $ref: '#/channels/sensors.{siteId}.{deviceId}.telemetry' }
     bindings:
       mqtt:
+        bindingVersion: '0.2.0'
         qos: 0                       # 遥测允许丢点（01-64 QoS 语义【定理】），operation 级
         retain: false
     x-semantics: [交付语义, 背压, 流控]

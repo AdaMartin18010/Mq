@@ -15,6 +15,7 @@ channels:
       NotificationRequestedCmd: { $ref: '#/components/messages/NotificationRequestedCmd' }
     bindings:
       amqp:
+        bindingVersion: '0.3.0'
         is: routingKey
         exchange: { name: notify.topic, type: topic, durable: true }
   notify.results:
