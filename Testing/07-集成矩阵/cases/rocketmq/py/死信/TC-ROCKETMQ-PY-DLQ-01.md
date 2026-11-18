@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 重试耗尽→%DLQ%
 
 ## When
+
 - 毒消息
 
 ## Then
+
 - 进死信组+人工可捞
 - 等级依据：TEST-C2 ROCKETMQ×死信=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/py/死信/TC-ROCKETMQ-PY-DLQ-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

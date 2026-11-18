@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无事务
 
 ## When
+
 - 事务需求
 
 ## Then
+
 - 反向用例——Lua 原子替代
 - 等级依据：TEST-C2 REDIS×事务=—
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/go/事务/TC-REDIS-GO-TRX-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 —

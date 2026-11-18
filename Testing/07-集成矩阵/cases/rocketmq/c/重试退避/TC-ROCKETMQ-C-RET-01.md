@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - consumer 重试等级（%RETRY%）
 
 ## When
+
 - 消费失败
 
 ## Then
+
 - 重试 16 次梯度（◐）
 - 等级依据：TEST-C2 ROCKETMQ×重试退避=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/c/重试退避/TC-ROCKETMQ-C-RET-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

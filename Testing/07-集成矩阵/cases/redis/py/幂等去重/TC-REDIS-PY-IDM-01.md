@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - XADD 应用层去重
 
 ## When
+
 - 重复生产
 
 ## Then
+
 - 幂等键模式
 - 等级依据：TEST-C2 REDIS×幂等去重=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/py/幂等去重/TC-REDIS-PY-IDM-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 ○

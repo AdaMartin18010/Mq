@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 18 级延迟等级原生
 
 ## When
+
 - 延迟投递
 
 ## Then
+
 - 等级时间窗断言
 - 等级依据：TEST-C2 ROCKETMQ×延迟消息=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/c/延迟消息/TC-ROCKETMQ-C-DLY-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】●

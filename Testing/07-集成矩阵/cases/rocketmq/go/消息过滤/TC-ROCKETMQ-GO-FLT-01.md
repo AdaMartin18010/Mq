@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - SQL92 过滤表达式
 
 ## When
+
 - 条件消费
 
 ## Then
+
 - 过滤表达式生效
 - 等级依据：TEST-C2 ROCKETMQ×消息过滤=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/go/消息过滤/TC-ROCKETMQ-GO-FLT-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

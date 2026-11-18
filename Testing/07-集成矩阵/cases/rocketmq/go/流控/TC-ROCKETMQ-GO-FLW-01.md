@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 消费限流
 
 ## When
+
 - 过载
 
 ## Then
+
 - 限流行为可观测
 - 等级依据：TEST-C2 ROCKETMQ×流控=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/go/流控/TC-ROCKETMQ-GO-FLW-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】◐

@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无流控
 
 ## When
+
 - 过载
 
 ## Then
+
 - 应用层限流模式
 - 等级依据：TEST-C2 REDIS×流控=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/py/流控/TC-REDIS-PY-FLW-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ○

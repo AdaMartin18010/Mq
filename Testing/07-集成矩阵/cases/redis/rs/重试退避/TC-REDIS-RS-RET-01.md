@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 应用层重试
 
 ## When
+
 - 失败
 
 ## Then
+
 - 模式断言
 - 等级依据：TEST-C2 REDIS×重试退避=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/rs/重试退避/TC-REDIS-RS-RET-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 ○

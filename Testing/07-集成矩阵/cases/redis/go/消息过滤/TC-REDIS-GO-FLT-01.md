@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无服务端过滤
 
 ## When
+
 - 过滤
 
 ## Then
+
 - 客户端模式
 - 等级依据：TEST-C2 REDIS×消息过滤=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/go/消息过滤/TC-REDIS-GO-FLT-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ○

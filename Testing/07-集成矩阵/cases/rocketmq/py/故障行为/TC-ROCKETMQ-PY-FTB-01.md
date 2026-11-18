@@ -4,18 +4,23 @@
 > **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
+
 - broker 宕机
 
 ## When
+
 - 注入
 
 ## Then
+
 - 主从切换行为
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/py/故障行为/TC-ROCKETMQ-PY-FTB-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

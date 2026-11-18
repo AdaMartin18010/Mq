@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - commitlog+consumequeue
 
 ## When
+
 - 重启
 
 ## Then
+
 - 消息存活
 - 等级依据：TEST-C2 ROCKETMQ×持久化=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/c/持久化/TC-ROCKETMQ-C-PST-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

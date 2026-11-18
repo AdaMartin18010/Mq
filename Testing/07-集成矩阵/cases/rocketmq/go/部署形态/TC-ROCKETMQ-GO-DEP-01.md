@@ -4,18 +4,23 @@
 > **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
+
 - namesrv+broker 拓扑
 
 ## When
+
 - 起停
 
 ## Then
+
 - 启动序列（先 namesrv）
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/go/部署形态/TC-ROCKETMQ-GO-DEP-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】03-67

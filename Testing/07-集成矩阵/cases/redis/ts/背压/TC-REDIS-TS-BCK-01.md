@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无原生背压
 
 ## When
+
 - 洪峰
 
 ## Then
+
 - 轮询补偿模式（01-66）
 - 等级依据：TEST-C2 REDIS×背压=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/ts/背压/TC-REDIS-TS-BCK-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ○

@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - Stream ID 单调
 
 ## When
+
 - 乱序 XADD
 
 ## Then
+
 - ID 单调序
 - 等级依据：TEST-C2 REDIS×顺序性=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/c/顺序性/TC-REDIS-C-ORD-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 ●

@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 应用层幂等键
 
 ## When
+
 - 重投
 
 ## Then
+
 - 幂等键去重模式
 - 等级依据：TEST-C2 ROCKETMQ×幂等去重=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/go/幂等去重/TC-ROCKETMQ-GO-IDM-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】

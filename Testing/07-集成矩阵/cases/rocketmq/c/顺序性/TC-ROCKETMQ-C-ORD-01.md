@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 分区顺序消息（MessageQueueSelector）
 
 ## When
+
 - 同键生产
 
 ## Then
+
 - 键内有序消费
 - 等级依据：TEST-C2 ROCKETMQ×顺序性=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/rocketmq/c/顺序性/TC-ROCKETMQ-C-ORD-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 【论证】
