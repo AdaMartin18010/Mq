@@ -15,6 +15,7 @@ services:
         condition: service_healthy
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/microcks
+      - JAVA_OPTIONS=-Dspring.data.mongodb.uri=mongodb://mongo:27017/microcks
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
       # 只读挂载场景包 spec 目录，供导入/校验
@@ -29,7 +30,7 @@ services:
       - "mq-test=contract"
 
   mongo:
-    image: mongo:4.4
+    image: mongo:7.0-jammy
     container_name: mq-microcks-mongo
     volumes:
       - microcks-mongo-data:/data/db

@@ -1,0 +1,10 @@
+# coverage-matrix：知识断言↔测试覆盖三态（批次140）；state: covered|unverified|conflict
+# doc	section	assertion	state	evidence
+01-63	1.63.6	EOS=系统+应用联合责任，消费幂等不可省	covered	TC-SEM-DURABILITY;ASE-001
+01-63	协议级边界	KAFKA-17754 跨故障 aborted read	unverified	Jepsen 引用（外部证据，待本库复现用例）
+01-64	QoS 时序	QoS1 至少一次重投语义	covered	TC-MQTT-PY-DLV-01(dry-run 断言库);ASE-012
+01-66	1.66.7	maxAckPending 平台期=配置值	covered	[EV:TC-SEM-07@0de1407]
+01-66	背压谱系	Flink buffer 可用性反压	unverified	官方文档引用（用例挂账 TC-SEM-11 族）
+01-65	AMQP 路径	DLX 死信隔离可再消费	covered	[EV:TC-SEM-05@0de1407]
+01-61	ISR 语义	acks=all 已确认不丢	covered	[EV:TC-SEM-KAFKA-DURABILITY@0de1407]
+01-62	BookKeeper	E>=WQ>=AQ	unverified	协议文档【定理级引用】

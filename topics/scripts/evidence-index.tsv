@@ -1,0 +1,5 @@
+# evidence-index：verified 实测↔知识断言双向索引（批次135）；引用格式 [EV:case-id@commit]（KB_CHARTER §6）
+# case_id	verified_date	assertion_family	docs（回链目标）	commit
+TC-SEM-05	2026-11-18	ASE-007	01-65（DLQ 三路径 AMQP 段）	0de1407
+TC-SEM-07	2026-11-18	ASE-010	01-66（maxAckPending 平台期）	0de1407
+TC-SEM-KAFKA-DURABILITY	2026-11-18	ASE-001/PST	01-63/01-61（acks=all 耐久）	0de1407

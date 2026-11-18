@@ -160,6 +160,54 @@ def doc_resource(path: str) -> str:
 
 # ---------- 入口 ----------
 
+
+
+# ---- 批次136 v2 新增 tools ----
+import csv as _csv
+
+_KB_VERSION = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip() if os.path.isdir(os.path.join(ROOT, ".git")) else "unknown"
+
+def _tsv_lookup(path, key_col, query):
+    hits = []
+    with open(os.path.join(ROOT, path), encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("#") or not line.strip(): continue
+            cols = line.rstrip(chr(13) + chr(10)).split(chr(9))
+            if query.lower() in cols[key_col].lower():
+                hits.append(cols)
+    return hits
+
+@mcp.tool()
+def decision_lookup(query: str) -> dict:
+    """决策判定检索：按关键词命中 decision-registry 判定与溯源（K1 §2 P1-P2 引用入口）。
+    返回 kb_version 与 kb_refs 引用三元组（KB_REF_AUDIT §1）。"""
+    reg = _tsv_lookup("topics/scripts/decision-registry.tsv", 0, query)
+    ev = _tsv_lookup("topics/scripts/decision-evidence.tsv", 0, query)
+    return {"ok": True, "kb_version": _KB_VERSION,
+            "decisions": reg[:5], "evidence": ev[:3],
+            "kb_refs": [{"doc": "topics/scripts/decision-registry.tsv", "commit": _KB_VERSION, "confidence": "按条目 degree"}]}
+
+@mcp.tool()
+def case_lookup(query: str) -> dict:
+    """案例/用例检索：verified 用例与故障案例（agent 可信断言清单入口）。"""
+    reg = _tsv_lookup("topics/scripts/test-registry.tsv", 0, query)
+    verified = [r for r in reg if r[5] == "verified"]
+    return {"ok": True, "kb_version": _KB_VERSION, "matched": len(reg), "verified": verified[:5],
+            "kb_refs": [{"doc": "topics/scripts/test-registry.tsv", "commit": _KB_VERSION}]}
+
+@mcp.tool()
+def knowledge_version() -> dict:
+    """知识版本查询：当前库 commit、时效等级表入口、宪章版本。"""
+    return {"ok": True, "kb_version": _KB_VERSION, "charter": "kb_charter v1.0",
+            "charter_docs": ["topics/KB_CHARTER.md", "topics/KB_ENDORSEMENT.md", "topics/KB_REF_AUDIT.md", "topics/KB_GOVERNANCE.md"]}
+
+
+_TOOL_REGISTRY += [
+    ("decision_lookup", "决策判定检索：registry 命中+溯源+kb_refs（K1 §2 P1-P2 入口）"),
+    ("case_lookup", "用例/案例检索：verified 清单=agent 可信断言清单"),
+    ("knowledge_version", "知识版本查询：commit+宪章版本+时效等级入口"),
+]
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Mq 知识库 MCP Server")
     parser.add_argument("--dry-run", action="store_true", help="无依赖打印将注册的 tools/resources 清单")

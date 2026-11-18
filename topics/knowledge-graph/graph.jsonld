@@ -1882,6 +1882,15 @@
    "type": "mq:Evidence",
    "name": "Jepsen 报告集",
    "source": "批次C3 扩边"
+  },
+  {
+   "id": "mq:dec-036",
+   "type": "mq:Decision",
+   "name": "exactly-once 选型判定",
+   "definition": "EOS 需求选 Kafka 事务/Pulsar 事务；边界见 KAFKA-17754",
+   "source": "decision-registry dec-036",
+   "degree": "argument",
+   "documentedIn": "mq:doc-01-63"
   }
  ]
 }

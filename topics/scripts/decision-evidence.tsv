@@ -1,0 +1,5 @@
+# decision-evidence：判定溯源旁挂表（批次134）；列: dec_id evidence_source counterexample boundary confidence endorser endorser_date
+dec-001	01-59 L0 决策树+六系统吞吐基线	高扇出小消息场景延迟劣势	单机<10万msg/s 且非日志类	argument	双签待办	-
+dec-021	01-60 六域扫描核实	新兴域（AI Agent 消息）证据仍在积累	时效 T1（季度复核）	argument	双签待办	-
+dec-036	01-63 KIP-98/129/447/890 官方	Jepsen KAFKA-17754 协议级 unsound（见 conformance-matrix）	跨故障窗口事务语义	argument	双签待办	-
+dec-053	03-66 OpenMessaging 方法论	单节点小规模结果不可外推生产	评估/基准环境	argument	双签待办	-
