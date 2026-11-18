@@ -14,9 +14,10 @@
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
 | **主题文档** | 266 | 01系列84篇 + 02系列59篇 + 03系列68篇 + 04系列10篇 + AI_Skills系列6篇 + Testing系列35篇（含 06-契约语义测试 21 篇 + 07-集成矩阵）+ concept 人类阅读层 4 篇（00-03；concept01~06 历史资产另计） |
-| **运维行为用例** | 131 | Testing/08（7 类 22 行为 × 7 系统适用矩阵，OPS 域注册；断言面 CLI/admin/metrics 语言无关） |
+| **运维行为用例** | 411 | Testing/08（22 行为+七小域 ERR70/FAL15/SYN35/PST40/CLU40/SCL45/ALT35/OPS131；断言面 CLI/admin/metrics） |
+| **契约治理族** | 6 | topics/KB_CHARTER·ENDORSEMENT·REF_AUDIT·GOVERNANCE·DIVISION（宪章族，K5 禁改区） |
 | **主题README** | 10 | 6个主题目录说明 + topics/README.md（含 concept 映射表）+ 契约语义测试系列2个（门面/场景库）+ Testing fixtures |
-| **元文档** | 20 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
+| **元文档** | 26 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
 | **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
@@ -34,9 +35,9 @@
 - **AI_Skills-AI技能体系与国际标准对齐（顶层目录，6 篇 + skills/ 7 技能实体，2026-11-18 提升重组）**：标准对齐/图谱/规范/模板/用例 + AI_SKILL-06 技能审计报告（7 技能全合规，漂移 WARN 15→0，国际对齐 AAIF 100 万 skills 生态）
 - **契约语义测试-六层契约与语义测试（顶层目录，2026-11-18 设立，批次 64-76）**：DSL→AsyncAPI→MQ 绑定→通信语义→业务场景→行为用例 六层模型；TEST-13 总纲/TEST-14 语义矩阵（12 维×6 系统）/TEST-15 场景规范；六系统 AsyncAPI spec + bindings 矩阵（官方版本核实）+ x- 扩展登记簿；8 业务场景契约包（contract+spec+SEMANTICS）；14 条 GWT 断言（assertions.tsv 机读）；registry 新 SEM/BUS 两域（TC-SEM 12 + TC-BUS 8）；六层追溯表（登记口径 95%）；E0 扩至七步（含契约 spec 校验 + 行为用例父用例校验）
 
-### 元文档清单（25个）
+### 元文档清单（31个：26 文档 + 5 索引三件套/README类另计）
 
-INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md、QUICK_REFERENCE.md、QUICK_COMMANDS.md、SUMMARY.md、PRACTICE_GUIDE.md、GLOSSARY.md、IMPLEMENTATION_CHECKLIST.md、PROJECT_STATUS.md（本文档）、ROADMAP.md、TEMPLATES.md（文档模板）、CROSS_REFERENCES.md、CHANGELOG.md、CONTRIBUTING.md、BEST_PRACTICES.md、COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md
+INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md、QUICK_REFERENCE.md、QUICK_COMMANDS.md、SUMMARY.md、PRACTICE_GUIDE.md、GLOSSARY.md、IMPLEMENTATION_CHECKLIST.md、KB_CHARTER.md、KB_ENDORSEMENT.md、KB_REF_AUDIT.md、KB_GOVERNANCE.md、KB_DIVISION.md（契约治理族，K5 禁改区）、PROJECT_STATUS.md（本文档）、ROADMAP.md、TEMPLATES.md（文档模板）、CROSS_REFERENCES.md、CHANGELOG.md、CONTRIBUTING.md、BEST_PRACTICES.md、COMPREHENSIVE_REVIEW_AND_RECOMMENDATIONS.md
 
 > 注：原 COMPLETION_REPORT*、FINAL_*、PROJECT_COMPLETION_*、IMPLEMENTATION_STATUS_FINAL 共8个完成度报告已合并归档，权威状态以本文档与 ROADMAP.md 为准。
 

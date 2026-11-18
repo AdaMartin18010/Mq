@@ -38,7 +38,7 @@
 ### 3.1 文件所有权矩阵（互斥铁律）
 
 | 文件/区域 | 唯一写者 | 另一方权限 |
-|-----------|---------|-----------|
+| ----------- | --------- | ----------- |
 | Testing/08/07 用例、results/、cases/、drift-inbox/、HERMES-STATE.md、benchmark 产物 | **hermes** | 主控只读（审计回放） |
 | topics/ 正文、K1-K6 宪章族、decision-registry、coverage/evidence 索引的规划列、AGENTS.md/ROADMAP/INDEX 的规划条目 | **主控** | hermes 只读 |
 | test-registry.tsv 的 **status 列** | hermes（执行流转） | 主控只读核对 |
@@ -47,12 +47,14 @@
 | E0 门禁/脚本 | 主控（治理变更）；hermes 只运行不修改 | — |
 
 ### 3.2 一致性协议（单一事实源）
+
 1. **git 为共同底账**：两轨都须 commit 工作单元（hermes 每 H 项一 commit；主控每规划批一 commit）；
 2. **HERMES-STATE.md 为执行轨状态源**（hermes 维护：当前项/产物索引/待上报 L3/异常）；主控梳理前必读，hermes 推进前必读 ROADMAP 主控队列；
 3. **冲突仲裁**：同时刻同文件变更以 git 为准，但**计划性冲突**（主控规划了 hermes 正在执行的区域）由主控避让——规划新批前查 HERMES-STATE 的在域标记；
 4. **E0 为共同门禁**：任何一轨提交后 E0 须全绿，红了由责任轨修复。
 
 ### 3.3 对齐检查（防漂移）
+
 - hermes 每 H 项完成：写 HERMES-STATE + [EXEC] CHANGELOG 条目 → 主控下次梳理时核对 STATUS/ROADMAP 统计一致性（发现不同步=一致性事故，按 K1 §4 漂移流程处理）；
 - 主控每规划批：在 ROADMAP 登记"主控队列"区 → hermes 启动时先读，避免执行已废止项。
 

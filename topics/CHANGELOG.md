@@ -10,6 +10,14 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.34.0] - 2026-11-18
+
+### [GOV] 批次128-141 运维扩展十类分类法+契约层九批+K6 两轨分工+A1/A2 执行基线
+
+**[GOV] 128-131 运维测试十类分类法（用户纠偏后全景版）**：ERR 错误边界 70（7 系统×10 错误类，83 来源锚）/FAL 切换 15+SYN 复制同步 35/PST 持久化阶梯 40+CLU 集群 40/SCL 伸缩 45+ALT 报警自愈 35——08 用例 131→**411**，registry 956→1236 行
+**[GOV] 133-141 契约层（知识权威基础设施）**：K1 宪章（引用优先级 P0-P4/时效 T1-T4/冲突闭环/置信消费语义/版本契约）/K2 背书（双签含人类）/K3 准入退役/K4 KB-REF 审计链/K5 治理细则（白名单/域锁/可重建）/K6 两轨分工（**执行移交 hermes：H1-H6 自治队列+互斥矩阵+一致性协议+HERMES-STATE 状态源**）；decision-evidence/evidence-index（[EV:case@commit] 试点 01-65/66）/coverage-matrix 试点；MCP v2=10 tools
+**[EXEC] A1/A2 执行基线（主控执行期，移交前）**：A1 三系统全绿（fixtures 三处修复：healthcheck 路径/双 listener/Kafka4.x inter.broker.listener.name）；A2 TC-SEM 3/3 PASS（DLX/耐久 RTO40s/背压平台期）——**首个语义域 verified，全库 verified 23**
+
 ## [3.33.0] - 2026-11-18
 
 ### 批次127 清欠批：4 项挂账清零，项目进入维护态

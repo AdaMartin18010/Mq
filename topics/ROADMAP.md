@@ -192,7 +192,7 @@
 | C2 十链示例 | examples/chain01-10（三层对账点+XLAN 对拍边） | ✅ 完成 |
 | C3 图谱扩边 | +6 证据节点/概念 documentedIn/场景 validatedBy（161 节点 182 边） | ✅ 完成 |
 
-**Phase A 真实执行集中批**：用户暂缓，随时可约（A1 环境验证→A5 基准回灌，半日盘）。
+**Phase A 真实执行集中批**：A1 环境验证 PASS + A2 TC-SEM 3/3 PASS（首个语义域 verified，23 条）——执行轨移交 hermes（K6），H1-H6 队列在 Testing/HERMES-STATE.md，由用户启动推进。
 
 **追加批次七（2026-11-18 用户纠偏：系统特性运维测试独立成系）**：
 

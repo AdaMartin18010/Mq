@@ -9,6 +9,11 @@
 - **[快速入门指南 QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md)** - 新手快速入门指南、常用命令速查
 - **[快速参考 QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - 技术选型快速决策卡片、性能指标速查
 - **[术语表 GLOSSARY.md](./GLOSSARY.md)** - 消息队列术语解释（A-Z）
+- **[K1 知识权威宪章 KB_CHARTER.md](./KB_CHARTER.md)** - AI agent 引用优先级/时效衰减/冲突闭环/置信消费语义/知识版本契约（治理族总纲）
+- **[K2/K3 背书与准入退役 KB_ENDORSEMENT.md](./KB_ENDORSEMENT.md)** - 双签升格/知识准入 checklist/退役降级规则
+- **[K4 引用审计链 KB_REF_AUDIT.md](./KB_REF_AUDIT.md)** - KB-REF 三元组/责任追溯流程
+- **[K5 治理细则 KB_GOVERNANCE.md](./KB_GOVERNANCE.md)** - 修订白名单/域锁/derived 资产可重建
+- **[K6 两轨分工 KB_DIVISION.md](./KB_DIVISION.md)** - 执行移交 hermes（H1-H6 队列/互斥矩阵/一致性协议）
 - **[总结报告 SUMMARY.md](./SUMMARY.md)** - 完整分析总结报告、核心发现、关键结论
 - **[实践指南 PRACTICE_GUIDE.md](./PRACTICE_GUIDE.md)** - 技术选型、架构设计、部署实施、运维管理实践指南
 - **[实施检查清单 IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)** - 从需求分析到运维优化的完整检查清单
@@ -749,7 +754,7 @@
 
 - 195个主题文件（01系列52篇 + 02系列58篇 + 03系列65篇 + 04系列5篇 + AI_Skills系列5篇 + Testing系列10篇）
 - 7个README文件（各主题和总目录说明）
-- 18个元文档（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/QUICK_* 等）
+- 24个元文档（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/KB_* 治理族/QUICK_* 等）
 - 53个代码示例文件（Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例，覆盖六大系统）
 - 69个配置模板文件（服务器/客户端 + Prometheus/Grafana + Docker Compose + AsyncAPI 契约与事件契约模板）
 - 112个运维脚本文件（含脚本目录 README；部署、监控、巡检、演练、治理、自检、test-harness 执行框架与 test-registry 注册表）
