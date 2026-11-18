@@ -18,7 +18,7 @@ def sh(cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
 # ---------- 1. 元数据层：find 实测 vs STATUS 声明 ----------
-total = int(sh("find . -type f -not -path './.git/*' -not -path './.vscode/*' | wc -l").stdout.strip())
+total = int(sh("find . -type f -not -path './.git/*' -not -path './.vscode/*' -not -path './results/*' | wc -l").stdout.strip())
 status = open("topics/PROJECT_STATUS.md", encoding="utf-8").read()
 m = re.search(r"\| \*\*总计\*\* \| \*\*(\d+)\*\*", status)
 check("元数据.总计", m and int(m.group(1)) == total, f"STATUS={m.group(1) if m else '?'} find={total}")

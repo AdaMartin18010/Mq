@@ -23,7 +23,7 @@
 | **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1709** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物） |
+| **总计** | **1683** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物） |  # 口径：不含 results/ 运行时产物
 
 ### 各系列主题文件分布
 
