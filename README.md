@@ -2,14 +2,21 @@
 
 ## 项目简介
 
-本项目对Kafka、MQTT、NATS、Pulsar、RabbitMQ、Redis Stream六大主流消息队列系统进行全面梳理和深度分析，
-采用多维度、多视角的方法论，结合权威论证、成熟案例和多种思维表征方式，为消息队列技术选型、架构设计和运维实践提供系统化的参考。
+本项目对 Kafka、MQTT、NATS、Pulsar、RabbitMQ、Redis Stream 六大主流消息队列系统（+RocketMQ/Redpanda 扩展）进行全面梳理和深度分析，
+采用多维度方法论与权威论证，为技术选型、架构设计和运维实践提供系统化参考。
+
+**项目定位（2026-11 升级）**：**AI Agent 的知识权威基础设施**——人类可读的知识论证（topics/ 279 篇）+ 机器可执行的测试证据（Testing/ 三维 1000+ 用例）+ 可推理的决策依据（知识图谱 173 节点 + 宪章族 K1-K6）三位一体的知识底座。治理规则见 [topics/KB_CHARTER.md](topics/KB_CHARTER.md)；执行/梳理两轨分工见 [topics/KB_DIVISION.md](topics/KB_DIVISION.md)。
 
 ## 项目结构
 
 ```text
 Mq/
-├── concept/                    # 原始概念文档
+├── concept/                    # 人类阅读层：总集导读+论证元理论（理论塔/论证分类学/关系公理/模型律）
+├── Testing/                    # 测试体系：规范/部署/集成/集群/可观测/机制 + 06-契约语义 + 07-集成矩阵 + 08-运维行为
+├── AI_Skills/                  # 技能体系（7 技能 + MCP server）
+├── topics/                     # 知识层：279 篇主题 + K1-K6 宪章族 + 索引资产
+├── 元文档/                     # （topics 根：INDEX/ROADMAP/CHANGELOG/STATUS/KB_*）
+└── 历史结构（简化示意，完整见 INDEX.md）
 │   ├── concept01.md           # Kafka、MQTT、NATS全面分析论证
 │   ├── concept02.md           # 场景驱动的消息队列全面论证
 │   ├── concept03.md           # 架构与运维双视角下的消息队列落地论证
@@ -214,7 +221,9 @@ Mq/
   - 机制：建立 ROADMAP 与季度审查流程
   - 扩展：AI_Skill 技能体系（对齐国际 Agent Skills 开放标准）与 Testing 测试验证体系（2026-11，批次12）
 
-**项目统计**（2026-11-18 实地核实）：497 个文件，其中 205 个主题文档、18 个元文档、53 个代码示例、69 个配置模板、114 个运维脚本、AI_Skills/skills/ 7 个 Agent Skills，另有 AGENTS.md 协作宪法与 concept/ 6 篇历史资产。
+- ✅ **第六阶段**：深度治理与前沿对齐（已完成，2026-11-18：批次1-158 全链）——治理/时效/补章/严谨性/机制全落地，并升级为知识权威基础设施：契约治理族 K1-K6、三维测试体系（语义 SEM/业务 BUS/系统行为 OPS+集成矩阵 560+运维行为 411）、MCP server 10 tools、一致性机器审计器
+
+**项目统计**（2026-11-18 实地核实）：1705 个文件——279 篇主题文档、27 个元文档、54 个代码示例、69 个配置模板、1236 行用例注册表（verified 23）、kg 知识图谱 173 节点、7 个 Agent Skills + MCP server、concept/ 人类阅读层（含论证元理论 08 篇），另有 AGENTS.md 协作宪法与 KB 宪章族。
 
 ## 贡献指南
 

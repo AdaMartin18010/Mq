@@ -9,7 +9,7 @@
 1. 场景契约：`{域}.{资源}` 小写点分（如 `orders.events`）；DLQ 通道=主通道+`.dlq` 后缀；
 2. 消息类型：PascalCase 领域事件名（`OrderCreatedEvent`）；命令动词开头（`ReserveStockCmd`）；
 3. 字段：camelCase；保留字禁用（`type`/`source` 留给信封）；时间字段统一后缀 `At`（occurredAt）；
-4. spec 文件名：`asyncapi-<系统>-example.yaml`；场景包：`NN-<场景名>/` 两位序号。
+4. spec 文件名：`asyncapi-<系统>-example.yaml`；**AsyncAPI 版本声明：新文档默认 `3.1.0`**（2026-01-31 minor 零破坏，评估见 DSL_ASYNCAPI_AUDIT 附录；存量 3.0.0 不强制改）；场景包：`NN-<场景名>/` 两位序号。
 
 ## 二、信封与载荷
 
