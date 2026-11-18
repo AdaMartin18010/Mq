@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - broker 配置决定
 
 ## When
+
 - 重启
 
 ## Then
+
 - 持久会话+保留消息断言
 - 等级依据：TEST-C2 MQTT×持久化=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/rs/持久化/TC-MQTT-RS-PST-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ◐

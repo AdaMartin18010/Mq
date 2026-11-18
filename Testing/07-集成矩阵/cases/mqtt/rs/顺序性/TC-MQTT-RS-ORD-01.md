@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 有序通道；QoS1 重可致重复
 
 ## When
+
 - 网络乱序
 
 ## Then
+
 - 通道有序重复可见（◐）
 - 等级依据：TEST-C2 MQTT×顺序性=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/rs/顺序性/TC-MQTT-RS-ORD-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-64

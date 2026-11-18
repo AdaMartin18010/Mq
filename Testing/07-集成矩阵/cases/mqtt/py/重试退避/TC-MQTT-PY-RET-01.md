@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 重连即重试
 
 ## When
+
 - 断连
 
 ## Then
+
 - 重连行为断言
 - 等级依据：TEST-C2 MQTT×重试退避=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/py/重试退避/TC-MQTT-PY-RET-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ◐

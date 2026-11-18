@@ -4,18 +4,23 @@
 > **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
+
 - mosquitto 模板
 
 ## When
+
 - 起停
 
 ## Then
+
 - listener/WS 双监听
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/ts/部署形态/TC-MQTT-TS-DEP-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 03-67

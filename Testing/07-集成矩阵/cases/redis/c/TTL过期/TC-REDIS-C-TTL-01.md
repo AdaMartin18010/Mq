@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无消息级 TTL
 
 ## When
+
 - 过期需求
 
 ## Then
+
 - 反向用例——MAXLEN 是容量非时间
 - 等级依据：TEST-C2 REDIS×TTL过期=—
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/c/TTL过期/TC-REDIS-C-TTL-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 —

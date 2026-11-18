@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 消息过期间隔（v5）
 
 ## When
+
 - 离线过期
 
 ## Then
+
 - 过期不投递（ASE-012）
 - 等级依据：TEST-C2 MQTT×TTL过期=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/ts/TTL过期/TC-MQTT-TS-TTL-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-64 【定理】

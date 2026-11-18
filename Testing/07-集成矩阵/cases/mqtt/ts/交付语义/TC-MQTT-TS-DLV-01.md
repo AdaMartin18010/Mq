@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - QoS1 订阅+会话保留
 
 ## When
+
 - 断连重连
 
 ## Then
+
 - inflight 重投（QoS 分级对照组）
 - 等级依据：TEST-C2 MQTT×交付语义=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/ts/交付语义/TC-MQTT-TS-DLV-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-64 【定理】

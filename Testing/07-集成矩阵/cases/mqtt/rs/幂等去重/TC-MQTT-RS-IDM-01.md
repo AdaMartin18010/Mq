@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 应用层
 
 ## When
+
 - 重复发布
 
 ## Then
+
 - 幂等键模式
 - 等级依据：TEST-C2 MQTT×幂等去重=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/rs/幂等去重/TC-MQTT-RS-IDM-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ○

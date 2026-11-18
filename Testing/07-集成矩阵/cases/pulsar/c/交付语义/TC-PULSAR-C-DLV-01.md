@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 持久 topic+副本
 
 ## When
+
 - 确认后宕机
 
 ## Then
+
 - 已确认不丢
 - 等级依据：TEST-C2 PULSAR×交付语义=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/pulsar/c/交付语义/TC-PULSAR-C-DLV-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-62

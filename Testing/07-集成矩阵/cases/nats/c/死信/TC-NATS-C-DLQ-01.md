@@ -5,20 +5,25 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - maxDeliver 耗尽→DLQ subject
 
 ## When
+
 - 毒消息
 
 ## Then
+
 - DLQ subject 收到
 - delivery count 可观测
 - 等级依据：TEST-C2 NATS×死信=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/c/死信/TC-NATS-C-DLQ-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-65

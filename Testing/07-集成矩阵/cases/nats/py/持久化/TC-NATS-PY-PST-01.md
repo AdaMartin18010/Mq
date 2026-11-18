@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - JetStream 持久（Core 内存对照）
 
 ## When
+
 - 重启
 
 ## Then
+
 - 流数据存活
 - 等级依据：TEST-C2 NATS×持久化=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/py/持久化/TC-NATS-PY-PST-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-66 ◐

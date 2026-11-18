@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - AOF everysec+RDB
 
 ## When
+
 - 重启
 
 ## Then
+
 - XLEN 与 ID 保持（ASE-014）
 - 等级依据：TEST-C2 REDIS×持久化=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/redis/c/持久化/TC-REDIS-C-PST-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ASE-014

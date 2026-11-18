@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - Msg-Id 去重窗口
 
 ## When
+
 - 窗口内重复发布
 
 ## Then
+
 - 仅首条持久化（ASE-005）
 - 等级依据：TEST-C2 NATS×幂等去重=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/rs/幂等去重/TC-NATS-RS-IDM-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-63

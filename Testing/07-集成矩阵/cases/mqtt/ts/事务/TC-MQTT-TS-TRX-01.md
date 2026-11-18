@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无事务
 
 ## When
+
 - 事务需求
 
 ## Then
+
 - 反向用例
 - 等级依据：TEST-C2 MQTT×事务=—
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/ts/事务/TC-MQTT-TS-TRX-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - —

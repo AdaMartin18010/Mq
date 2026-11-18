@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - topic ttl
 
 ## When
+
 - 过期
 
 ## Then
+
 - 过期消息不可见
 - 等级依据：TEST-C2 PULSAR×TTL过期=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/pulsar/c/TTL过期/TC-PULSAR-C-TTL-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-62 ●

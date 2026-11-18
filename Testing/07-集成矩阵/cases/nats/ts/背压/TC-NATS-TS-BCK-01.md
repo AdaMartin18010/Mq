@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - maxAckPending=100 不 ack
 
 ## When
+
 - 持续投递
 
 ## Then
+
 - 平台期=100（ASE-010）
 - 等级依据：TEST-C2 NATS×背压=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/ts/背压/TC-NATS-TS-BCK-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-66/TC-NATS-GO-BCK-01

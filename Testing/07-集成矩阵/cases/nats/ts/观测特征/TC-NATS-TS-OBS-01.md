@@ -4,18 +4,23 @@
 > **依据**：03-67/03-68 运维画像 | **环境**：E2；**状态**：pending
 
 ## Given
+
 - /varz+consumer info
 
 ## When
+
 - 常态
 
 ## Then
--  JetStream 指标基线
+
+- JetStream 指标基线
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/ts/观测特征/TC-NATS-TS-OBS-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 03-68

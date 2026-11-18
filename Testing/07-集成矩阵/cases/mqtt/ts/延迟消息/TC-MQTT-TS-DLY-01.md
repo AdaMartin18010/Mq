@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无原生
 
 ## When
+
 - 定时
 
 ## Then
+
 - 应用层模式
 - 等级依据：TEST-C2 MQTT×延迟消息=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/ts/延迟消息/TC-MQTT-TS-DLY-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ○

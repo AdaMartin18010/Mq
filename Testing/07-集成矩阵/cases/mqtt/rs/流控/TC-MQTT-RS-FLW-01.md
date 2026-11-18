@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - inflight 窗口
 
 ## When
+
 - 过载
 
 ## Then
+
 - 窗口满行为
 - 等级依据：TEST-C2 MQTT×流控=◐
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/mqtt/rs/流控/TC-MQTT-RS-FLW-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - ◐

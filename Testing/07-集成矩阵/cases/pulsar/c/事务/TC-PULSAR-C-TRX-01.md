@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 事务（2.8+）
 
 ## When
+
 - 跨分区事务
 
 ## Then
+
 - 提交/中止语义（01-63 对照）
 - 等级依据：TEST-C2 PULSAR×事务=●
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/pulsar/c/事务/TC-PULSAR-C-TRX-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - 01-63 ●

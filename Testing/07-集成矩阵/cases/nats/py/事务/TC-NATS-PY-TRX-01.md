@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无事务
 
 ## When
+
 - 事务需求
 
 ## Then
+
 - 系统不承诺（反向用例）——用 outbox 模式（02-47）
 - 等级依据：TEST-C2 NATS×事务=—
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/py/事务/TC-NATS-PY-TRX-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 —

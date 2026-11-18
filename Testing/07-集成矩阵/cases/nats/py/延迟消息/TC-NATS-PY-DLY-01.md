@@ -5,19 +5,24 @@
 > **环境**：E2 docker；**状态**：pending
 
 ## Given
+
 - 无原生延迟
 
 ## When
+
 - 定时需求
 
 ## Then
+
 - 应用层调度模式
 - 等级依据：TEST-C2 NATS×延迟消息=○
 
 ## Dry-run 验证
+
 ```bash
 bash Testing/07-集成矩阵/cases/nats/py/延迟消息/TC-NATS-PY-DLY-01.sh   # 计划打印（挂账）
 ```
 
 ## 关联
+
 - TEST-C2 ○

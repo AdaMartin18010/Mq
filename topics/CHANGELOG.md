@@ -10,6 +10,16 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.29.0] - 2026-11-18
+
+### 挂账清零批：RocketMQ 语义格补定 + 560 格 GWT 全量充实 + Kafka 4.4 镜像 + 场景自动映射
+
+- **挂账#4 RocketMQ 语义格**：12 维度等级补定【论证】（亮点：延迟消息/事务消息/DLQ 重试链原生=●，per-message TTL 无=○）——560 用例中 RocketMQ 80 格从挂账骨架转为实义用例；TEST-C2/knowledge-graph 同步补边（kg judge 订单×RocketMQ 实测 SUPPORTED 5 概念）；版本事实核实入季度复核
+- **挂账#1 GWT 全量充实**：matrix-enrich.py（112 格手工知识库：84 语义格+28 运维格，等级驱动文案）重写 535 骨架——每格实义 Given/When/Then+权威互链；生成器入库可重跑
+- **挂账#3 Kafka 4.4 镜像**：fixtures compose cp-kafka:7.8.0 → **apache/kafka:4.4.0**（官方镜像，KIP-1191 Share Groups DLQ 解锁）；TC-KAFKA-*-DLQ 用例挂账标记移除
+- **挂账#2 场景自动映射**：scenario-map.py（读 SEMANTICS.md x-semantics 声明×约定主系统→校验矩阵格存在→生成 场景映射.md）首跑 **OK 全格存在**
+- 修复：RocketMQ 图谱边 2 条 dim id 对齐（delay/flow-control）
+
 ## [3.28.0] - 2026-11-18
 
 ### 批次117-120：Testing/07-集成矩阵——四维维度化用例库（系统×语言×特性×转换链）
