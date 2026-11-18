@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/mq/contract-dsl-schema.json",
+  "title": "Mq 场景 DSL 契约 (contract.yaml) Schema",
+  "description": "约束 01-43 设计→DSL 转换方法论产出的场景契约字段，与 Testing/06-契约语义测试/03-业务场景 八场景包对齐。",
+  "type": "object",
+  "required": ["scenario", "version", "messages", "invariants"],
+  "additionalProperties": false,
+  "properties": {
+    "scenario": {
+      "type": "string",
+      "description": "场景标识（kebab-case），与目录名 01-<scenario> 对应。",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "description": "语义化版本，如 1.0.0。",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "messages": {
+      "type": "object",
+      "description": "消息类型定义（命令/事件/查询三分，见 02-57）。",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[A-Z][a-zA-Z0-9]*$": {
+          "type": "object",
+          "required": ["type", "fields"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["command", "event", "query"],
+              "description": "消息类型：命令、事件或查询。"
+            },
+            "required": {
+              "type": "array",
+              "description": "必填字段名列表。",
+              "items": { "type": "string", "minLength": 1 },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "fields": {
+              "type": "object",
+              "description": "字段定义。字段名小写驼峰/下划线。",
+              "minProperties": 1,
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[a-z][a-zA-Z0-9_]*$": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": ["type"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": ["string", "number", "integer", "timestamp", "array", "object", "boolean"]
+                        },
+                        "desc": { "type": "string" },
+                        "enum": {
+                          "type": "array",
+                          "minItems": 1,
+                          "uniqueItems": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["enum"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "enum": {
+                          "type": "array",
+                          "minItems": 1,
+                          "uniqueItems": true
+                        },
+                        "desc": { "type": "string" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stateMachine": {
+      "type": "object",
+      "description": "可选：领域状态机，用于事件溯源回放与不变式断言。",
+      "required": ["states", "transitions"],
+      "additionalProperties": false,
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["event", "to"],
+            "additionalProperties": false,
+            "properties": {
+              "from": { "type": ["string", "null"] },
+              "event": { "type": "string", "minLength": 1 },
+              "to": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "description": "业务不变式文本断言，至少 1 条。",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "quality": {
+      "type": "array",
+      "description": "可选：ODCS v3.1.0 quality 块对齐（odcs-alignment.md §三）。",
+      "items": {
+        "type": "object",
+        "required": ["column", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "column": { "type": "string", "minLength": 1 },
+          "type": {
+            "type": "string",
+            "enum": ["not_null", "freshness", "acceptedValues", "mustBeNull", "regex", "range"]
+          },
+          "severity": { "type": "string", "enum": ["error", "warning", "info"] },
+          "maximum": { "type": "string" },
+          "minimum": { "type": "string" },
+          "acceptedValues": { "type": "array", "items": { "type": "string" } },
+          "regex": { "type": "string" }
+        }
+      }
+    },
+    "sla": {
+      "type": "object",
+      "description": "可选：ODCS v3.1.0 sla 块对齐。",
+      "additionalProperties": false,
+      "properties": {
+        "freshness": { "type": "string" },
+        "availability": { "type": "string" },
+        "retention": { "type": "string" }
+      }
+    }
+  }
+}

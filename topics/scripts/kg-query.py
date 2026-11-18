@@ -29,7 +29,9 @@ def index(graph):
     for n in graph:
         by_id[n["id"]] = n
         if "name" in n:
-            by_name[n["name"]] = n
+            # 同名时先出现的优先（概念节点在前，避免维度节点覆盖概念名）
+            if n["name"] not in by_name:
+                by_name[n["name"]] = n
     return by_id, by_name
 
 def closure(node, rel, by_id, seen=None):

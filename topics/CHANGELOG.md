@@ -10,6 +10,16 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.25.0] - 2026-11-18
+
+### 批次106-109：concept 人类友好总集 + DSL 全链审计 + 图谱全量扩容
+
+**批次106 concept/ 2.0（人类阅读层，用户确认"兼顾导览+内容"方案）**：README 三层表征总地图（人类/图解/机读）+ 三档阅读路径；00 论证标准导论（P3 标注/形式化资产/论证链四段式/认知偏差对策）；01 概念体系导读（108 概念按掌握依赖序六阶重构+10 易混概念对）；02 六系统论证链（五段式骨架×六系统）；03 场景论证链（8 场景走查+完整性自查）——5 文件 857 行，220 相对链接 os.path.exists 级全命中；**AGENTS.md concept/ 红线正式修订**（历史冻结→人类阅读层，事实源仍在 topics 防双源漂移）
+**批次107 DSL-AsyncAPI 全链审计**：topics/DSL_ASYNCAPI_AUDIT.md 六环覆盖矩阵（L1-L3/L5-L6 部分/L4 完备）+ P0 补齐 dsl-schema.json（contract.yaml 正式 JSON Schema，8 场景全绿验证）+ contract-dsl-check.sh；**修复脚本 SERIES_DIR 残留旧路径**（contract 检查从 2 spec 恢复到 14 spec 覆盖）；登记 P1/P2 缺口清单（bindingVersion 缺失 13 处/外部 $ref 未解析/7 场景缺 quality-sla/无 design→asyncapi 生成器）
+**批次109 图谱全量扩容**：graph.jsonld 25→**155 节点**（110 概念=01-58 全量/12 维度/8 系统 72 条能力边 degree 严格按 TEST-C2 ●◐○—/17 断言/8 场景），168 边全带 source；kg-query 新增 --path（BFS 最短路径）/--explain（判定依据含 degree+source）/--stats；跨域同名概念按域拆分节点保 108 全量入图
+
+**治理同步**：INDEX 增 concept/ 总集段；STATUS（主题 253→257、总计 630→636 实测）；ROADMAP 批次 106-109 勾记
+
 ## [3.24.0] - 2026-11-18
 
 ### 批次94-105：五方向旗舰群 + Testing 体系统一重组（11+13 篇新章 + 结构治理）
