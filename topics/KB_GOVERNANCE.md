@@ -5,7 +5,7 @@
 ## 1. 知识域修订白名单（agent 权限矩阵）
 
 | 区域 | agent 自主 | 人审（PR/审批单） | 禁改 |
-|------|-----------|------------------|------|
+| ------ | ----------- | ------------------ | ------ |
 | results/、Testing/drift-inbox/、cases/ | ✅ 直接写 | — | — |
 | Testing/07/08 用例骨架、evidence-index、coverage-matrix | ✅ 生成器产出 | 手工单条改须审批 | — |
 | topics/ 正文、decision-registry、kg/graph | — | ✅ L3 审批单（TEST-16 模板 B） | — |
@@ -21,7 +21,7 @@
 ## 3. Derived 资产可重建清单（备份≠可恢复）
 
 | 资产 | 重建方式 | 验证 |
-|------|---------|------|
+| ------ | --------- | ------ |
 | kg/graph.jsonld | 手工维护为主（155→162 节点经审计追加）；扩边脚本可重放 | `kg-query --check` 入 E0 ✓ |
 | matrix-registry.tsv | 07 生成器（enrich 可重跑） | matrix-check 入 E0 ✓ |
 | OPS/ERR/FAL/SYN/PST/CLU/SCL/ALT 用例 | 各生成器重跑（幂等保护） | 文件存在性+registry 双向校验 |
