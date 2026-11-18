@@ -162,6 +162,24 @@ step_registry_check() {
   echo "SUMMARY: bad_cols=$bad_cols bad_env=$bad_env bad_status=$bad_status duplicate=$dup"
   # 集成矩阵一致性（批次119）
   python3 "./topics/scripts/matrix-check.py" || rc=1
+  # mapped 准入自动核验（批次127：TEST-17 挂账落地）——script 非"-"的 mapped 行须脚本实地存在
+  local miss=0
+  while IFS=$'\t' read -r rid rdom rscript renv rdocs rstat; do
+    [[ "$rstat" == "mapped" && "$rscript" != "-" && "$rscript" != "" ]] || continue
+    local found=0 s
+    for s in ${rscript//,/ }; do
+      s="$(echo "$s" | xargs)"
+      for d in topics/scripts Testing/06-契约语义测试/04-行为用例 Testing/06-契约语义测试/06-行为验证 Testing/07-集成矩阵 Testing/08-运维行为测试; do
+        [[ -f "$d/$s" ]] && { found=1; break; }
+      done
+      [[ $found -eq 1 ]] && break
+    done
+    if [[ $found -eq 0 ]]; then
+      echo "[FAIL] mapped 但脚本缺失: $rid -> $rscript"
+      miss=$((miss+1)); rc=1
+    fi
+  done < "$registry"
+  echo "MAPPED_SCRIPT_CHECK missing=$miss"
   return "$rc"
 }
 

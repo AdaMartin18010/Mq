@@ -281,6 +281,8 @@ Kafka Streams 的 exactly-once 语义经历了两个主要版本：
 
 【论证】KIP-129（Kafka 0.11.0，2017）首次在 Kafka Streams 中实现 EOS，其设计为每个流任务绑定一个 `transactional.id`。当拓扑任务数很多时，每个 commit interval 会产生大量事务控制批次，显著影响吞吐与延迟。KIP-447（Kafka 2.5+）将其改进为每个 Stream Thread 一个 `transactional.id`，利用消费者组 epoch 来 fence 旧线程，从而将事务开销降低一个数量级。KIP-890（Kafka 3.8/4.0）进一步在 Broker 端增强事务协议，防止乱序/延迟的 `AddPartitionsToTxn` 或 `EndTxn` 请求导致悬挂事务或 EOS 违反。
 
+> **协议级边界（批次 127 回灌，Jepsen 2024-11【定理级第三方证据】）**：[Jepsen 对 Bufstream 的评测](https://jepsen.io/analyses/bufstream-0.1.0) 发现 Kafka 事务协议的根本缺陷（KAFKA-17754）：事务协调者分区与数据分区的**分离使 `EndTxn` 缺乏全局顺序约束**，在故障窗口内可能出现 aborted 事务部分可见（aborted read）、丢失已提交写入与撕裂事务——**该缺陷影响 Apache Kafka、Bufstream 及所有 Kafka 协议兼容实现**。工程含义：①EOS 的结论以"单协调者无故障窗口"为隐含前提，跨故障场景须保留消费侧幂等兜底（本文 §1.63.6 的责任划分不变）；②评估 Kafka 兼容实现（Redpanda/AutoMQ/Bufstream）时，须索取其对 KAFKA-17754 的处置证据；③KIP-890 的防御增强不覆盖该协议层缺陷，修复需协议变更（关注 KIP 进展，季度复核跟踪）。详见 [conformance-matrix](../../Testing/06-契约语义测试/02-语义矩阵/conformance-matrix.md) 与 01-71 §1.71.4。
+
 启用配置：
 
 ```properties

@@ -25,6 +25,10 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: kafka:9092
+      # 批次127 SEC硬化：凭据走 Secret 引用（禁止明文）
+      # sasl: plaintext
+      # username: { valueFrom: { secretKeyRef: { name: kafka-secret, key: username } } }
+      # password: { valueFrom: { secretKeyRef: { name: kafka-secret, key: password } } }
       consumerGroup: orders-processor
       topic: orders.order.created
       lagThreshold: "1000"         # 每副本目标 lag：可容忍积压时长×消费速率【估算】

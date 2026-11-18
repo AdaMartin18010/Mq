@@ -29,6 +29,10 @@ description: >
   选型与运维要点，基于项目 <源专章> 输出带置信标注的回答。
   Use when 用户询问 <System> 架构/机制/版本/对比/选型，
   <system> architecture, deep dive, comparison, 深度分析。
+  行为约束（批次127 模板规范新增，源自 TEST-18 回放经验）：
+  ① 用户输入缺少必要约束（场景/硬约束/对象）时必须先回问，禁止臆造结论；
+  ② 破坏性操作请求（删除/清空/强制升级）必须先拒绝并给出安全流程；
+  ③ 触发词超出本技能范围时先声明边界再给范围内建议。
 license: Apache-2.0
 compatibility: 无外部依赖（纯知识型技能）
 metadata:

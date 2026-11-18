@@ -66,6 +66,11 @@ log.segment.bytes=1073741824
 # 日志清理策略（delete或compact）
 log.cleanup.policy=delete
 
+############################# Authorization & Audit（批次127 SEC硬化）#############################
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+allow.everyone.if.no.acl.found=false
+# 审计日志：log4j appender 建议 kafka-authorizer-log4j（参考服务器 log4j 配置）
+
 ############################# Replication #############################
 # Leader与Follower之间的socket超时时间
 replica.socket.timeout.ms=30000

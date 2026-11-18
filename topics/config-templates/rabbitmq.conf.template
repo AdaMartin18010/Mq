@@ -33,3 +33,8 @@ queue_master_locator = min-masters
 
 # 镜像队列策略（高可用）
 # rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}'
+
+# 默认账户收敛（批次127 SEC硬化）
+loopback_users.guest = false
+default_user = app_user
+default_pass = CHANGE_ME_VIA_SECRET

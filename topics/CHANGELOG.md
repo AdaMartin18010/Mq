@@ -10,6 +10,15 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.33.0] - 2026-11-18
+
+### 批次127 清欠批：4 项挂账清零，项目进入维护态
+
+1. **Jepsen 证据回灌**：01-63 新增"协议级边界"段（KAFKA-17754：协调者-数据分区分离致 aborted read/丢失写入，影响全 Kafka 兼容实现；工程三含义：幂等兜底不可省/兼容实现须索证据/KIP-890 不覆盖）；01-59 EOS 决策分支加协议风险注记——批次 80 挂账清零
+2. **SEC WARN 硬化**：6 模板缺口修复（Redis TLS 块/Kafka StandardAuthorizer+审计/RabbitMQ 默认账户收敛/Pulsar 审计/KEDA Secret 引用）——sec-baseline-scan 复扫 **14 PASS / 0 HIGH / 0 WARN**（原 8/0/6）
+3. **E0 mapped 准入自动化**：registry 校验器增 MAPPED_SCRIPT_CHECK（mapped 行脚本实地存在性自动核验）——TEST-17 挂账落地，状态机准入从人工审计转机器门禁
+4. **AI_SKILL-04 行为约束段**：技能模板新增三条款（缺约束回问/破坏性拒绝/范围边界）——TEST-18 回放经验制度化
+
 ## [3.32.0] - 2026-11-18
 
 ### 批次124-126：测试资产整合对账 + skill 回放首跑（首个 verified 域）+ 静态域推进
