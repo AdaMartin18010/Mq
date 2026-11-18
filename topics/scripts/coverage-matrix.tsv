@@ -8,3 +8,32 @@
 01-65	AMQP 路径	DLX 死信隔离可再消费	covered	[EV:TC-SEM-05@0de1407]
 01-61	ISR 语义	acks=all 已确认不丢	covered	[EV:TC-SEM-KAFKA-DURABILITY@0de1407]
 01-62	BookKeeper	E>=WQ>=AQ	unverified	协议文档【定理级引用】
+01-61	1.61.2	ISR 收缩时机=replica.lag.time.max.ms	covered	TC-OPS-KAFKA-REPLICALOST
+01-61	1.61.3	Leader Epoch 截断防数据丢失（KIP-101）	unverified	KIP 官方文档定理级引用
+01-61	1.61.5	KIP-405 分层存储语义不变	unverified	用例挂账 TC-SEM 分层族
+01-61	1.61.7	磁盘满拒绝写+清理自动恢复	covered	TC-OPS-KAFKA-DISKFULL（KB 源自 03-68）
+01-62	1.62.2	E>=WQ>=AQ 协议约束	covered	TEST-C2 矩阵定理级+BookKeeper 文档
+01-62	1.62.3	读写路径分层行为	unverified	TC-PULSAR-* 族挂账
+01-62	1.62.5	Oxia 元数据层容量优势	unverified	官方基准引用【估算级】
+01-63	1.63.3	Kafka 事务提交/中止语义	covered	TC-SEM-KAFKA-DURABILITY（单broker变体）;Jepsen 边界已注
+01-63	1.63.6	EOS=系统+应用联合责任	covered	[EV:TC-SEM-KAFKA-DURABILITY@0de1407]
+01-64	1.64.3	QoS0/1/2 报文交换时序	covered	TC-MQTT-PY-DLV-01（dry-run 断言库）+ASE-012
+01-64	1.64.5	Reason Code 43 项分类	covered	OASIS 规范定理级引用+conformance-matrix
+01-65	1.65.4	Kafka DLQ（KIP-1191）路径	unverified	fixtures 4.4 已就位，hermes H 队列执行
+01-66	1.66.3	Reactive Streams request-n 协议	covered	RS 1.0.4 规范定理级
+01-66	1.66.4	六系统 broker 背压参数矩阵	covered	[EV:TC-SEM-07@0de1407]+断言库 ASE-010/011
+01-66	1.66.6	无背压灾难模式时序	unverified	TC-CHA 族+04-03 关联，待 hermes
+01-67	1.67.4	S3 权威路线 acks=all 边界后移	unverified	Jepsen 证据+01-67 论证，实测挂账
+01-67	1.67.5	Share Groups 放弃顺序性	covered	TC-KAFKA-GO-DLQ（KIP-1191 路径）+语义矩阵
+01-67	1.67.7	分层存储正确性六维测试	unverified	测试维度已注册（01-67.7），用例挂账
+01-68	1.68.2	Dapr 默认 at-least-once	covered	官方文档定理级+Dapr conformance 引用
+01-68	1.68.5	抽象层能力下沉损失	unverified	评测用例 TC-ABS-01/02 pending
+01-70	1.70.2	五种形态数据份数排序	covered	15 来源 WebSearch 核实+权威分析引用
+01-70	1.70.4	schema→表契约演化规则	unverified	ODCS 对齐工具链，端到端用例挂账
+01-71	1.71.3	fetch 会话增量语义	unverified	协议级，用例挂账 TC-SEM-FLW 族
+01-71	1.71.4	KAFKA-17754 协议层缺陷	covered	Jepsen 2024-11 定理级第三方证据
+01-72	1.72.1	六系统大小限制参数	covered	官方配置页核实（316 行旗舰）
+01-72	1.72.3	压缩矩阵 CPU/带宽权衡	covered	官方基准+【估算】标注纪律
+03-67	3.67.2	配置热更新能力对照	covered	03-67 画像+20 官方来源
+03-68	3.68.2	故障默认行为对照表	covered	行为档案+OPS 131 用例断言源
+03-68	3.68.4	病态曲线图谱判读	unverified	观测用例 TC-OPS-*-OBS 族挂账

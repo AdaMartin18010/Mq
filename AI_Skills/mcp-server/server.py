@@ -167,13 +167,14 @@ import csv as _csv
 
 _KB_VERSION = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip() if os.path.isdir(os.path.join(ROOT, ".git")) else "unknown"
 
-def _tsv_lookup(path, key_col, query):
+def _tsv_lookup(path, key_col, query, any_col=False):
     hits = []
     with open(os.path.join(ROOT, path), encoding="utf-8") as f:
         for line in f:
             if line.startswith("#") or not line.strip(): continue
             cols = line.rstrip(chr(13) + chr(10)).split(chr(9))
-            if query.lower() in cols[key_col].lower():
+            hay = cols if any_col else [cols[key_col]]
+            if any(query.lower() in c.lower() for c in hay):
                 hits.append(cols)
     return hits
 
@@ -181,8 +182,8 @@ def _tsv_lookup(path, key_col, query):
 def decision_lookup(query: str) -> dict:
     """决策判定检索：按关键词命中 decision-registry 判定与溯源（K1 §2 P1-P2 引用入口）。
     返回 kb_version 与 kb_refs 引用三元组（KB_REF_AUDIT §1）。"""
-    reg = _tsv_lookup("topics/scripts/decision-registry.tsv", 0, query)
-    ev = _tsv_lookup("topics/scripts/decision-evidence.tsv", 0, query)
+    reg = _tsv_lookup("topics/scripts/decision-registry.tsv", 0, query, any_col=True)
+    ev = _tsv_lookup("topics/scripts/decision-evidence.tsv", 0, query, any_col=True)
     return {"ok": True, "kb_version": _KB_VERSION,
             "decisions": reg[:5], "evidence": ev[:3],
             "kb_refs": [{"doc": "topics/scripts/decision-registry.tsv", "commit": _KB_VERSION, "confidence": "按条目 degree"}]}
