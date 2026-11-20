@@ -3,3 +3,6 @@
 TC-SEM-05	2026-11-18	ASE-007	01-65（DLQ 三路径 AMQP 段）	0de1407
 TC-SEM-07	2026-11-18	ASE-010	01-66（maxAckPending 平台期）	0de1407
 TC-SEM-KAFKA-DURABILITY	2026-11-18	ASE-001/PST	01-63/01-61（acks=all 耐久）	0de1407
+TC-SEM-MICROCKS-ASYNC	2026-11-20	CT（异步契约：Microcks 1.15.0 + async-minion，4 服务 6 场景 9/9 用例全绿；根因链 4 项=startOffset=0/operations.messages+payload/testEndpoint/INTERNAL 29092）	06-契约语义测试（06-行为验证/microcks-compose.sh）/ 01-77（跨语言集成测试）	a62541e
+TC-OPS-BEHAVIOR-DRYRUN	2026-11-20	OPS（运维行为 25 项 × 系统矩阵 411 卡 dry-run 层 411/411 RC=0；--live 真实注入=用户在场授权门）	08-运维行为测试（catalog 25 项 + cases 411 卡）/ 03-68（故障行为）	820cda4
+TC-SEC-BASELINE	2026-11-20	SEC（14 项安全配置基线复扫 14/0/0，对照批次127 基线零回退）	03-16（安全加固指南）/ 03-26（安全加固检查清单）	820cda4
