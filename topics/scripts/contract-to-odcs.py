@@ -28,6 +28,11 @@ def main():
             sys.exit(1)
 
     if check_only:
+        # quality/sla 为 dsl-schema.json 可选段（非 required），但 8/8 场景包惯例齐备；
+        # 缺失时 WARN 上报不 fail（对齐 spec-validate 的 error=fail / warning=仅上报 语义）
+        for opt in ("quality", "sla"):
+            if opt not in c:
+                print(f"WARN: 缺可选段 {opt}（dsl-schema 可选, 8 场景包惯例齐备）")
         print("CHECK_OK")
         return
 

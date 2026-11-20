@@ -169,8 +169,9 @@ $ bash topics/scripts/spec-validate-check.sh
    - P0: 4 个脚本硬编码旧目录 `契约语义测试`，导致 E0 长期只查 2 个模板。根因是批次 53 将目录从 `契约语义测试` 重命名为 `Testing/06-契约语义测试` 后未同步脚本（`git status` 显示 rename 记录）。已修复为 `Testing/06-契约语义测试`。
    - P1: `contract-spec-check` 只查内部 `$ref`，不解析 `contract.yaml#` 外部引用；不检查 `bindingVersion`；`contract-binding-check` 对未声明 bindingVersion 不告警。
 
-5. **ODCS 对齐仅 1/8 场景落地（P1）**
-   - odcs-alignment.md §三 以 01-order-lifecycle 为范例要求 8 场景补 `quality/sla`，但 02~08 场景包尚未执行；`contract-to-odcs.py` 对缺失段输出空对象，不报错，导致静态门禁无法拦截。
+5. **ODCS 对齐 8/8 场景已落地（P1，批次186 复核销项）**
+   - 原声称「仅 1/8 落地、02~08 尚未执行」为过期口径：01~08 全部 8 场景包 `contract.yaml` 均含实质 `quality`（1-2 条 not_null/freshness 检查）与 `sla`（freshness/availability/retention）段。批次186 复核：`contract-to-odcs.py --check` 8/8 CHECK_OK；导出 ODCS 的 quality/sla 结构 8/8 齐备；quality 引用的 column 与 `messages.*.fields` 逐一比对 8/8 零悬挂引用。
+   - 残留观察（已处置）：`contract-to-odcs.py` 原对缺失可选段静默输出空对象，是缺口长期未被静态拦截的根因——批次186 已为 `--check` 增加可选段缺失 WARN（不 fail，与 dsl-schema.json 将 quality/sla 定义为可选段、及 spec-validate error=fail/warning=仅上报 的严重性语义一致）；现 8/8 零 WARN。
 
 ---
 
@@ -182,7 +183,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P0 | contract.yaml 无正式 schema，DSL 字段约束不可机读 | L1 层无法做静态门禁；新增字段易漂移 | ✅ 已新建 dsl-schema.json + contract-dsl-check.sh |
 | P1 | 13 处 binding 未声明 `bindingVersion` | 违反 01-44/02-56 治理规则；不同工具解释不一致 | 未改（现有文档/模板） |
 | P1 | `contract-spec-check` 不解析外部 `$ref: contract.yaml#` | payload 字段变更无法被 E0 捕获 | ✅ 批次185 裁定：外部 $ref 解析已由 parser 覆盖（spec-validate=E0 第十二步；实测缺失外部 $ref→parser ENOENT→RC=1），house 检查器不重复实现 |
-| P1 | 7/8 场景包缺失 `quality/sla` ODCS 段 | ODCS 对齐不完整 | 未改 |
+| P1 | 7/8 场景包缺 `quality/sla` ODCS 段（ODCS 对齐不完整） | 批次186 复核：8/8 全有实质 quality/sla 段，--check 8/8 CHECK_OK，导出结构一致，column 引用零悬挂 | ✅ 已复核（原「未修」为过期口径，作废） |
 | P1 | 无 design→asyncapi 生成器 | 转换靠手写，效率低、易出错 | 未改 |
 | P2 | 跨语言金样本矩阵未实跑 | 01-77 提出的 5 语言对等验证停留在规划 | 未改 |
 | P2 | ~~`asyncapi-contract-skeleton.yaml` 用非官方 `replicas` 字段~~ **勘误（批次183）：方向颠倒**，`replicas` 为官方字段；真正违规=3 件 spec 用 `replicationFactor` | 模板无冲突；3 spec 与官方 schema 冲突 | ✅ 批次183 已修 3 件 spec（`replicationFactor`→`replicas`）+ skeleton `cleanup.policy` 数组化，16/16 全绿 |
@@ -197,7 +198,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P0 DSL schema | 本次（审计批） | `Testing/06-契约语义测试/01-契约规格/dsl-schema.json`、`topics/scripts/contract-dsl-check.sh` | 8 contract.yaml 全通过 schema 校验；`python3 -c json` 通过 |
 | P1 bindingVersion | 批次 94 | 批量修复 8 场景 + 2 模板 bindingVersion；`contract-binding-check.sh` 增加必填检查 | ✅ 批次185 复核：16 yaml（14 可运行 spec+fixture+模板）全带 bindingVersion、零缺失，无可修项；门禁强制项=不加入（官方 schema 非必填，见 L6 裁定③）；KB 文档 13 处缺失维持独立项（上表 L183 行） |
 | P1 外部 $ref 解析 | 批次 94 | `contract-spec-check.sh` 增加 `contract.yaml#` 存在性与字段存在检查 | ✅ 批次185 裁定：parser（E0 第十二步）已覆盖外部 $ref 解析与 ENOENT 失败，不重复实现 |
-| P1 ODCS 段补齐 | 批次 94 | 02~08 场景包 contract.yaml 补 quality/sla | `contract-to-odcs.py --check` 全绿且导出 YAML 结构一致 |
+| P1 ODCS 段补齐 | 批次94 | 02-08 场景包 contract.yaml 补 `quality/sla`；验收：`contract-to-odcs.py --check` 全绿 + 导出 YAML 结构一致 | ✅ 批次186 复核：8/8 段齐备（非批次94 未执行，系既有实现），--check 8/8 CHECK_OK + 导出结构一致 + column 引用零悬挂；--check 增可选段缺失 WARN（不 fail） |
 | P1 生成器 | 批次 95 | `contract-to-asyncapi.py`（contract.yaml → asyncapi.yaml 骨架） | 输入 01-order-lifecycle contract，输出与现有 asyncapi.yaml 结构等价 |
 | P2 跨语言矩阵 | 批次 100（原挂账） | `xlang-matrix.sh --live` + fixtures 多语言容器 + 金样本集扩至 8 场景 | 5 语言两两全配对 20 条边跑通 |
 | P2 模板字段修正 | 批次 94 | ~~skeleton `replicas` → `replicationFactor`~~ **勘误（批次183）：方向颠倒，skeleton 本就正确**；实际修 3 件 spec `replicationFactor`→`replicas` + skeleton `cleanup.policy` 数组化 + spec-validate 门落地 | ✅ 批次183 spec-validate 16/16 全绿（RC=0），门=`topics/scripts/spec-validate-check.sh`，批次184 已入 E0 第十二步 |

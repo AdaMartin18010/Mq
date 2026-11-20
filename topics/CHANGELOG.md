@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.43.0] - 2026-11-21
+
+- ODCS 对齐 P1 项复核销项：审计文档声称「7/8 场景包缺 quality/sla 段、仅 1/8 落地」为过期口径——实测 01~08 全部 8 场景包 contract.yaml 均含实质 quality（1-2 条 not_null/freshness 检查）与 sla（freshness/availability/retention）段，系既有实现非批次94 欠账
+- 复核证据三链：`contract-to-odcs.py --check` 8/8 CHECK_OK；导出 ODCS 的 quality/sla 结构 8/8 齐备（quality 行 1-2 条 + freshness/availability 键）；quality 引用的 column 与 messages.*.fields 逐一比对 8/8 零悬挂引用
+- `contract-to-odcs.py --check` 增可选段缺失 WARN（不 fail）：原实现对缺失可选段静默输出空对象，是缺口长期未被静态发现的根因；WARN 语义对齐 dsl-schema.json（quality/sla 为可选段非 required）与 spec-validate 的 error=fail / warning=仅上报 分级；现 8/8 零 WARN
+- `topics/DSL_ASYNCAPI_AUDIT.md` 3 处过期声称回写（缺口清单第 5 项/优先级表 P1 行/路线图 P1 ODCS 行）
+
 ## [3.42.0] - 2026-11-21
 
 ### [GOV] 批次185：大版本窗口闭环（AsyncAPI 基线 3.1.0 全仓升级 + Kafka/外部$ref/bindingVersion 三裁定）
