@@ -1,5 +1,5 @@
 # IoT 遥测 AsyncAPI spec（主系统 MQTT 5.0；topic 参数化与 QoS 分级是核心）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: IoT 设备遥测契约
   version: 1.0.0

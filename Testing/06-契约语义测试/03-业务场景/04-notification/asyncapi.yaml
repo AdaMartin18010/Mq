@@ -1,5 +1,5 @@
 # 通知广播 AsyncAPI spec（主系统 RabbitMQ：topic 交换器天然适配多通道路由）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 通知广播契约
   version: 1.0.0

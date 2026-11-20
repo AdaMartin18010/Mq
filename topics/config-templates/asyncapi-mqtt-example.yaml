@@ -1,6 +1,6 @@
 # AsyncAPI 3.x MQTT 契约模板（设备遥测示例）
 # 用法: asyncapi validate asyncapi-mqtt-example.yaml
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 设备遥测契约（示例）
   version: 1.0.0

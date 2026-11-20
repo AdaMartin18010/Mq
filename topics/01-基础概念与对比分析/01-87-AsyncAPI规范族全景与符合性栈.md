@@ -217,7 +217,7 @@ bash topics/scripts/contract-dsl-check.sh --json
 ### L2 结构层
 
 - **定义**：文档符合 AsyncAPI 3.x 的 schema 结构，必填字段存在，`$ref` 不悬空。
-- **判据**：`asyncapi: '3.0.0'`；`info.title/version` 存在；`channels` 非空；operation 引用的 channel 存在；message `$ref` 指向 `components/messages`；binding key 在官方 19 个列表内。
+- **判据**：`asyncapi: '3.1.0'`；`info.title/version` 存在；`channels` 非空；operation 引用的 channel 存在；message `$ref` 指向 `components/messages`；binding key 在官方 19 个列表内。
 - **工具**：`contract-spec-check.sh`（E0 步骤 6）、Spectral `spectral:asyncapi` 规则集。
 - **检查命令示例**：
 

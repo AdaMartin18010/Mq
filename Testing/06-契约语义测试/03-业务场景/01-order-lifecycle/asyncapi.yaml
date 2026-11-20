@@ -1,5 +1,5 @@
 # 订单全链路 AsyncAPI spec（主系统 Kafka；场景与系统解耦，切换系统只需换 bindings）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 订单全链路契约
   version: 1.0.0

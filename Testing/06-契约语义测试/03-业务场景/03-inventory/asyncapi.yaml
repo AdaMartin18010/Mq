@@ -1,5 +1,5 @@
 # 库存扣减 AsyncAPI spec（主系统 Kafka；TTL 过期语义由应用消费 ScheduledExpiry 实现，矩阵 ○ 格）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 库存扣减契约
   version: 1.0.0

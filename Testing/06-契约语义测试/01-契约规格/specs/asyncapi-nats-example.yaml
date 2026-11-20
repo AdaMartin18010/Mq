@@ -5,7 +5,7 @@
 #   JetStream 语义（stream/durable/maxAckPending/ackPolicy）官方绑定未覆盖，
 #   按 01-44 表达力边界的等价转换策略，以 x-jetstream 扩展声明并登记。
 # 参考: topics/01-基础概念与对比分析/01-40-应用层流协议与交互标准.md（NATS 节）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 异步任务队列契约（NATS 示例）
   version: 1.0.0

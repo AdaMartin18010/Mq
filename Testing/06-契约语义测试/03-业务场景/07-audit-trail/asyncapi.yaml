@@ -1,5 +1,5 @@
 # 审计日志链 AsyncAPI spec（主系统 Pulsar：持久化 topic + retention 契合审计保留要求）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 审计日志链契约
   version: 1.0.0

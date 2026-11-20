@@ -4,7 +4,7 @@
 # 参考: topics/01-基础概念与对比分析/01-37-AsyncAPI组织级应用与治理.md
 # 用法: asyncapi validate asyncapi-contract-skeleton.yaml && spectral lint 本文件
 
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: <Domain> 事件契约
   version: 1.0.0

@@ -6,7 +6,7 @@
 #   订阅类型（Exclusive/Shared/Key_Shared/Failover）官方绑定未覆盖，
 #   按 01-44 等价转换策略以 x-pulsar-subscription 扩展声明。
 # 参考: topics/01-基础概念与对比分析/01-62-Pulsar存算分离架构深度解析.md
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 订单事件契约（Pulsar 示例）
   version: 1.0.0

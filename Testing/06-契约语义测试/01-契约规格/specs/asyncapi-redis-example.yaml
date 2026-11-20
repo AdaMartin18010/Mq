@@ -5,7 +5,7 @@
 #   Redis Stream 全部语义（stream key/consumer group/XAUTOCLAIM/MAXLEN）
 #   按 01-44 等价转换策略以 x-redis 扩展声明，本文件是"绑定全空+全扩展"的范例。
 # 参考: topics/01-基础概念与对比分析/01-58-全局核心概念卡片总表.md（Redis Stream 卡）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 订单事件流契约（Redis 示例）
   version: 1.0.0

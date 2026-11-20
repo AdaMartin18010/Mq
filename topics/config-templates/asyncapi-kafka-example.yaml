@@ -1,7 +1,7 @@
 # AsyncAPI 3.x Kafka 契约模板（订单事件示例）
 # 用法: asyncapi validate asyncapi-kafka-example.yaml && spectral lint 本文件
 # 参考: topics/01-基础概念与对比分析/01-32-AsyncAPI工程生态深度分析.md
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 订单事件契约（示例）
   version: 1.0.0

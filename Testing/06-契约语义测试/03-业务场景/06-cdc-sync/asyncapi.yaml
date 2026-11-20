@@ -1,5 +1,5 @@
 # CDC 同步 AsyncAPI spec（主系统 Kafka：Debezium 标准落地）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: CDC 数据同步契约
   version: 1.0.0

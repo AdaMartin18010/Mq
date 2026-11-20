@@ -1,5 +1,5 @@
 # 异步任务队列 AsyncAPI spec（主系统 NATS JetStream：workQueue 保留 + 原生退避是最佳匹配）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 异步任务队列契约
   version: 1.0.0

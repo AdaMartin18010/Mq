@@ -86,7 +86,7 @@
 
 - **证据**: `hermes-e0-run.sh` 步骤 6/7 已接入 `contract-spec-check.sh` 与 `tc-assert-check.sh`（行 175-183）；`test-registry.tsv` 已注册 TC-SEM-01~12 与 TC-BUS-01~08（行 200-218）。
 - **实测**: 修复前 4 个脚本均因 `SERIES_DIR="$PROJECT_ROOT/契约语义测试"` 硬编码旧目录而退化：`contract-spec-check` 只查到 2 个 config-template spec；`tc-assert-check` 直接报错找不到断言库。修复后 14 spec 与 25 项断言校验全绿。
-- **缺口**: **批次183 DSL schema 校验工具已落地**（`Testing/asyncapi-tools/spec-validate.js`+`topics/scripts/spec-validate-check.sh`，@asyncapi/parser 3.6.6 封装，16 spec 全量覆盖 schema/$ref/binding 字段校验，双向实证：修复后全绿 RC=0 + 注入坏 $ref 门真红 RC=1；同批修复 8 件 spec 缺陷：坏 $ref×4 处（JSON pointer `%2F` 转义）/`replicationFactor` 非官方字段×3 件/`cleanup.policy` 非数组×1 件/amqp routingKey 分支误带 queue×1 件/inventory kafka binding 缩进错位×1 件）；**批次184 已入 E0 第十二步**（`hermes-e0-run.sh` 十二步全量门禁，12/12 执行，node 缺失 SKIP）；`contract-spec-check` 不检查外部 $ref 与 `bindingVersion`；跨语言金样本矩阵 `xlang-matrix.sh` 仍是占位骨架，`--live` 未实现；spec 版本差分已入 E0 第十一步（批次182：版本对样本=仓内 v1 spec×v2-break fixture，回归断言 self RC=0/fixture RC=1 breaking=3，node 缺失 SKIP）。
+- **缺口**: **批次183 DSL schema 校验工具已落地**（`Testing/asyncapi-tools/spec-validate.js`+`topics/scripts/spec-validate-check.sh`，@asyncapi/parser 3.6.6 封装，16 spec 全量覆盖 schema/$ref/binding 字段校验，双向实证：修复后全绿 RC=0 + 注入坏 $ref 门真红 RC=1；同批修复 8 件 spec 缺陷：坏 $ref×4 处（JSON pointer `%2F` 转义）/`replicationFactor` 非官方字段×3 件/`cleanup.policy` 非数组×1 件/amqp routingKey 分支误带 queue×1 件/inventory kafka binding 缩进错位×1 件）；**批次184 已入 E0 第十二步**（`hermes-e0-run.sh` 十二步全量门禁，12/12 执行，node 缺失 SKIP）；`contract-spec-check` 不检查外部 $ref 与 `bindingVersion`；跨语言金样本矩阵 `xlang-matrix.sh` 仍是占位骨架，`--live` 未实现；spec 版本差分已入 E0 第十一步（批次182：版本对样本=仓内 v1 spec×v2-break fixture，回归断言 self RC=0/fixture RC=1 breaking=3，node 缺失 SKIP）。**批次185 大版本窗口裁定**：① AsyncAPI 基线 3.0.0→3.1.0 全仓升级（24 文件 26 处：16 yaml=14 可运行 spec+回归 fixture+模板 skeleton+3 config-template、8 md 页=6 KB 示例+concept/08 本体页+本审计文档；官方 release notes：3.1.0=minor 零破坏、唯一新增 ROS 2 bindings、迁移=`asyncapi` 字段版本变更；工具链 parser 3.6.6/specs 6.11.1 本就是 3.1.0 时代件；实测升级后全 E0 12/12 RC=0、parser"latest version"版本建议信息清零、spec-diff 回归 breaking=3 不变）；② **外部 $ref 解析裁定=已由 parser 覆盖**（实测：缺失外部 $ref → parser ENOENT error → spec-validate RC=1，E0 第十二步即覆盖，不另建检查器避免重复功能）；③ **bindingVersion 裁定=不强制**（官方 schema kafka 0.3/0.4/0.5 channel.json `required` 均空=非 schema 必填，硬 fail 即对官方 spec 过度校验；现行 16 yaml 全带、零缺失，维持惯例声明不入门禁）。
 
 ---
 
@@ -181,7 +181,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P0 | 脚本 `SERIES_DIR` 硬编码旧目录，E0 契约检查失效 | 全链可信度崩塌；test-registry 中 TC-BUS 静态校验实际未跑 | ✅ 已修复 4 脚本 |
 | P0 | contract.yaml 无正式 schema，DSL 字段约束不可机读 | L1 层无法做静态门禁；新增字段易漂移 | ✅ 已新建 dsl-schema.json + contract-dsl-check.sh |
 | P1 | 13 处 binding 未声明 `bindingVersion` | 违反 01-44/02-56 治理规则；不同工具解释不一致 | 未改（现有文档/模板） |
-| P1 | `contract-spec-check` 不解析外部 `$ref: contract.yaml#` | payload 字段变更无法被 E0 捕获 | 未改 |
+| P1 | `contract-spec-check` 不解析外部 `$ref: contract.yaml#` | payload 字段变更无法被 E0 捕获 | ✅ 批次185 裁定：外部 $ref 解析已由 parser 覆盖（spec-validate=E0 第十二步；实测缺失外部 $ref→parser ENOENT→RC=1），house 检查器不重复实现 |
 | P1 | 7/8 场景包缺失 `quality/sla` ODCS 段 | ODCS 对齐不完整 | 未改 |
 | P1 | 无 design→asyncapi 生成器 | 转换靠手写，效率低、易出错 | 未改 |
 | P2 | 跨语言金样本矩阵未实跑 | 01-77 提出的 5 语言对等验证停留在规划 | 未改 |
@@ -195,13 +195,13 @@ $ bash topics/scripts/spec-validate-check.sh
 | ---- | -------- | ------ | -------- |
 | P0 脚本路径 | 本次（审计批） | `topics/scripts/contract-{spec,binding,drift}-check.sh`、`tc-assert-check.sh` 路径修复 | E0 步骤 6/7 覆盖 14 spec + 25 断言，全绿 |
 | P0 DSL schema | 本次（审计批） | `Testing/06-契约语义测试/01-契约规格/dsl-schema.json`、`topics/scripts/contract-dsl-check.sh` | 8 contract.yaml 全通过 schema 校验；`python3 -c json` 通过 |
-| P1 bindingVersion | 批次 94 | 批量修复 8 场景 + 2 模板 bindingVersion；`contract-binding-check.sh` 增加必填检查 | `contract-binding-check` 对缺失 bindingVersion 报错 |
-| P1 外部 $ref 解析 | 批次 94 | `contract-spec-check.sh` 增加 `contract.yaml#` 存在性与字段存在检查 | 删除/重命名字段后 E0 立即 FAIL |
+| P1 bindingVersion | 批次 94 | 批量修复 8 场景 + 2 模板 bindingVersion；`contract-binding-check.sh` 增加必填检查 | ✅ 批次185 复核：16 yaml（14 可运行 spec+fixture+模板）全带 bindingVersion、零缺失，无可修项；门禁强制项=不加入（官方 schema 非必填，见 L6 裁定③）；KB 文档 13 处缺失维持独立项（上表 L183 行） |
+| P1 外部 $ref 解析 | 批次 94 | `contract-spec-check.sh` 增加 `contract.yaml#` 存在性与字段存在检查 | ✅ 批次185 裁定：parser（E0 第十二步）已覆盖外部 $ref 解析与 ENOENT 失败，不重复实现 |
 | P1 ODCS 段补齐 | 批次 94 | 02~08 场景包 contract.yaml 补 quality/sla | `contract-to-odcs.py --check` 全绿且导出 YAML 结构一致 |
 | P1 生成器 | 批次 95 | `contract-to-asyncapi.py`（contract.yaml → asyncapi.yaml 骨架） | 输入 01-order-lifecycle contract，输出与现有 asyncapi.yaml 结构等价 |
 | P2 跨语言矩阵 | 批次 100（原挂账） | `xlang-matrix.sh --live` + fixtures 多语言容器 + 金样本集扩至 8 场景 | 5 语言两两全配对 20 条边跑通 |
-| P2 模板字段修正 | 批次 94 | ~~skeleton `replicas` → `replicationFactor`~~ **勘误（批次183）：方向颠倒，skeleton 本就正确**；实际修 3 件 spec `replicationFactor`→`replicas` + skeleton `cleanup.policy` 数组化 + spec-validate 门落地 | ✅ 批次183 spec-validate 16/16 全绿（RC=0），门=`topics/scripts/spec-validate-check.sh`（未入 E0） |
-| P2 Spectral 规则补全 | 批次 94 | 在 `topics/config-templates/spectral-asyncapi-ruleset.yaml` 增加 `binding-version-required` 规则 | `spectral lint` 对缺失 bindingVersion 报错 |
+| P2 模板字段修正 | 批次 94 | ~~skeleton `replicas` → `replicationFactor`~~ **勘误（批次183）：方向颠倒，skeleton 本就正确**；实际修 3 件 spec `replicationFactor`→`replicas` + skeleton `cleanup.policy` 数组化 + spec-validate 门落地 | ✅ 批次183 spec-validate 16/16 全绿（RC=0），门=`topics/scripts/spec-validate-check.sh`，批次184 已入 E0 第十二步 |
+| P2 Spectral 规则补全 | 批次 94 | 在 `topics/config-templates/spectral-asyncapi-ruleset.yaml` 增加 `binding-version-required` 规则 | `spectral lint` 对缺失 bindingVersion 报错；**批次185 注**：本机 tools 目录未装 spectral（规则不可实跑验证），且官方 schema 非必填（L6 裁定③）——降为可选项，若执行规则须标注 house 惯例非 schema 要求 |
 
 ---
 
@@ -235,7 +235,7 @@ $ bash topics/scripts/spec-validate-check.sh
 
 ## 附录：AsyncAPI 3.1.0 基线评估（批次 161，2026-11-18 核实）
 
-**事实**（[官方 release notes](https://www.asyncapi.com/blog/release-notes-3.1.0)，2026-01-31）：3.1.0 为 minor  release，**零破坏性变更**——`asyncapi: '3.0.0'` 直接改为 `'3.1.0'` 文档保持有效；唯一实质新增=**ROS 2 bindings**（机器人域，与六系统无关；bindings-matrix 索引已含）。
+**事实**（[官方 release notes](https://www.asyncapi.com/blog/release-notes-3.1.0)，2026-01-31）：3.1.0 为 minor  release，**零破坏性变更**——`asyncapi: '3.1.0'` 直接改为 `'3.1.0'` 文档保持有效；唯一实质新增=**ROS 2 bindings**（机器人域，与六系统无关；bindings-matrix 索引已含）。
 
 **处置结论**【论证】：
 
@@ -243,3 +243,5 @@ $ bash topics/scripts/spec-validate-check.sh
 2. **新文档默认声明 3.1.0**（对齐当前版，防工具链新旧校验歧义）——入 CONTRACT_DESIGN_SPEC §一 补充条款；
 3. contract-spec-check 的版本校验维持 `3.` 前缀匹配（已兼容），无需变更；
 4. ROS 2 binding 不纳入六系统矩阵（超出范围声明，防范围蔓延）。
+
+**批次185 执行注（2026-11-21）**：上条结论 1「无需批量修改」为**必要性**裁定（非禁止）。批次185 执行基线对齐：16 yaml + 7 md 页 3.0.0→3.1.0（26 处），理由=① P2 队列「AsyncAPI 3.1.0 基线评估」项的「基线」以仓内 spec 声明版本为准，升级后窗口项闭合；② 消除 spec-validate 门日志中 16 条「latest version is 3.1.0」版本建议信息（gate 噪声）；③ 与结论 2「新文档默认 3.1.0」方向一致，消除新旧文档版本声明混合态。实测：全 E0 12/12 RC=0、spec-diff 回归 breaking=3 不变、contract-spec-check `3.` 前缀匹配兼容（结论 3 仍成立）。结论 1 更新为「已执行（批次185），维持结论 2-4」。

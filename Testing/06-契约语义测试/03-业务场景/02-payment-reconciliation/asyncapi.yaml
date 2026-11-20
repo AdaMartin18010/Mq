@@ -1,5 +1,5 @@
 # 支付与对账 AsyncAPI spec（主系统 Kafka；对账差错事件高持久化要求）
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 支付与对账契约
   version: 1.0.0

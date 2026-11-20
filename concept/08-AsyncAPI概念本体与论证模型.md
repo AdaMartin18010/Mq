@@ -1,7 +1,7 @@
 # 08 AsyncAPI 概念本体与论证模型
 
 > **定位**：在 [06 概念关系理论](./06-概念关系理论.md) 的七型框架与 [05 论证方法分类学](./05-论证方法分类学.md) 的论证型谱下，为 [01-86 AsyncAPI 构件语义全书](../topics/01-基础概念与对比分析/01-86-AsyncAPI构件语义全书.md) 建立本体地位与可验证论证链。
-> **置信口径**：构件定义=【定理】（以 AsyncAPI 3.0.0 官方规范为源）；关系判定与表达力命题=【论证】；工程覆盖缺口=【估算】。
+> **置信口径**：构件定义=【定理】（以 AsyncAPI 3.0.0 官方规范为源；2026-11-21 仓基线升 3.1.0 后零破坏兼容、构件定义不变）；关系判定与表达力命题=【论证】；工程覆盖缺口=【估算】。
 
 ## 目录
 
@@ -49,10 +49,10 @@ action 与 reply 是 `operations` 对象内部的取值/子对象，不单独成
 | components | **实体**（可复用命名空间） | 是 `$ref` 解析的根容器；messages/schemas/operations/parameters 等子命名空间独立 | spec 初始化时创建；随可复用构件增加而扩展 |
 | traits | **关系/模板**（横切组合） | 由 `title`+浅合并规则确定；多层 traits 展开顺序由规范固定 | 应用时展开为 operation/message 的实例属性；trait 自身不运行时 |
 
-以下 YAML 片段展示 11 个构件在 AsyncAPI 3.0 文档中的典型位置：
+以下 YAML 片段展示 11 个构件在 AsyncAPI 3.x 文档中的典型位置：
 
 ```yaml
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:                          # 构件 1：info
   title: Order API
   version: '1.2.0'
@@ -360,6 +360,7 @@ asyncapi-cli validate asyncapi-mqtt-example.yaml
   - [Testing/06-契约语义测试](../Testing/06-契约语义测试/)：L1–L6 验证体系与 ASE 断言库。
 - 外部：
   - [AsyncAPI 3.0.0 Specification](https://www.asyncapi.com/docs/reference/specification/v3.0.0)
+  - [AsyncAPI 3.1.0 Specification](https://www.asyncapi.com/docs/reference/specification/v3.1.0)（2026-01-31 发布，minor 零破坏，唯一新增 ROS 2 bindings；仓基线 2026-11-21 起）
   - [AsyncAPI Bindings](https://www.asyncapi.com/docs/reference/bindings)
 
 ---

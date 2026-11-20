@@ -4,7 +4,7 @@
 #   server/message 保留为空；channel 有 is/exchange/queue；operation 有
 #   expiration/priority/deliveryMode/mandatory/replyTo/timestamp/ack 等字段。
 # 参考: topics/01-基础概念与对比分析/01-42-JMS-AMQP-与传统企业消息标准.md
-asyncapi: '3.0.0'
+asyncapi: '3.1.0'
 info:
   title: 订单通知契约（AMQP 示例）
   version: 1.0.0

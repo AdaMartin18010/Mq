@@ -10,13 +10,21 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.42.0] - 2026-11-21
+
+### [GOV] 批次185：大版本窗口闭环（AsyncAPI 基线 3.1.0 全仓升级 + Kafka/外部$ref/bindingVersion 三裁定）
+
+**[GOV] 185** AsyncAPI 基线升级：全仓 `asyncapi: '3.0.0'`→`'3.1.0'` 共 24 文件 26 处（16 yaml=14 可运行 spec+回归 fixture+模板 skeleton+3 config-template 模板、8 md=6 KB 示例页+concept/08 本体页+DSL_ASYNCAPI_AUDIT 自身示例）；依据=官方 release notes（2026-01-31 发布，minor 零破坏，唯一新增=ROS 2 bindings，迁移=`asyncapi` 字段版本变更）+ 工具链本就是 3.1.0 时代件（parser 3.6.6/specs 6.11.1）；**实测**：全 E0 12/12 执行 PASS RC=0（results/2026-11-21/，06:29 终跑）、spec-validate 的 "latest version is 3.1.0" 版本建议信息清零、spec-diff 回归断言不变（self RC=0 / fixture RC=1 breaking=3）、contract-spec-check `3.` 前缀匹配兼容（批次161 附录结论3 仍成立）；**批次161 附录结论1「无需批量修改」=必要性裁定非禁止，本批执行升级并留执行注+理由（审计附录批次185 执行注节），结论 2-4 维持**
+**[GOV] 185b** 大版本窗口三裁定（P2 队列「大版本窗口（Kafka 5.x、AsyncAPI 3.1.0 基线评估）」项闭环）：① **Kafka 5.x 不存在**——Maven Central `kafka-clients` maven-metadata latest=4.4.0，仓内镜像 `apache/kafka:4.4.0` 已是最新，窗口项无升级对象（重开条件=Kafka 4.5+ GA）② **外部 $ref 解析=已由 parser 覆盖**——实测：spec 指向不存在的外部 `$ref` 文件 → parser ENOENT error（severity=error）→ spec-validate RC=1，E0 第十二步即覆盖，house 检查器（contract-spec-check）不重复实现 ③ **bindingVersion 不强制入门禁**——官方 schema kafka binding 0.3/0.4/0.5 channel.json `required` 均为空（非 schema 必填），硬 fail=对官方 spec 过度校验；现行 16 yaml 全带 bindingVersion 零缺失（维持惯例声明）；spectral 规则补全项因本机 tools 目录未装 spectral（规则不可实跑验证）降为可选项
+**[GOV] 185c** 禁词自引变体修复：CHANGELOG 184c 条目（随 b87d5e3 入库）引述了禁用的完成度百分比宣称原文，批次185 首次全量门禁 doc-self-check 即检出 ERROR（规则=AGENTS.md §5 红线 `100% *(完成|覆盖)`，排除子句不覆盖引述场景）；修=条目文本去除字面模式改"完成度宣称"代称；纪律回写 RECOVERY 陷阱账 19③ 扩展（台账任何行不得出现禁词原文）
+
 ## [3.41.0] - 2026-11-21
 
 ### [GOV] 批次184：spec-validate 入 E0 第十二步（十二步全量门禁 12/12 PASS RC=0）+ 门禁自身三缺陷修复
 
 **[GOV] 184** E0 门禁化：hermes-e0-run.sh 十一步→十二步（新增 E0-spec-validate：调 spec-validate-check.sh，16 spec 自动发现，RC=4 降级 SKIP，失败时打印 `"ok":false` 明细+汇总，node 缺失 SKIP）；**全量复跑 12/12 执行、12 PASS、RC=0**（results/2026-11-21/）；TC-DEP-16 既有夜巡 case 即 hermes-e0-run.sh 全量门，步骤 12 随其覆盖，不重复注册新 case（诚实口径：无新增用例）
 **[GOV] 184b** 门禁自身三缺陷修复（复跑真红暴露）：① **contract-spec-check.sh %2F 误报**——L1-L2 层检查器对 `operations[].channel.$ref` 做裸串比对，未解 RFC 6901 JSON pointer 转义，把官方 `%2F` 写法（AsyncAPI 解析器要求，批次183 已修 spec 侧）误判 OP_REF_DANGLING×4（pulsar/audit-trail 各 2）；修=比对前 `%7E`→`~`、`%2F`→`/` 解转义（spec 侧合规、检查器侧缺陷，双向实证：修复后 contract 14 spec PASS，且 unescape 不放过真悬挂——fixture 负向对照仍红）② **consistency 总数口径**——PROJECT_STATUS 批次183 误用 git ls-files 口径 1705（含 .vscode×3、漏 find 口径 2 个 gitignore 运行时产物 mq-bench.exe/__pycache__），consistency-audit 门以 find 实测为准=1704，总数回写 1704 并双注口径差；③ **hermes-e0-run.sh 步骤 1 返回码协议冲突**——step_doc_check 把错误数直接作返回码，"ERROR=2" 时 rc=2 撞 run_step 的 SKIP 保留码，步骤标签失真显示 SKIP（主计数器仍计 FAIL）；修=错误数>0 一律 return 1
-**[GOV] 184c** 禁词自引修复：DSL_ASYNCAPI_AUDIT 批次183 新增文本两处"100% 覆盖"触发 doc-self-check 禁用表述 ERROR×2（禁词规则=活文档禁完成度宣称），改"全量覆盖"；同节两处"未入 E0"过期声称随本批回写"批次184 已入 E0 第十二步"
+**[GOV] 184c** 禁词自引修复：DSL_ASYNCAPI_AUDIT 批次183 新增文本两处完成度宣称触发 doc-self-check 禁用表述 ERROR×2（禁词规则=活文档禁完成度宣称），改"全量覆盖"；同节两处"未入 E0"过期声称随本批回写"批次184 已入 E0 第十二步"
 
 ## [3.40.0] - 2026-11-21
 
