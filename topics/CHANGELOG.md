@@ -10,6 +10,14 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.44.0] - 2026-11-21
+
+### [GOV] 批次187：P1 生成器落地（contract-to-asyncapi.py）
+
+**[GOV] 187** `topics/scripts/contract-to-asyncapi.py` 落地（路线图 P1 生成器项，批次95 原挂账）：`contract.yaml` → AsyncAPI 3.1.0 骨架。可推导面=components.messages 全集（payload 一律 `$ref: 'contract.yaml#/messages/<Name>/fields'`，与仓内 8 场景既有 spec 统一形态逐字一致）+ 默认通道 `<scenario>.events` 挂全部 event 型消息 + operations on*/publish*；不可推导面（诚实边界）=servers/通道集合/transport bindings 不含于契约语义，骨架以 `x-todo` 标注由人工按目标系统补全，不伪造 transport 配置
+**[GOV] 187b** `--verify <既有.yaml>` 结构等价校验（C1 组件孤儿/C2 payload.$ref 形态逐字/C3 通道引用悬挂/C4 生成集超集）：**8/8 场景 VERIFY_OK**；01 验收骨架实测=3 共享组件 $ref 逐字一致、生成集=既有集∪{OrderCreateCmd}（剪枝子集=transport 精选属设计决策，信息性输出非缺陷）、官方 parser 校验 ok=true 0 errors
+**[GOV] 187c** 陷阱账 18 更正两处失实：parser 真实 API=**模块级** `mod.fromFile(parser, absPath)` 返回 `{parse}`（非 `parser.fromFile(path, {baseUri})` 实例方法，后者实证 TypeError）+ 诊断 severity 为数值 0-3（非字符串）；权威参照=spec-validate.js
+
 ## [3.43.0] - 2026-11-21
 
 - ODCS 对齐 P1 项复核销项：审计文档声称「7/8 场景包缺 quality/sla 段、仅 1/8 落地」为过期口径——实测 01~08 全部 8 场景包 contract.yaml 均含实质 quality（1-2 条 not_null/freshness 检查）与 sla（freshness/availability/retention）段，系既有实现非批次94 欠账

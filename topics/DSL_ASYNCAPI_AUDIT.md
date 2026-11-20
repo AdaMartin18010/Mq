@@ -199,7 +199,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P1 bindingVersion | 批次 94 | 批量修复 8 场景 + 2 模板 bindingVersion；`contract-binding-check.sh` 增加必填检查 | ✅ 批次185 复核：16 yaml（14 可运行 spec+fixture+模板）全带 bindingVersion、零缺失，无可修项；门禁强制项=不加入（官方 schema 非必填，见 L6 裁定③）；KB 文档 13 处缺失维持独立项（上表 L183 行） |
 | P1 外部 $ref 解析 | 批次 94 | `contract-spec-check.sh` 增加 `contract.yaml#` 存在性与字段存在检查 | ✅ 批次185 裁定：parser（E0 第十二步）已覆盖外部 $ref 解析与 ENOENT 失败，不重复实现 |
 | P1 ODCS 段补齐 | 批次94 | 02-08 场景包 contract.yaml 补 `quality/sla`；验收：`contract-to-odcs.py --check` 全绿 + 导出 YAML 结构一致 | ✅ 批次186 复核：8/8 段齐备（非批次94 未执行，系既有实现），--check 8/8 CHECK_OK + 导出结构一致 + column 引用零悬挂；--check 增可选段缺失 WARN（不 fail） |
-| P1 生成器 | 批次 95 | `contract-to-asyncapi.py`（contract.yaml → asyncapi.yaml 骨架） | 输入 01-order-lifecycle contract，输出与现有 asyncapi.yaml 结构等价 |
+| P1 生成器 | 批次95 | ✅ `contract-to-asyncapi.py` 已落地（批次187）：contract.yaml → AsyncAPI 3.1.0 骨架（components.messages 全集派生 payload $ref，与 8 场景既有形态逐字一致；servers/通道/binding 标注 x-todo 不可推导）+ `--verify` 结构等价校验 8/8 通过 + 01 验收骨架官方 parser ok=true 0 errors |
 | P2 跨语言矩阵 | 批次 100（原挂账） | `xlang-matrix.sh --live` + fixtures 多语言容器 + 金样本集扩至 8 场景 | 5 语言两两全配对 20 条边跑通 |
 | P2 模板字段修正 | 批次 94 | ~~skeleton `replicas` → `replicationFactor`~~ **勘误（批次183）：方向颠倒，skeleton 本就正确**；实际修 3 件 spec `replicationFactor`→`replicas` + skeleton `cleanup.policy` 数组化 + spec-validate 门落地 | ✅ 批次183 spec-validate 16/16 全绿（RC=0），门=`topics/scripts/spec-validate-check.sh`，批次184 已入 E0 第十二步 |
 | P2 Spectral 规则补全 | 批次 94 | 在 `topics/config-templates/spectral-asyncapi-ruleset.yaml` 增加 `binding-version-required` 规则 | `spectral lint` 对缺失 bindingVersion 报错；**批次185 注**：本机 tools 目录未装 spectral（规则不可实跑验证），且官方 schema 非必填（L6 裁定③）——降为可选项，若执行规则须标注 house 惯例非 schema 要求 |

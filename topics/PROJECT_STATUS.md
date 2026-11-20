@@ -20,10 +20,10 @@
 | **元文档** | 27 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
-| **运维脚本** | 132 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线）；批次180/181 新增 spec-diff-check/tc-design-check（127→131）；批次183 新增 spec-validate-check（131→132 实地 find 核实） |
+| **运维脚本** | 133 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线）；批次180/181 新增 spec-diff-check/tc-design-check（127→131）；批次183 新增 spec-validate-check（131→132 实地 find 核实）；批次187 新增 contract-to-asyncapi（132→133） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1704** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（consistency-audit find 实测口径；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684）；2026-11-21 批次180/181：+18（批次176 H5 运行器+178/179 基准+180 asyncapi-tools 6 件），且 find 口径新增排除 node_modules（npm 依赖 gitignore 非 KB 内容），1684→1702；2026-11-21 批次183/184：+2（spec-validate.js/spec-validate-check.sh），1702→1704（find 实测；注1：git ls-files=1705 系 .vscode×3 入 git 口径差，consistency 门以 find 为准；注2：find 口径含 2 个 gitignore 运行时产物 mq-bench.exe/__pycache__，系既有口径噪声非 KB 内容） |
+| **总计** | **1705** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（consistency-audit find 实测口径；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684）；2026-11-21 批次180/181：+18（批次176 H5 运行器+178/179 基准+180 asyncapi-tools 6 件），且 find 口径新增排除 node_modules（npm 依赖 gitignore 非 KB 内容），1684→1702；2026-11-21 批次183/184：+2（spec-validate.js/spec-validate-check.sh），1702→1704；2026-11-21 批次187：+1（contract-to-asyncapi.py 生成器），1704→1705（find 实测；注1：git ls-files 口径含 .vscode×3 与 find 差 3，consistency 门以 find 为准；注2：find 口径含 2 个 gitignore 运行时产物 mq-bench.exe/__pycache__，系既有口径噪声非 KB 内容） |
 
 ### 各系列主题文件分布
 
