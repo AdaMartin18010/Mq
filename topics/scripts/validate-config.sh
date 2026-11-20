@@ -83,6 +83,42 @@ validate_rabbitmq_config() {
     echo "  ✅ 配置文件存在: $CONFIG_FILE"
 }
 
+validate_redis_config() {
+    echo "验证Redis配置..."
+
+    if [ -z "$CONFIG_FILE" ]; then
+        CONFIG_FILE="redis.conf"
+    fi
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "  ⚠️  配置文件不存在，使用默认配置"
+        return 0
+    fi
+
+    echo "  ✅ 配置文件存在: $CONFIG_FILE"
+
+    if grep -q "^port" "$CONFIG_FILE"; then
+        echo "    ✅ port已配置"
+    fi
+
+    if grep -q "^appendonly" "$CONFIG_FILE"; then
+        echo "    ✅ appendonly已配置"
+    fi
+
+    if grep -q "^maxmemory-policy" "$CONFIG_FILE"; then
+        echo "    ✅ maxmemory-policy已配置"
+    fi
+
+    if grep -q "^tls-port" "$CONFIG_FILE"; then
+        if grep -q "^tls-cert-file" "$CONFIG_FILE" && grep -q "^tls-key-file" "$CONFIG_FILE"; then
+            echo "    ✅ TLS已启用且证书路径已配置"
+        else
+            echo "    ❌ TLS已启用但证书路径缺失"
+            return 1
+        fi
+    fi
+}
+
 case $MQ_TYPE in
     kafka)
         validate_kafka_config
@@ -93,8 +129,11 @@ case $MQ_TYPE in
     rabbitmq)
         validate_rabbitmq_config
         ;;
+    redis)
+        validate_redis_config
+        ;;
     *)
-        echo "用法: $0 [kafka|nats|rabbitmq] [config_file]"
+        echo "用法: $0 [kafka|nats|rabbitmq|redis] [config_file]"
         exit 1
         ;;
 esac
