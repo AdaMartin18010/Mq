@@ -20,13 +20,13 @@
 | H1 A3 Microcks 收尾 | ✅ 完成（批次169：4 spec 自包含导入+async-minion 接线+6/6 场景契约测试全绿 9/9 用例，根因链 4 项闭环） | results/2026-11-20/h1-microcks-evidence.md | 2026-11-20 |
 | H2 冒烟资产修复 | ✅ 完成（批次167 六轮冒烟终验 PASS=3/FAIL=0/SKIP=1，2026-11-20） | results/2026-11-20/podman-migration-evidence.md §5 | 2026-11-20 |
 | H3 GAME DAY+cases | 🟡 部分完成（批次171 dry-run 层：411/411 全绿+注册表 411/411+nats 17/17；`--live`=用户在场授权门挂起） | results/2026-11-20/h3-case-dryrun-evidence.md | 2026-11-20 |
-| H4 基准首跑+L3 审批单 | ⬜ | — | — |
+| H4 基准首跑+L3 审批单 | 🟡 首跑完成（批次173：Kafka 实测基线稳态近 9.9k msg/s@1KB/acks=all；NATS/RabbitMQ blocked）；L3 审批单已出待签核 | results/2026-11-20/h4-benchmark-baseline.md + Testing/L3-审批单-H4基准转正-2026-11-20.md | 2026-11-20 |
 | H5 周期常态化 | ⬜ | — | — |
 | H6 SEC 复扫 | ✅ 完成（批次172：14 项基线复扫 14/0/0，对照批次127 基线零回退，RC=0） | results/2026-11-20/h6-sec-rescan-evidence.md | 2026-11-20 |
 
 ## 待上报 L3
 
-（空）
+| L3-审批单-H4基准转正-2026-11-20 | H4 Kafka 基线转正（A1）+ NATS 解锁（A2）+ RabbitMQ 解锁（A3）+ Kafka 3 节点拓扑修复（A4） | 待用户签核；未批准项维持挂起 | 2026-11-20 |
 
 ## 异常/漂移
 
