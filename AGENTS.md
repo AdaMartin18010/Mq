@@ -154,6 +154,8 @@ Mq/
 
 - ✅ 批次173 H4 基准首跑+L3 审批单（2026-11-20）：Kafka producer 基线**官方 perf 工具容器内 exec 实测**（apache/kafka:4.4.0 自带工具，/opt/kafka/bin 全路径规避镜像 PATH 缺陷）：1KB/目标 10k msg/s/60s/acks=all/batch=16384/linger=10 → **稳态近 9.9k records/sec（9.70 MB/sec）**、p99=4ms/p99.9=89ms 量级（全窗口均摊 3287 records/sec 含 ramp-up/drain，稳态区间 9318~9931 为真实持续吞吐）；**拓扑缺陷发现**=kafka-1/2/3 实为 3 独立单节点（listener 全 localhost，容器间 9093/9094 不可达→健康检查 unhealthy，既有'3-broker'描述失实）→队列175 登记修复；NATS/RabbitMQ=blocked 诚实登记（容器未在跑+镜像无基准工具+宿主无 CLI）+解锁路径→队列176/177（L3 门）；L3 审批单已出 Testing/L3-审批单-H4基准转正-2026-11-20.md（A1 基线转正/A2 NATS/A3 RabbitMQ/A4 拓扑修复，用户门）；证据 results/2026-11-20/h4-benchmark-baseline.md（数值经 scratch 日志程序化提取，码点级复验）
 
+- ✅ 批次174 H5 周期常态化（2026-11-20）：冒烟测试四系统全绿 **PASS=4 FAIL=0 SKIP=0 RC=0**（kafka/nats/rabbitmq/redis，单轮约 6 分钟，kafka KRaft 冷启约 3 分钟占主体）；四项修复：① 宿主 nats CLI 缺失→`go install` v0.5.2（C:/Users/luyan/go/bin，PATH 内）② nats 模板 compose 与 `nats:latest` 实为 **nats-server v2.15.3** 不兼容→每节点补 `--name`（server_name 硬要求）+`--cluster_name`（集群名硬要求；`-s`/`-c` 短形式实测无效=客户端标志/配置文件标志）③ nats 就绪等待 `sleep 3`→`nats stream ls` 轮询 60s 上限（三节点组建窗口）④ WSL2/podman 宿主端口转发对 rabbit mgmt HTTP 失效（TCP 握手成功但 Empty reply，三轮复现）→脚本 `rq()` 访问器=宿主 curl 优先+容器网络命名空间 curl sidecar 回退；副作用：长驻证据栈停止（自包含冒烟与长驻栈端口互斥，9092/4222/5672/15672）+**NATS 基准解锁**（批次173 队列176 前提已消，仍受 L3 审批门约束）；证据 results/2026-11-20/h5-smoke-normalization-evidence.md
+
 ### 7.2 AI 代理协作协议
 
 > **执行分工（2026-11-18 起，K6）**：执行类工作（容器测试/周期任务/资产修复）移交 hermes 自治推进（队列见 topics/KB_DIVISION.md §2）；主控负责规划/治理/审计/知识梳理；用户负责背书与裁决。hermes 产物须经 results/ 佐证+registry 流转，主控抽审可回放。

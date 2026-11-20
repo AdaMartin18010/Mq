@@ -8,6 +8,8 @@ services:
       - "8222:8222"
     command: [
       "-js",
+      "--name", "nats-1",
+      "--cluster_name", "smoke-cluster",
       "-m", "8222",
       "-cluster", "nats://0.0.0.0:6222",
       "-routes", "nats://nats-2:6222,nats://nats-3:6222"
@@ -20,6 +22,8 @@ services:
       - "8223:8222"
     command: [
       "-js",
+      "--name", "nats-2",
+      "--cluster_name", "smoke-cluster",
       "-m", "8222",
       "-cluster", "nats://0.0.0.0:6222",
       "-routes", "nats://nats-1:6222,nats://nats-3:6222"
@@ -32,6 +36,8 @@ services:
       - "8224:8222"
     command: [
       "-js",
+      "--name", "nats-3",
+      "--cluster_name", "smoke-cluster",
       "-m", "8222",
       "-cluster", "nats://0.0.0.0:6222",
       "-routes", "nats://nats-1:6222,nats://nats-2:6222"

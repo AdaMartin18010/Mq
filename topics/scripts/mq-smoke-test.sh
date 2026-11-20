@@ -58,7 +58,13 @@ smoke_nats() {
   trap cleanup_nats RETURN
   say "[nats 1/3] 启动容器..."
   $RT compose -f "$CT/docker-compose-nats.yml" up -d >/dev/null 2>&1 || { fail nats "compose 启动失败"; return; }
-  sleep 3
+  # 三节点 JetStream 集群组建需要时间（路由互联+元数据 leader 选举），sleep 3 不足；轮询就绪最长 60s（批次174 实测修复）
+  local nready=0
+  for _ in $(seq 1 30); do
+    nats stream ls -s nats://localhost:4222 >/dev/null 2>&1 && { nready=1; break; }
+    sleep 2
+  done
+  [ "$nready" = 1 ] || { fail nats "60 秒 JetStream 未就绪"; cleanup_nats; trap - RETURN; return; }
   say "[nats 2/3] 建流 + 收发..."
   if nats stream add SMOKE_TEST --subjects smoke.test --storage file --defaults \
        -s nats://localhost:4222 >/dev/null 2>&1; then
@@ -84,21 +90,29 @@ smoke_rabbitmq() {
   say "[rabbitmq 1/3] 启动容器..."
   $RT compose -f "$CT/docker-compose-rabbitmq.yml" up -d >/dev/null 2>&1 || { fail rabbitmq "compose 启动失败"; return; }
   local i
+  # mgmt API 访问器: 宿主 curl 优先；WSL2/podman 宿主端口转发对 rabbit mgmt HTTP 实测失效
+  # （TCP 握手成功但 Empty reply, 批次174 三轮复测）, 回退=容器网络命名空间内 curl sidecar
+  local rab1id
+  rab1id=$($RT compose -f "$CT/docker-compose-rabbitmq.yml" ps -q 2>/dev/null | head -1)
+  rq() {
+    if curl -s --max-time 8 "$@" 2>/dev/null; then return 0; fi
+    [ -n "$rab1id" ] && $RT run --rm --network "container:$rab1id" curlimages/curl "$@" 2>/dev/null
+  }
   for i in $(seq 1 30); do
-    curl -s -o /dev/null http://localhost:15672 && break; sleep 2
+    rq -s -u admin:admin -o /dev/null http://127.0.0.1:15672/api/overview && break; sleep 2
   done
   say "[rabbitmq 2/3] 队列声明 + 收发..."
-  if curl -s -u admin:admin -H "content-type:application/json" \
+  if rq -s -u admin:admin -H "content-type:application/json" \
       -X PUT -d '{"auto_delete":false,"durable":true,"arguments":{"x-queue-type":"quorum"}}' \
-      http://localhost:15672/api/queues/%2F/smoke-test >/dev/null 2>&1; then
+      http://127.0.0.1:15672/api/queues/%2F/smoke-test >/dev/null 2>&1; then
     sleep 3  # quorum 队列 Raft 收敛窗口, 立即 publish 会丢消息
-    curl -s -u admin:admin -H "content-type:application/json" \
+    rq -s -u admin:admin -H "content-type:application/json" \
       -X POST -d '{"properties":{},"routing_key":"smoke-test","payload":"smoke","payload_encoding":"string"}' \
-      http://localhost:15672/api/exchanges/%2F/amq.default/publish >/dev/null 2>&1
+      http://127.0.0.1:15672/api/exchanges/%2F/amq.default/publish >/dev/null 2>&1
     local n i2
     n=0
     for i2 in $(seq 1 5); do  # quorum 队列 Raft 提交收敛, 轮询最多 10 秒
-      n=$(curl -s -u admin:admin http://localhost:15672/api/queues/%2F/smoke-test 2>/dev/null | grep -oE '"messages(_ready)?":[0-9]+' | head -1 | grep -oE '[0-9]+$')
+      n=$(rq -s -u admin:admin http://127.0.0.1:15672/api/queues/%2F/smoke-test 2>/dev/null | grep -oE '"messages(_ready)?":[0-9]+' | head -1 | grep -oE '[0-9]+$')
       [ "${n:-0}" -ge 1 ] && break
       sleep 2
     done
