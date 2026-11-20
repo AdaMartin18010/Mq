@@ -10,6 +10,14 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.45.0] - 2026-11-21
+
+### [GOV] 批次188：跨语言金样本 3→8 场景全对齐（P2 跨语言矩阵静态半闭环）
+
+**[GOV] 188** `Testing/fixtures/generators/` 金样本 5 件新增（gen-inventory/gen-notification/gen-cdc-sync/gen-audit-trail/gen-task-queue），与 03-业务场景 03/04/06/07/08 契约字段逐一派生：边界探针共 41 个（库存 6=空幂等键/空 SKU/零数量/极大数量/TTL=0 即时过期/Unicode 商品名；通知 5=空 ID/空通道数组/全通道 fan-out/空内容引用/空幂等键；CDC 5=op=create·delete before/after=null 镜像/op=read 快照/空对象 update/tsMs=0；审计 5=空操作者/空操作类型/空引用/Unicode/超长引用+链式完整性断言；任务队列 6=空 ID/重试额度=0/负额度非法/截止已过/空类型/Unicode）；`xlang-matrix.sh --validate` 循环 3→8 生成器，**8/8 VALIDATE_OK RC=0**，JSONL 冒烟 8/8 合法；路线图 P2 跨语言矩阵项静态半闭环（余 `--live` 5 语言 20 边实跑+多语言容器挂真实执行集中批）
+**[GOV] 188b** 修 xlang-matrix.sh 两处缺陷：① MSYS 路径（`/e/...`）在 MSYS_NO_PATHCONV=1 下不被原生 python3 识别→按仓内既有体例补 `cygpath -m` 转换（与 contract-binding-check.sh 同款）② 首跑实证 3 件新生成器 `int(sys.argv)` 笔误（缺 `[1]`）→修正；生成器 README 清单 3→8 行同步
+**[GOV] 188c** 账本回写：PROJECT_STATUS 总数 1705→1710（+5 生成器，find 实测）、运维脚本 133 不变（生成器属 fixtures 非 scripts）、DSL_ASYNCAPI_AUDIT P2 行回写
+
 ## [3.44.0] - 2026-11-21
 
 ### [GOV] 批次187：P1 生成器落地（contract-to-asyncapi.py）
