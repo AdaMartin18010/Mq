@@ -1,5 +1,6 @@
 #!/bin/bash
 # 快速启动脚本（一键启动所有消息队列系统）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -34,8 +35,8 @@ start_nats() {
 
 start_rabbitmq() {
     echo "启动RabbitMQ..."
-    if docker ps -a | grep -q rabbitmq; then
-        docker start rabbitmq
+    if $RT ps -a | grep -q rabbitmq; then
+        $RT start rabbitmq
         echo "  ✅ RabbitMQ已启动"
     elif command -v rabbitmq-server &> /dev/null; then
         rabbitmq-server -detached
@@ -47,8 +48,8 @@ start_rabbitmq() {
 
 start_redis() {
     echo "启动Redis..."
-    if docker ps -a | grep -q redis; then
-        docker start redis
+    if $RT ps -a | grep -q redis; then
+        $RT start redis
         echo "  ✅ Redis已启动"
     elif command -v redis-server &> /dev/null; then
         redis-server --daemonize yes

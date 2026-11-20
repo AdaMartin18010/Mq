@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列实时监控脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -51,8 +52,8 @@ monitor_rabbitmq() {
         echo "时间: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
-        if docker ps | grep -q rabbitmq; then
-            docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | head -10
+        if $RT ps | grep -q rabbitmq; then
+            $RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | head -10
         fi
         
         sleep 5

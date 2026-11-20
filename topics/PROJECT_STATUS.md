@@ -6,10 +6,10 @@
 
 **项目名称**: 消息队列全面分析论证
 **创建日期**: 2025-12-31
-**最近核实**: 2026-11-18
+**最近核实**: 2026-11-20
 **项目状态**: 🔄 深度治理与前沿对齐中（第六阶段）
 
-## 文档统计（2026-11-18 实地核实 · 批次77-86 后）
+## 文档统计（2026-11-20 实地核实 · 批次167 后）
 
 | 类别 | 数量 | 说明 |
 | ------ | ------ | ------ |
@@ -23,7 +23,7 @@
 | **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1683** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物 |
+| **总计** | **1684** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684） |
 
 ### 各系列主题文件分布
 
@@ -85,6 +85,7 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次108+110 自检收口+MCP MVP（2026-11-18：%20 解码盲区修复+全库普查坏链 0、口径闭合；AI_Skills/mcp-server FastMCP 7 tools+2 resources 只读纪律）
 - ✅ 批次111-116 全量消化+地基+映射+用例扩展+闭环（2026-11-18：concept 8 卷 257 篇逐篇消化、01-83~86 地基四篇+01-82 六维映射、ASE 89 条/registry 284 行、TEST-16 hermes 执行规划与问题闭环三模板）
 - ✅ 批次117-120 Testing/07-集成矩阵（2026-11-18：四维维度化用例库 560 用例文件=7系统×5语言×16特性，matrix-registry 唯一事实源+matrix-check 入 E0+harness --sys/--lang 过滤；registry 825 行）——批次 1-116 全部闭环，剩滚动例行项与真实执行集中批（挂账）
+- ✅ 批次167 容器运行时 Docker→podman 迁移（2026-11-20：RT shim 入 5 核心脚本+3 层深死链修复×3+E0 五脚本 cygpath 注入[九步 9/9 绿]+6 compose 适配[kafka healthcheck→kafka-cluster.sh、mongo→mongosh、microcks SPRING_MONGODB_URI 依 #2053 定案]+端到端证据链[3-broker 全 healthy、Microcks health=200、H1 冒烟、game-day dry-run RC=0]+TEST-09/10/11/07 矩阵 README 运行时声明）——E1 podman 轨道宿主默认，E2 docker 回退
 
 ---
 

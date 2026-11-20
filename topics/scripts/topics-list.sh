@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列主题/队列列表脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -30,8 +31,8 @@ list_nats_subjects() {
 list_rabbitmq_queues() {
     echo "RabbitMQ Queues:"
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
             head -20 | tail -n +2 | \
             while read line; do
                 echo "  - $line"

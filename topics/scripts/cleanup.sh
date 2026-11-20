@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列清理脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -35,8 +36,8 @@ cleanup_nats_logs() {
 
 cleanup_rabbitmq_logs() {
     echo "清理RabbitMQ日志..."
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq find /var/log/rabbitmq -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq find /var/log/rabbitmq -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
         echo "✅ 已清理7天前的日志文件"
     fi
 }

@@ -1,14 +1,15 @@
 #!/bin/bash
 # RabbitMQ快速部署脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
 echo "=== RabbitMQ部署脚本 ==="
 
 # 检查Docker
-if command -v docker &> /dev/null; then
+if [ -n "$RT" ] && command -v "$RT" &> /dev/null; then
     echo "使用Docker部署RabbitMQ..."
-    docker run -d \
+    $RT run -d \
         --name rabbitmq \
         -p 5672:5672 \
         -p 15672:15672 \
@@ -31,5 +32,5 @@ if command -v rabbitmq-server &> /dev/null; then
 fi
 
 echo "错误: 未找到Docker或RabbitMQ，请先安装"
-echo "Docker: docker pull rabbitmq:3-management"
+echo "Docker: $RT pull rabbitmq:3-management"
 echo "或安装RabbitMQ: https://www.rabbitmq.com/download.html"

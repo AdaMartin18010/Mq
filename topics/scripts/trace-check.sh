@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息追踪配置检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -13,21 +14,21 @@ check_trace_config() {
     echo "--- 追踪工具检查 ---"
     
     # 检查Jaeger
-    if command -v jaeger &> /dev/null || docker ps | grep -q jaeger; then
+    if command -v jaeger &> /dev/null || $RT ps | grep -q jaeger; then
         echo "  ✅ Jaeger已安装"
     else
         echo "  ⚠️  Jaeger未安装"
     fi
     
     # 检查Zipkin
-    if command -v zipkin &> /dev/null || docker ps | grep -q zipkin; then
+    if command -v zipkin &> /dev/null || $RT ps | grep -q zipkin; then
         echo "  ✅ Zipkin已安装"
     else
         echo "  ⚠️  Zipkin未安装"
     fi
     
     # 检查Prometheus
-    if command -v prometheus &> /dev/null || docker ps | grep -q prometheus; then
+    if command -v prometheus &> /dev/null || $RT ps | grep -q prometheus; then
         echo "  ✅ Prometheus已安装"
     else
         echo "  ⚠️  Prometheus未安装"

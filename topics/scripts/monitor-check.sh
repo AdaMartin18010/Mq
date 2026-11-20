@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息监控状态检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -24,7 +25,7 @@ check_grafana() {
     
     if curl -s http://localhost:3000/api/health > /dev/null 2>&1; then
         echo "  ✅ Grafana运行中"
-    elif docker ps | grep -q grafana; then
+    elif $RT ps | grep -q grafana; then
         echo "  ✅ Grafana容器运行中"
     else
         echo "  ⚠️  Grafana未运行"
@@ -38,7 +39,7 @@ check_exporters() {
     echo "  Kafka Exporter:"
     if curl -s http://localhost:9308/metrics > /dev/null 2>&1; then
         echo "    ✅ Kafka Exporter运行中"
-    elif docker ps | grep -q kafka-exporter; then
+    elif $RT ps | grep -q kafka-exporter; then
         echo "    ✅ Kafka Exporter容器运行中"
     else
         echo "    ⚠️  Kafka Exporter未运行"
@@ -48,7 +49,7 @@ check_exporters() {
     echo "  NATS Exporter:"
     if curl -s http://localhost:7777/metrics > /dev/null 2>&1; then
         echo "    ✅ NATS Exporter运行中"
-    elif docker ps | grep -q nats-exporter; then
+    elif $RT ps | grep -q nats-exporter; then
         echo "    ✅ NATS Exporter容器运行中"
     else
         echo "    ⚠️  NATS Exporter未运行"
@@ -58,7 +59,7 @@ check_exporters() {
     echo "  RabbitMQ Exporter:"
     if curl -s http://localhost:9419/metrics > /dev/null 2>&1; then
         echo "    ✅ RabbitMQ Exporter运行中"
-    elif docker ps | grep -q rabbitmq-exporter; then
+    elif $RT ps | grep -q rabbitmq-exporter; then
         echo "    ✅ RabbitMQ Exporter容器运行中"
     else
         echo "    ⚠️  RabbitMQ Exporter未运行"
@@ -70,7 +71,7 @@ check_alertmanager() {
     
     if curl -s http://localhost:9093/-/healthy > /dev/null 2>&1; then
         echo "  ✅ AlertManager运行中"
-    elif docker ps | grep -q alertmanager; then
+    elif $RT ps | grep -q alertmanager; then
         echo "  ✅ AlertManager容器运行中"
     else
         echo "  ⚠️  AlertManager未运行"

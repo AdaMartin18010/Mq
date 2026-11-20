@@ -1,5 +1,6 @@
 #!/bin/bash
 # 性能报告生成脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -36,8 +37,8 @@ echo ""
     
     if [ "$MQ_TYPE" = "rabbitmq" ] || [ "$MQ_TYPE" = "all" ]; then
         echo "--- RabbitMQ性能指标 ---"
-        if docker ps | grep -q rabbitmq; then
-            docker exec rabbitmq rabbitmqctl list_queues name messages messages_ready messages_unacknowledged 2>/dev/null | head -20
+        if $RT ps | grep -q rabbitmq; then
+            $RT exec rabbitmq rabbitmqctl list_queues name messages messages_ready messages_unacknowledged 2>/dev/null | head -20
         fi
         echo ""
     fi

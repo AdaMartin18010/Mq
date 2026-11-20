@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列备份和恢复脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -47,8 +48,8 @@ restore_kafka() {
 backup_rabbitmq() {
     echo "备份RabbitMQ数据..."
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl export_definitions \
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl export_definitions \
             "$BACKUP_DIR/rabbitmq_definitions_$DATE.json" 2>/dev/null || true
         echo "✅ RabbitMQ备份完成: $BACKUP_DIR/rabbitmq_definitions_$DATE.json"
     elif command -v rabbitmqctl &> /dev/null; then
@@ -71,9 +72,9 @@ restore_rabbitmq() {
         return 1
     fi
     
-    if docker ps | grep -q rabbitmq; then
-        docker cp "$BACKUP_FILE" rabbitmq:/tmp/definitions.json
-        docker exec rabbitmq rabbitmqctl import_definitions /tmp/definitions.json
+    if $RT ps | grep -q rabbitmq; then
+        $RT cp "$BACKUP_FILE" rabbitmq:/tmp/definitions.json
+        $RT exec rabbitmq rabbitmqctl import_definitions /tmp/definitions.json
         echo "✅ RabbitMQ恢复完成"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl import_definitions "$BACKUP_FILE"

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 系统信息收集脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -48,7 +49,7 @@ echo ""
     echo "--- 已安装软件 ---"
     echo "Java: $(java -version 2>&1 | head -1 || echo '未安装')"
     echo "Python: $(python3 --version 2>&1 || echo '未安装')"
-    echo "Docker: $(docker --version 2>&1 || echo '未安装')"
+    echo "Docker: $($RT --version 2>&1 || echo '未安装')"
     echo ""
     
     echo "--- 消息队列系统 ---"
@@ -64,7 +65,7 @@ echo ""
         echo "NATS: ❌ 未安装"
     fi
     
-    if command -v rabbitmqctl &> /dev/null || docker ps | grep -q rabbitmq; then
+    if command -v rabbitmqctl &> /dev/null || $RT ps | grep -q rabbitmq; then
         echo "RabbitMQ: ✅ 已安装"
     else
         echo "RabbitMQ: ❌ 未安装"

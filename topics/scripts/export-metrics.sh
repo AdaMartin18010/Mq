@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列指标导出脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -40,8 +41,8 @@ export_nats_metrics() {
 export_rabbitmq_metrics() {
     echo "导出RabbitMQ指标..."
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null > "$OUTPUT_FILE"
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null > "$OUTPUT_FILE"
         echo "  ✅ 指标已导出到: $OUTPUT_FILE"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl list_queues name messages 2>/dev/null > "$OUTPUT_FILE"

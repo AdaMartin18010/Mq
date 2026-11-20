@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列停止脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -29,8 +30,8 @@ stop_nats() {
 
 stop_rabbitmq() {
     echo "停止RabbitMQ..."
-    if docker ps | grep -q rabbitmq; then
-        docker stop rabbitmq
+    if $RT ps | grep -q rabbitmq; then
+        $RT stop rabbitmq
         echo "✅ RabbitMQ已停止"
     elif pgrep -f "beam.smp.*rabbit" > /dev/null; then
         rabbitmqctl stop

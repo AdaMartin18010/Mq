@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列安全审计脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -75,9 +76,9 @@ echo ""
     audit_rabbitmq() {
         echo "--- RabbitMQ安全审计 ---"
         
-        if docker ps | grep -q rabbitmq; then
+        if $RT ps | grep -q rabbitmq; then
             # 检查用户配置
-            USERS=$(docker exec rabbitmq rabbitmqctl list_users 2>/dev/null | wc -l)
+            USERS=$($RT exec rabbitmq rabbitmqctl list_users 2>/dev/null | wc -l)
             if [ "$USERS" -gt 1 ]; then
                 echo "✅ 已配置用户（$USERS个）"
             else
@@ -85,7 +86,7 @@ echo ""
             fi
             
             # 检查TLS配置
-            if docker exec rabbitmq rabbitmqctl environment | grep -q "ssl"; then
+            if $RT exec rabbitmq rabbitmqctl environment | grep -q "ssl"; then
                 echo "✅ TLS加密已启用"
             else
                 echo "❌ TLS加密未启用"

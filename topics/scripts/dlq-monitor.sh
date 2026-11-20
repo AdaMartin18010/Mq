@@ -1,5 +1,6 @@
 #!/bin/bash
 # 死信队列监控脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -34,13 +35,13 @@ monitor_nats_dlq() {
 monitor_rabbitmq_dlq() {
     echo "RabbitMQ死信队列监控:"
     
-    if docker ps | grep -q rabbitmq; then
-        DLQ_QUEUES=$(docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
+    if $RT ps | grep -q rabbitmq; then
+        DLQ_QUEUES=$($RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
             grep -E "dlq|dead-letter" | wc -l)
         echo "  死信队列数量: $DLQ_QUEUES"
         
         if [ "$DLQ_QUEUES" -gt 0 ]; then
-            docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
+            $RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
                 grep -E "dlq|dead-letter" | \
                 while read line; do
                     echo "    - $line"

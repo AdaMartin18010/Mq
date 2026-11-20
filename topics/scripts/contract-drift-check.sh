@@ -23,6 +23,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# MSYS 路径（/c/ /e/）在 MSYS_NO_PATHCONV=1 下不被 Windows 原生 python3 识别 → cygpath 统一转换
+if command -v cygpath >/dev/null 2>&1; then
+  PROJECT_ROOT="$(cygpath -m "$PROJECT_ROOT")"
+  SERIES_DIR="$(cygpath -m "$SERIES_DIR")"
+  [[ "$ONLY_SPEC" == /* ]] && ONLY_SPEC="$(cygpath -m "$ONLY_SPEC")"
+fi
+
 command -v python3 >/dev/null 2>&1 || { echo "ERROR: 需要 python3"; exit 2; }
 
 # spec 参数名 -> 期望模板（新增 spec 时在此登记）

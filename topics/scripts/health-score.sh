@@ -1,5 +1,6 @@
 #!/bin/bash
 # 健康评分脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -75,8 +76,8 @@ score_rabbitmq() {
     SCORE=100
     
     # 检查连接
-    if docker ps | grep -q rabbitmq; then
-        if ! docker exec rabbitmq rabbitmqctl status &> /dev/null; then
+    if $RT ps | grep -q rabbitmq; then
+        if ! $RT exec rabbitmq rabbitmqctl status &> /dev/null; then
             SCORE=$((SCORE - 30))
         fi
     elif ! command -v rabbitmqctl &> /dev/null; then

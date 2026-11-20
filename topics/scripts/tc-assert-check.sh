@@ -11,6 +11,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SERIES_DIR="$PROJECT_ROOT/Testing/06-契约语义测试"
+# MSYS 路径（/c/ /e/）在 MSYS_NO_PATHCONV=1 下不被 Windows 原生 python3 识别 → cygpath 统一转换
+if command -v cygpath >/dev/null 2>&1; then
+  PROJECT_ROOT="$(cygpath -m "$PROJECT_ROOT")"
+  SERIES_DIR="$(cygpath -m "$SERIES_DIR")"
+fi
 DIMS="交付语义 顺序性 幂等去重 重试退避 死信 事务 背压 TTL过期 延迟消息 消息过滤 流控 持久化"
 SYSTEMS="Kafka RabbitMQ NATS Pulsar Redis MQTT CloudEvents OTel"
 

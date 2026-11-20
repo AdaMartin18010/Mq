@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列集群状态检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -42,8 +43,8 @@ check_nats_cluster() {
 check_rabbitmq_cluster() {
     echo "RabbitMQ集群状态:"
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl cluster_status 2>/dev/null | head -10
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl cluster_status 2>/dev/null | head -10
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl cluster_status 2>/dev/null | head -10
     else

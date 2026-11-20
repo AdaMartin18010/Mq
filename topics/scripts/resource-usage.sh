@@ -1,5 +1,6 @@
 #!/bin/bash
 # 资源使用情况脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -52,8 +53,8 @@ check_nats_resources() {
 check_rabbitmq_resources() {
     echo "RabbitMQ资源使用:"
     
-    if docker ps | grep -q rabbitmq; then
-        STATS=$(docker stats rabbitmq --no-stream --format "{{.MemUsage}}\t{{.CPUPerc}}" 2>/dev/null)
+    if $RT ps | grep -q rabbitmq; then
+        STATS=$($RT stats rabbitmq --no-stream --format "{{.MemUsage}}\t{{.CPUPerc}}" 2>/dev/null)
         if [ -n "$STATS" ]; then
             echo "  $STATS"
         fi

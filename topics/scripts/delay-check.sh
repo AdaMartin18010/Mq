@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息延迟配置检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -28,8 +29,8 @@ check_delay_config() {
     
     echo ""
     echo "--- RabbitMQ延迟消息 ---"
-    if docker ps | grep -q rabbitmq; then
-        PLUGINS=$(docker exec rabbitmq rabbitmq-plugins list 2>/dev/null | grep -i delay || echo "")
+    if $RT ps | grep -q rabbitmq; then
+        PLUGINS=$($RT exec rabbitmq rabbitmq-plugins list 2>/dev/null | grep -i delay || echo "")
         if echo "$PLUGINS" | grep -q "rabbitmq_delayed_message_exchange"; then
             echo "  ✅ 延迟插件已安装"
         else

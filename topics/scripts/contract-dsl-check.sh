@@ -8,6 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SCHEMA="$PROJECT_ROOT/Testing/06-契约语义测试/01-契约规格/dsl-schema.json"
+# MSYS 路径（/c/ /e/）在 MSYS_NO_PATHCONV=1 下不被 Windows 原生 python3 识别 → cygpath 统一转换
+if command -v cygpath >/dev/null 2>&1; then
+  PROJECT_ROOT="$(cygpath -m "$PROJECT_ROOT")"
+  SCHEMA="$(cygpath -m "$SCHEMA")"
+fi
 JSON_OUT=0
 
 [[ "${1:-}" == "--json" ]] && JSON_OUT=1

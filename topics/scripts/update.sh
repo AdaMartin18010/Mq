@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列升级脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -32,8 +33,8 @@ update_kafka() {
 update_nats() {
     echo "升级NATS到版本: $VERSION"
     
-    if command -v docker &> /dev/null; then
-        docker pull nats:$VERSION
+    if [ -n "$RT" ] && command -v "$RT" &> /dev/null; then
+        $RT pull nats:$VERSION
         echo "✅ NATS镜像已更新"
         echo "重启容器以应用新版本"
     else
@@ -44,8 +45,8 @@ update_nats() {
 update_rabbitmq() {
     echo "升级RabbitMQ到版本: $VERSION"
     
-    if command -v docker &> /dev/null; then
-        docker pull rabbitmq:$VERSION-management
+    if [ -n "$RT" ] && command -v "$RT" &> /dev/null; then
+        $RT pull rabbitmq:$VERSION-management
         echo "✅ RabbitMQ镜像已更新"
         echo "重启容器以应用新版本"
     else

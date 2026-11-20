@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列告警检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -48,8 +49,8 @@ check_nats_alerts() {
 check_rabbitmq_alerts() {
     echo "检查RabbitMQ告警..."
     
-    if docker ps | grep -q rabbitmq; then
-        QUEUES=$(docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | wc -l)
+    if $RT ps | grep -q rabbitmq; then
+        QUEUES=$($RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | wc -l)
         if [ "$QUEUES" -gt 100 ]; then
             echo "  ⚠️  队列数量过多: $QUEUES"
         else

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列日志查看脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -22,8 +23,8 @@ view_kafka_logs() {
 view_nats_logs() {
     echo "NATS日志（最近${LINES}行）:"
     
-    if docker ps | grep -q nats; then
-        docker logs --tail $LINES $(docker ps | grep nats | awk '{print $1}')
+    if $RT ps | grep -q nats; then
+        $RT logs --tail $LINES $($RT ps | grep nats | awk '{print $1}')
     elif [ -f "/var/log/nats/nats.log" ]; then
         tail -n $LINES /var/log/nats/nats.log
     else
@@ -34,8 +35,8 @@ view_nats_logs() {
 view_rabbitmq_logs() {
     echo "RabbitMQ日志（最近${LINES}行）:"
     
-    if docker ps | grep -q rabbitmq; then
-        docker logs --tail $LINES $(docker ps | grep rabbitmq | awk '{print $1}')
+    if $RT ps | grep -q rabbitmq; then
+        $RT logs --tail $LINES $($RT ps | grep rabbitmq | awk '{print $1}')
     elif [ -f "/var/log/rabbitmq/rabbit@*.log" ]; then
         tail -n $LINES /var/log/rabbitmq/rabbit@*.log
     else

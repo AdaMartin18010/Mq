@@ -1,7 +1,5 @@
 # Docker Compose RabbitMQ集群配置示例
 
-version: '3.8'
-
 services:
   rabbitmq-1:
     image: rabbitmq:3-management

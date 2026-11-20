@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列健康检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -54,9 +55,9 @@ check_rabbitmq() {
     echo "检查RabbitMQ健康状态..."
     
     # 检查是否运行（Docker）
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         echo "✅ RabbitMQ运行正常（Docker）"
-        docker exec rabbitmq rabbitmqctl status 2>/dev/null | head -5
+        $RT exec rabbitmq rabbitmqctl status 2>/dev/null | head -5
     elif command -v rabbitmqctl &> /dev/null; then
         if rabbitmqctl status > /dev/null 2>&1; then
             echo "✅ RabbitMQ运行正常"

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息存储配置检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -40,7 +41,7 @@ check_kafka_storage() {
 check_nats_storage() {
     echo "检查NATS存储配置..."
     
-    if docker ps | grep -q nats; then
+    if $RT ps | grep -q nats; then
         echo "  NATS存储:"
         echo "    - NATS Core: 内存存储（无持久化）"
         echo "    - JetStream: 文件存储（持久化）"
@@ -56,11 +57,11 @@ check_nats_storage() {
 check_rabbitmq_storage() {
     echo "检查RabbitMQ存储配置..."
     
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         echo "  RabbitMQ存储路径:"
         RABBITMQ_DATA_DIR="/var/lib/rabbitmq/mnesia"
-        if docker exec rabbitmq test -d "$RABBITMQ_DATA_DIR" 2>/dev/null; then
-            SIZE=$(docker exec rabbitmq du -sh "$RABBITMQ_DATA_DIR" 2>/dev/null | awk '{print $1}')
+        if $RT exec rabbitmq test -d "$RABBITMQ_DATA_DIR" 2>/dev/null; then
+            SIZE=$($RT exec rabbitmq du -sh "$RABBITMQ_DATA_DIR" 2>/dev/null | awk '{print $1}')
             echo "    - $RABBITMQ_DATA_DIR: $SIZE"
         fi
     elif command -v rabbitmqctl &> /dev/null; then

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列故障诊断脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -69,9 +70,9 @@ diagnose_rabbitmq() {
     
     # 检查进程
     echo "1. 检查进程状态:"
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         echo "   ✅ RabbitMQ容器运行中"
-        docker ps | grep rabbitmq
+        $RT ps | grep rabbitmq
     elif pgrep -f "beam.smp.*rabbit" > /dev/null; then
         echo "   ✅ RabbitMQ进程运行中"
     else

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息监控设置脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -31,12 +32,12 @@ setup_prometheus() {
 setup_grafana() {
     echo "设置Grafana监控..."
     
-    if command -v grafana-server &> /dev/null || docker ps | grep -q grafana; then
+    if command -v grafana-server &> /dev/null || $RT ps | grep -q grafana; then
         echo "  ✅ Grafana已安装"
     else
         echo "  ⚠️  Grafana未安装，请先安装Grafana"
         echo "  安装命令:"
-        echo "    docker run -d -p 3000:3000 grafana/grafana"
+        echo "    $RT run -d -p 3000:3000 grafana/grafana"
     fi
     
     echo ""
@@ -53,32 +54,32 @@ setup_exporters() {
     
     echo ""
     echo "  Kafka Exporter:"
-    if docker ps | grep -q kafka-exporter; then
+    if $RT ps | grep -q kafka-exporter; then
         echo "    ✅ Kafka Exporter运行中"
     else
         echo "    ⚠️  Kafka Exporter未运行"
         echo "    启动命令:"
-        echo "      docker run -d -p 9308:9308 danielqsj/kafka-exporter --kafka.server=kafka:9092"
+        echo "      $RT run -d -p 9308:9308 danielqsj/kafka-exporter --kafka.server=kafka:9092"
     fi
     
     echo ""
     echo "  NATS Exporter:"
-    if docker ps | grep -q nats-exporter; then
+    if $RT ps | grep -q nats-exporter; then
         echo "    ✅ NATS Exporter运行中"
     else
         echo "    ⚠️  NATS Exporter未运行"
         echo "    启动命令:"
-        echo "      docker run -d -p 7777:7777 natsio/prometheus-nats-exporter"
+        echo "      $RT run -d -p 7777:7777 natsio/prometheus-nats-exporter"
     fi
     
     echo ""
     echo "  RabbitMQ Exporter:"
-    if docker ps | grep -q rabbitmq-exporter; then
+    if $RT ps | grep -q rabbitmq-exporter; then
         echo "    ✅ RabbitMQ Exporter运行中"
     else
         echo "    ⚠️  RabbitMQ Exporter未运行"
         echo "    启动命令:"
-        echo "      docker run -d -p 9419:9419 kbudde/rabbitmq-exporter"
+        echo "      $RT run -d -p 9419:9419 kbudde/rabbitmq-exporter"
     fi
 }
 

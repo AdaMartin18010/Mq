@@ -1,5 +1,6 @@
 #!/bin/bash
 # 快速停止脚本（一键停止所有消息队列系统）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -31,8 +32,8 @@ stop_nats() {
 
 stop_rabbitmq() {
     echo "停止RabbitMQ..."
-    if docker ps | grep -q rabbitmq; then
-        docker stop rabbitmq
+    if $RT ps | grep -q rabbitmq; then
+        $RT stop rabbitmq
         echo "  ✅ RabbitMQ已停止"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl stop
@@ -44,8 +45,8 @@ stop_rabbitmq() {
 
 stop_redis() {
     echo "停止Redis..."
-    if docker ps | grep -q redis; then
-        docker stop redis
+    if $RT ps | grep -q redis; then
+        $RT stop redis
         echo "  ✅ Redis已停止"
     elif pgrep -f redis-server > /dev/null; then
         pkill -f redis-server

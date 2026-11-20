@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列重启脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -51,8 +52,8 @@ restart_nats() {
 restart_rabbitmq() {
     echo "重启RabbitMQ..."
     
-    if docker ps | grep -q rabbitmq; then
-        docker restart rabbitmq
+    if $RT ps | grep -q rabbitmq; then
+        $RT restart rabbitmq
         echo "✅ RabbitMQ已重启"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl stop_app

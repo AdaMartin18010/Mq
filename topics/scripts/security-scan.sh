@@ -1,5 +1,6 @@
 #!/bin/bash
 # 安全扫描脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -82,9 +83,9 @@ echo ""
     scan_rabbitmq() {
         echo "--- RabbitMQ安全扫描 ---"
         
-        if docker ps | grep -q rabbitmq; then
+        if $RT ps | grep -q rabbitmq; then
             # 检查用户
-            USERS=$(docker exec rabbitmq rabbitmqctl list_users 2>/dev/null | wc -l)
+            USERS=$($RT exec rabbitmq rabbitmqctl list_users 2>/dev/null | wc -l)
             if [ "$USERS" -gt 1 ]; then
                 echo "✅ 已配置用户（$USERS个）"
             else
@@ -92,12 +93,12 @@ echo ""
             fi
             
             # 检查guest用户
-            if docker exec rabbitmq rabbitmqctl list_users 2>/dev/null | grep -q guest; then
+            if $RT exec rabbitmq rabbitmqctl list_users 2>/dev/null | grep -q guest; then
                 echo "⚠️  guest用户仍存在（建议禁用）"
             fi
             
             # 检查TLS
-            if docker exec rabbitmq rabbitmqctl environment 2>/dev/null | grep -q ssl; then
+            if $RT exec rabbitmq rabbitmqctl environment 2>/dev/null | grep -q ssl; then
                 echo "✅ TLS加密已启用"
             else
                 echo "❌ TLS加密未启用（安全风险）"

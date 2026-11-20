@@ -1,5 +1,6 @@
 #!/bin/bash
 # 多租户配置检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -36,8 +37,8 @@ check_multi_tenant() {
     
     echo ""
     echo "--- RabbitMQ多租户 ---"
-    if docker ps | grep -q rabbitmq; then
-        VHOSTS=$(docker exec rabbitmq rabbitmqctl list_vhosts 2>/dev/null | wc -l)
+    if $RT ps | grep -q rabbitmq; then
+        VHOSTS=$($RT exec rabbitmq rabbitmqctl list_vhosts 2>/dev/null | wc -l)
         echo "  Virtual Hosts: $VHOSTS"
     elif command -v rabbitmqctl &> /dev/null; then
         VHOSTS=$(rabbitmqctl list_vhosts 2>/dev/null | wc -l)

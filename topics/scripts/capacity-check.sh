@@ -1,5 +1,6 @@
 #!/bin/bash
 # 容量检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -58,9 +59,9 @@ check_nats_capacity() {
 check_rabbitmq_capacity() {
     echo "检查RabbitMQ容量..."
     
-    if docker ps | grep -q rabbitmq; then
-        QUEUES=$(docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | wc -l)
-        TOTAL_MSGS=$(docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
+    if $RT ps | grep -q rabbitmq; then
+        QUEUES=$($RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | wc -l)
+        TOTAL_MSGS=$($RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | \
             awk '{sum+=$2} END {print sum}')
         
         echo "  队列数量: $QUEUES"

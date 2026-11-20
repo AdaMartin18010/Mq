@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列状态检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -36,9 +37,9 @@ check_nats() {
 
 check_rabbitmq() {
     echo "📊 RabbitMQ状态:"
-    if docker ps | grep -q rabbitmq || pgrep -f "beam.smp.*rabbit" > /dev/null; then
+    if $RT ps | grep -q rabbitmq || pgrep -f "beam.smp.*rabbit" > /dev/null; then
         echo "  ✅ 运行中"
-        if docker ps | grep -q rabbitmq; then
+        if $RT ps | grep -q rabbitmq; then
             echo "  🐳 Docker容器运行中"
         fi
     else

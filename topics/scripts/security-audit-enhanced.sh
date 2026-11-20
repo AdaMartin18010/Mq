@@ -1,5 +1,6 @@
 #!/bin/bash
 # 增强版消息安全审计脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -48,7 +49,7 @@ audit_kafka_security() {
 audit_nats_security() {
     echo "审计NATS安全配置..." | tee -a "$OUTPUT_FILE"
     
-    if docker ps | grep -q nats || command -v nats-server &> /dev/null; then
+    if $RT ps | grep -q nats || command -v nats-server &> /dev/null; then
         echo "  NATS安全配置:" >> "$OUTPUT_FILE"
         echo "    - TLS/SSL: 检查配置文件" >> "$OUTPUT_FILE"
         echo "    - 认证: 检查用户配置" >> "$OUTPUT_FILE"
@@ -63,18 +64,18 @@ audit_nats_security() {
 audit_rabbitmq_security() {
     echo "审计RabbitMQ安全配置..." | tee -a "$OUTPUT_FILE"
     
-    if docker ps | grep -q rabbitmq || command -v rabbitmqctl &> /dev/null; then
+    if $RT ps | grep -q rabbitmq || command -v rabbitmqctl &> /dev/null; then
         echo "  RabbitMQ安全配置:" >> "$OUTPUT_FILE"
         
         # 检查默认用户
-        DEFAULT_USER=$(docker exec rabbitmq rabbitmqctl list_users 2>/dev/null | \
+        DEFAULT_USER=$($RT exec rabbitmq rabbitmqctl list_users 2>/dev/null | \
             grep -E "guest|admin" | head -1 || echo "未知")
         if [ -n "$DEFAULT_USER" ]; then
             echo "    ⚠️  发现默认用户: $DEFAULT_USER" >> "$OUTPUT_FILE"
         fi
         
         # 检查SSL配置
-        SSL_ENABLED=$(docker exec rabbitmq rabbitmqctl environment 2>/dev/null | \
+        SSL_ENABLED=$($RT exec rabbitmq rabbitmqctl environment 2>/dev/null | \
             grep -i "ssl" | wc -l || echo "0")
         if [ "$SSL_ENABLED" -gt 0 ]; then
             echo "    ✅ SSL/TLS加密已启用" >> "$OUTPUT_FILE"

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 版本信息收集脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -36,8 +37,8 @@ echo ""
     if command -v rabbitmqctl &> /dev/null; then
         RABBITMQ_VERSION=$(rabbitmqctl version 2>/dev/null | head -1 || echo "未知")
         echo "  RabbitMQ: $RABBITMQ_VERSION"
-    elif docker ps | grep -q rabbitmq; then
-        RABBITMQ_VERSION=$(docker exec rabbitmq rabbitmqctl version 2>/dev/null | head -1 || echo "未知")
+    elif $RT ps | grep -q rabbitmq; then
+        RABBITMQ_VERSION=$($RT exec rabbitmq rabbitmqctl version 2>/dev/null | head -1 || echo "未知")
         echo "  RabbitMQ (Docker): $RABBITMQ_VERSION"
     else
         echo "  RabbitMQ: 未安装"
@@ -48,7 +49,7 @@ echo ""
     echo "  操作系统: $(uname -s) $(uname -r)"
     echo "  Java: $(java -version 2>&1 | head -1 || echo '未安装')"
     echo "  Python: $(python3 --version 2>&1 || echo '未安装')"
-    echo "  Docker: $(docker --version 2>&1 || echo '未安装')"
+    echo "  Docker: $($RT --version 2>&1 || echo '未安装')"
     echo ""
     
 } | tee "$OUTPUT_FILE"

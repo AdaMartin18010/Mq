@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列主题/队列清理脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -40,8 +41,8 @@ clean_rabbitmq_queues() {
         return 1
     fi
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl delete_queue "$PATTERN" 2>/dev/null
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl delete_queue "$PATTERN" 2>/dev/null
         echo "  ✅ Queue已删除: $PATTERN"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl delete_queue "$PATTERN" 2>/dev/null

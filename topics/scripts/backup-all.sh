@@ -1,5 +1,6 @@
 #!/bin/bash
 # 所有消息队列系统备份脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -34,8 +35,8 @@ backup_nats() {
 backup_rabbitmq() {
     echo "备份RabbitMQ..."
     
-    if docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq rabbitmqctl export_definitions "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null
+    if $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq rabbitmqctl export_definitions "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null
         echo "  ✅ RabbitMQ定义已备份"
     elif command -v rabbitmqctl &> /dev/null; then
         rabbitmqctl export_definitions "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null

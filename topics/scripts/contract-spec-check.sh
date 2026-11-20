@@ -24,6 +24,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# MSYS 路径（/c/ /e/）在 MSYS_NO_PATHCONV=1 下不被 Windows 原生 python3 识别 → cygpath 统一转换
+if command -v cygpath >/dev/null 2>&1; then
+  PROJECT_ROOT="$(cygpath -m "$PROJECT_ROOT")"
+  SERIES_DIR="$(cygpath -m "$SERIES_DIR")"
+fi
+
 SPECS=()
 for f in "$SERIES_DIR"/01-契约规格/specs/*.yaml; do
   [[ -f "$f" && "$(basename "$f")" != "contract.yaml" ]] && SPECS+=("$f")

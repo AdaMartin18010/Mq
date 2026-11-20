@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列指标收集脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -38,9 +39,9 @@ collect_nats_metrics() {
 collect_rabbitmq_metrics() {
     echo "RabbitMQ指标:"
     
-    if docker ps | grep -q rabbitmq; then
-        echo "  队列数: $(docker exec rabbitmq rabbitmqctl list_queues 2>/dev/null | wc -l)"
-        echo "  连接数: $(docker exec rabbitmq rabbitmqctl list_connections 2>/dev/null | wc -l)"
+    if $RT ps | grep -q rabbitmq; then
+        echo "  队列数: $($RT exec rabbitmq rabbitmqctl list_queues 2>/dev/null | wc -l)"
+        echo "  连接数: $($RT exec rabbitmq rabbitmqctl list_connections 2>/dev/null | wc -l)"
     elif command -v rabbitmqctl &> /dev/null; then
         echo "  队列数: $(rabbitmqctl list_queues 2>/dev/null | wc -l)"
         echo "  连接数: $(rabbitmqctl list_connections 2>/dev/null | wc -l)"

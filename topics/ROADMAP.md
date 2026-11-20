@@ -352,4 +352,10 @@
 | 163-165 挂账清零 | P1 双清零+WARN 清零+领域模板×3+Jepsen 用例 | ✅ 完成 |
 | 166 一致性入门禁 | consistency-audit=E0 第 9 步（九步门禁） | ✅ 完成 |
 
+**追加批次十二（2026-11-20 容器运行时迁移）**：
+
+| 批次 | 内容 | 状态 |
+| ------ | ------ | ------ |
+| 167 Docker→podman 迁移 | RT shim（podman 首选+docker 回退+MQ_RUNTIME 覆盖）入 5 核心脚本；3 层深死链修复×3；E0 五脚本 cygpath 注入（九步 9/9 绿）；6 compose 适配（kafka healthcheck→kafka-cluster.sh 29092/mongo→mongosh/microcks SPRING_MONGODB_URI 依 #2053/version 3.8 清除）；端到端证据链（3-broker healthy+Microcks health=200+H1 冒烟+game-day dry-run）；TEST-09/10/11/07 矩阵 README 运行时声明（324 卡等价替换不逐卡改） | ✅ 完成 |
+
 **剩余挂账（全部触发源驱动）**：hermes 执行全队列（H1-H6+TC-DESIGN+15 缺口+Jepsen 复现+L5/L6）/季度复核 2027-02/大版本窗口/@asyncapi/diff 安装（node 环境）/kg 规则 9-10（待内核）。

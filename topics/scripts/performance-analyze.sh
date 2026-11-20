@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列性能分析脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -57,13 +58,13 @@ analyze_nats() {
 analyze_rabbitmq() {
     echo "分析RabbitMQ性能..."
     
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         echo "1. 队列统计:"
-        docker exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | head -10
+        $RT exec rabbitmq rabbitmqctl list_queues name messages 2>/dev/null | head -10
         
         echo ""
         echo "2. 连接统计:"
-        docker exec rabbitmq rabbitmqctl list_connections 2>/dev/null | head -5
+        $RT exec rabbitmq rabbitmqctl list_connections 2>/dev/null | head -5
     elif command -v rabbitmqctl &> /dev/null; then
         echo "1. 队列统计:"
         rabbitmqctl list_queues name messages 2>/dev/null | head -10

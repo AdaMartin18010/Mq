@@ -31,6 +31,8 @@
 
 矩阵的降级口径：E1/E2 互斥——hermes 探测到哪种容器运行时可用即执行对应变体，另一列记 N/A；E3 缺失时整体 SKIP 并附原因，不转为 FAIL。
 
+**宿主默认（2026-11-20 实证）**：本机容器运行时 = Podman 6.1.4（WSL2 machine，/etc/subuid+subgid 已配 `user:1:524287` rootless uid 映射）；Docker Desktop 未启动 → **E1 为默认执行轨道，E2 记 N/A**。核心脚本（mq-smoke-test.sh、microcks-compose.sh、game-day.sh、tc-sem-05/07）统一使用运行时 shim `RT="${MQ_RUNTIME:-$(podman 优先、docker 回退)}"`，docker→podman 命令等价替换已通过端到端实测（6 compose config、5 镜像、3-broker 全 healthy、Microcks health=200）；用例卡中的 `docker` 命令按等价替换 `podman` 执行即可，无需逐卡改写。
+
 ## T.09.2 执行频率计划
 
 | 触发时机 | 环境 | 用例范围 | 通过门禁 |

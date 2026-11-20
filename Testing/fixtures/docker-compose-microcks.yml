@@ -14,8 +14,7 @@ services:
       mongo:
         condition: service_healthy
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/microcks
-      - JAVA_OPTIONS=-Dspring.data.mongodb.uri=mongodb://mongo:27017/microcks
+      - SPRING_MONGODB_URI=mongodb://mongo:27017/microcks   # Spring Boot 4 前缀（spring.mongodb.*；旧 SPRING_DATA_MONGODB_* 被忽略回落 localhost，microcks/microcks#2053 实证 2026-11-20）
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
       # 只读挂载场景包 spec 目录，供导入/校验
@@ -35,7 +34,7 @@ services:
     volumes:
       - microcks-mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand('ping')"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5

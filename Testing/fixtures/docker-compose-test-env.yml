@@ -5,8 +5,6 @@
 #   topics/config-templates/docker-compose-nats.yml
 #   topics/config-templates/docker-compose-rabbitmq.yml
 #   topics/config-templates/docker-compose-all.yml
-version: "3.8"
-
 services:
   # Kafka 单节点 KRaft 模式（apache/kafka 官方镜像 4.4.0——KIP-1191 Share Groups DLQ 解锁，2026-11 核实发布）
   kafka-test:
@@ -30,7 +28,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: ["CMD", "/opt/kafka/bin/kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "localhost:29092"]
       interval: 10s
       timeout: 5s
       retries: 6

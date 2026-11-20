@@ -52,8 +52,9 @@ ID 分配示例：
 - **前置条件**: 环境/工具/数据前提；无环境时如何 SKIP
 - **步骤**: 编号命令序列，可复制执行
   ```bash
-  # 示例
-  docker compose -f topics/config-templates/docker-compose-kafka.yml up -d
+  # 示例（运行时 shim：podman 优先、docker 回退，可用 MQ_RUNTIME 覆盖，见 TEST-09 宿主默认）
+  RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
+  "$RT" compose -f topics/config-templates/docker-compose-kafka.yml up -d
   ```
 - **预期输出**: 每步命令输出要点
 - **通过标准**: 量化判定，禁止"正常""无误"
@@ -98,13 +99,16 @@ START=$(date +%s)
 RESULT="PASS"
 EXIT_CODE=0
 
+# 运行时 shim：podman 优先、docker 回退（TEST-09 宿主默认；MQ_RUNTIME 可强制指定）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
+
 cleanup() {
-  docker compose -f topics/config-templates/docker-compose-kafka.yml down -v >/dev/null 2>&1 || true
+  "$RT" compose -f topics/config-templates/docker-compose-kafka.yml down -v >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
 # 环境预检
-if ! docker compose version >/dev/null 2>&1; then
+if ! "$RT" compose version >/dev/null 2>&1; then
   echo "RESULT: SKIP"
   echo "DURATION: $(( $(date +%s) - START ))"
   echo "EXIT_CODE: 2"

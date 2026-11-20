@@ -82,6 +82,8 @@ fi
 
 常见失败模式映射表：
 
+容器命令 podman/docker 等价（宿主默认 podman，见 TEST-09 宿主默认）；脚本化执行时用 `$RT` shim，表中 `docker` 替换为 `"$RT"` 即可。
+
 | 失败模式 | 快速诊断命令 | 修复动作 | 自愈级别 |
 | ---------- | -------------- | ---------- | ---------- |
 | 容器起不来 | `docker logs <container>`、`docker inspect --format='{{.State.Error}}' <container>` | 检查镜像拉取/compose 语法；清除残留后重跑 | L1 |
@@ -99,12 +101,13 @@ fi
 CASE_ID=$1
 ENV=$2
 LOG=results/$PLAN_ID/$ENV-$CASE_ID.log
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 diagnose_container() {
-  local c=$(docker ps -aqf "name=$CASE_ID" | head -1)
+  local c=$("$RT" ps -aqf "name=$CASE_ID" | head -1)
   if [[ -z "$c" ]]; then echo "NO_CONTAINER"; return; fi
-  docker inspect --format='{{.State.Status}}|{{.State.ExitCode}}|{{.State.Error}}' "$c"
-  docker logs --tail 50 "$c" >> "$LOG"
+  "$RT" inspect --format='{{.State.Status}}|{{.State.ExitCode}}|{{.State.Error}}' "$c"
+  "$RT" logs --tail 50 "$c" >> "$LOG"
 }
 
 diagnose_port() {
@@ -133,9 +136,10 @@ diagnose_container
 #!/bin/bash
 # hermes-fix-l1.sh —— 测试残留清理（仅在确认由本任务包创建时执行）
 PLAN_ID=$1
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 for label in "hermes.run=$PLAN_ID" "mq-test"; do
-  docker ps -qf "label=$label" | xargs -r docker rm -f
-  docker volume ls -qf "label=$label" | xargs -r docker volume rm -f
+  "$RT" ps -qf "label=$label" | xargs -r "$RT" rm -f
+  "$RT" volume ls -qf "label=$label" | xargs -r "$RT" volume rm -f
 done
 # 释放常见测试端口（确认无生产进程占用后）
 for port in 9092 4222 5672 15672; do
@@ -222,8 +226,8 @@ PLAN_ID=$1; ENV=$2; CASE_ID=$3
 BUNDLE="results/$PLAN_ID/$ENV-$CASE_ID.failbundle"
 mkdir -p "$BUNDLE"/{container-logs,resource-snapshot}
 
-# 容器日志（兼容 docker/podman）
-RUNTIME=${RUNTIME:-docker}
+# 容器日志（兼容 docker/podman，宿主默认 podman）
+RUNTIME=${RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}
 $RUNTIME ps -a --format '{{.Names}}' | grep -E "$CASE_ID|mq-test|hermes" | while read c; do
   $RUNTIME logs --tail 200 "$c" > "$BUNDLE/container-logs/$c.log" 2>&1 || true
 done

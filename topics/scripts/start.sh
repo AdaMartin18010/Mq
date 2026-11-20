@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列启动脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -41,10 +42,10 @@ start_nats() {
 
 start_rabbitmq() {
     echo "启动RabbitMQ..."
-    if command -v docker &> /dev/null; then
-        if ! docker ps | grep -q rabbitmq; then
-            docker start rabbitmq 2>/dev/null || \
-            docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 \
+    if [ -n "$RT" ] && command -v "$RT" &> /dev/null; then
+        if ! $RT ps | grep -q rabbitmq; then
+            $RT start rabbitmq 2>/dev/null || \
+            $RT run -d --name rabbitmq -p 5672:5672 -p 15672:15672 \
                 -e RABBITMQ_DEFAULT_USER=admin \
                 -e RABBITMQ_DEFAULT_PASS=admin \
                 rabbitmq:3-management
@@ -53,7 +54,7 @@ start_rabbitmq() {
             echo "ℹ️  RabbitMQ已在运行"
         fi
     else
-        echo "❌ 需要Docker或RabbitMQ Server"
+        echo "❌ 需要容器运行时（podman/docker）或RabbitMQ Server"
     fi
 }
 

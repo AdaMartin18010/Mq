@@ -1,5 +1,6 @@
 #!/bin/bash
 # 故障注入测试脚本（混沌工程）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 

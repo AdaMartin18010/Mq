@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息分区配置检查脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -33,8 +34,8 @@ check_partition_config() {
     
     echo ""
     echo "--- RabbitMQ分区 ---"
-    if docker ps | grep -q rabbitmq; then
-        QUEUES=$(docker exec rabbitmq rabbitmqctl list_queues name 2>/dev/null | \
+    if $RT ps | grep -q rabbitmq; then
+        QUEUES=$($RT exec rabbitmq rabbitmqctl list_queues name 2>/dev/null | \
             grep -E "partition|part-" | wc -l)
         echo "  分区队列数量: $QUEUES"
     elif command -v rabbitmqctl &> /dev/null; then

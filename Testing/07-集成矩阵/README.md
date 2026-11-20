@@ -40,6 +40,10 @@ registry: 由 matrix-registry 生成 test-registry.tsv 行（119 批自动化，
 - **场景包映射**（120 批）：Testing/06-03-业务场景 8 包的 invariants 是矩阵用例的断言输入——对应关系：订单/支付/库存→KAFKA 格；通知→RABBITMQ 格；IoT→MQTT 格；CDC→KAFKA-ORD/IDM 格；审计→PULSAR-PST 格；任务→NATS-RET/DLQ 格。全量自动映射脚本列入挂账（场景包增删时执行）
 - **转换链测试**：dsl-schema/binding-check/contract-to-odcs 的集成面在 transforms.tsv 四链定义
 
+## 五、运行时环境声明（2026-11-20）
+
+矩阵用例卡中的容器命令按 **podman/docker 等价替换**执行：宿主默认运行时 = Podman 6.1.4（WSL2 machine），Docker Desktop 未启动 → 用例卡内 `docker compose/exec/kill/pause/run` 一律以 `podman` 等价命令执行，**不逐卡改写**（324 条 TC-BUS 卡 + 矩阵卡共用本声明）。podman 兼容差异：`podman exec` 无 `--rm` 参数；`docker kill/pause` 语义与 podman 一致。环境与降级口径见 [TEST-09](../00-规范与计划/TEST-09-测试执行计划与环境矩阵.md) 宿主默认节。
+
 ---
 
-**最后更新**: 2026-11-18
+**最后更新**: 2026-11-20

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 所有消息队列系统恢复脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -50,8 +51,8 @@ restore_rabbitmq() {
     echo "恢复RabbitMQ..."
     
     if [ -f "$BACKUP_DIR/rabbitmq_definitions.json" ]; then
-        if docker ps | grep -q rabbitmq; then
-            docker exec -i rabbitmq rabbitmqctl import_definitions < "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null
+        if $RT ps | grep -q rabbitmq; then
+            $RT exec -i rabbitmq rabbitmqctl import_definitions < "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null
             echo "  ✅ RabbitMQ定义已恢复"
         elif command -v rabbitmqctl &> /dev/null; then
             rabbitmqctl import_definitions "$BACKUP_DIR/rabbitmq_definitions.json" 2>/dev/null

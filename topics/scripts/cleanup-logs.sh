@@ -1,5 +1,6 @@
 #!/bin/bash
 # 日志清理脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -39,8 +40,8 @@ cleanup_rabbitmq_logs() {
     if [ -d "/var/log/rabbitmq" ]; then
         find /var/log/rabbitmq -name "*.log" -type f -mtime +$RETENTION_DAYS -delete 2>/dev/null
         echo "  ✅ RabbitMQ日志已清理（保留${RETENTION_DAYS}天）"
-    elif docker ps | grep -q rabbitmq; then
-        docker exec rabbitmq find /var/log/rabbitmq -name "*.log" -type f -mtime +$RETENTION_DAYS -delete 2>/dev/null || true
+    elif $RT ps | grep -q rabbitmq; then
+        $RT exec rabbitmq find /var/log/rabbitmq -name "*.log" -type f -mtime +$RETENTION_DAYS -delete 2>/dev/null || true
         echo "  ✅ RabbitMQ日志已清理（保留${RETENTION_DAYS}天）"
     else
         echo "  ⚠️  未找到RabbitMQ日志"

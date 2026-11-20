@@ -1,5 +1,6 @@
 #!/bin/bash
 # 清理旧数据脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -43,7 +44,7 @@ cleanup_nats() {
 cleanup_rabbitmq() {
     echo "清理RabbitMQ旧数据..."
     
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         # 清理过期消息（需要配置TTL）
         echo "  ⚠️  需要配置队列TTL策略"
     else

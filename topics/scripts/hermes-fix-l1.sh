@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # hermes L1 级修复脚本（TEST-11 §T.11.3 实现）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 # 用途：清理本任务包创建的测试残留容器/卷，并在安全校验后释放测试端口。
 # 用法：hermes-fix-l1.sh PLAN_ID [--dry-run]
 # 权限：严格按 L1 白名单执行；所有动作写入 Testing/hermes-audit.log。
@@ -76,18 +77,18 @@ for label in "hermes.run=$PLAN_ID" "mq-test"; do
     if [[ "$RUNTIME" == "docker" ]]; then
       while IFS= read -r vol; do
         [[ -z "$vol" ]] && continue
-        if docker volume inspect "$vol" 2>/dev/null | grep -qE "\"$label\"|\"$PLAN_ID\""; then
+        if $RT volume inspect "$vol" 2>/dev/null | grep -qE "\"$label\"|\"$PLAN_ID\""; then
           if [[ "$DRY_RUN" -eq 1 ]]; then
-            echo "DRY_RUN: docker volume rm -f $vol"
+            echo "DRY_RUN: $RT volume rm -f $vol"
           else
-            docker volume rm -f "$vol" >/dev/null 2>&1 && {
+            $RT volume rm -f "$vol" >/dev/null 2>&1 && {
               echo "CLEANED_VOLUME: $vol"
               audit "L1" "leftover_volume" "volume rm -f $vol" "从 compose/backup 恢复卷数据"
               CLEANED=$((CLEANED + 1))
             } || echo "FAIL_VOLUME: $vol"
           fi
         fi
-      done < <(docker volume ls -q 2>/dev/null || true)
+      done < <($RT volume ls -q 2>/dev/null || true)
     elif [[ "$RUNTIME" == "podman" ]]; then
       while IFS= read -r vol; do
         [[ -z "$vol" ]] && continue

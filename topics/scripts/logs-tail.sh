@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息队列日志实时查看脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -24,14 +25,14 @@ tail_kafka_logs() {
 tail_nats_logs() {
     echo "NATS日志:"
     echo "  ⚠️  NATS日志通常输出到stdout/stderr"
-    echo "  使用: journalctl -u nats-server 或 docker logs <container>"
+    echo "  使用: journalctl -u nats-server 或 $RT logs <container>"
 }
 
 tail_rabbitmq_logs() {
     echo "RabbitMQ日志（最后${LINES}行）:"
     
-    if docker ps | grep -q rabbitmq; then
-        docker logs --tail $LINES rabbitmq 2>/dev/null || echo "  ⚠️  无法获取日志"
+    if $RT ps | grep -q rabbitmq; then
+        $RT logs --tail $LINES rabbitmq 2>/dev/null || echo "  ⚠️  无法获取日志"
     elif [ -f "/var/log/rabbitmq/rabbit@*.log" ]; then
         tail -n $LINES /var/log/rabbitmq/rabbit@*.log 2>/dev/null || echo "  ⚠️  未找到日志文件"
     else

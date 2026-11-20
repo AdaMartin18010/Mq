@@ -1,5 +1,6 @@
 #!/bin/bash
 # 消息存储备份脚本
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -34,12 +35,12 @@ backup_kafka() {
 backup_nats() {
     echo "备份NATS存储..."
     
-    if docker ps | grep -q nats; then
+    if $RT ps | grep -q nats; then
         BACKUP_FILE="$BACKUP_DIR/nats_${BACKUP_TYPE}_${DATE}.tar.gz"
         echo "  备份到: $BACKUP_FILE"
-        docker exec nats tar -czf /tmp/nats_backup.tar.gz /data 2>/dev/null || true
-        docker cp nats:/tmp/nats_backup.tar.gz "$BACKUP_FILE" 2>/dev/null || true
-        docker exec nats rm /tmp/nats_backup.tar.gz 2>/dev/null || true
+        $RT exec nats tar -czf /tmp/nats_backup.tar.gz /data 2>/dev/null || true
+        $RT cp nats:/tmp/nats_backup.tar.gz "$BACKUP_FILE" 2>/dev/null || true
+        $RT exec nats rm /tmp/nats_backup.tar.gz 2>/dev/null || true
         echo "  ✅ NATS备份完成"
     else
         echo "  ⚠️  NATS容器未运行"
@@ -49,12 +50,12 @@ backup_nats() {
 backup_rabbitmq() {
     echo "备份RabbitMQ存储..."
     
-    if docker ps | grep -q rabbitmq; then
+    if $RT ps | grep -q rabbitmq; then
         BACKUP_FILE="$BACKUP_DIR/rabbitmq_${BACKUP_TYPE}_${DATE}.tar.gz"
         echo "  备份到: $BACKUP_FILE"
-        docker exec rabbitmq tar -czf /tmp/rabbitmq_backup.tar.gz /var/lib/rabbitmq/mnesia 2>/dev/null || true
-        docker cp rabbitmq:/tmp/rabbitmq_backup.tar.gz "$BACKUP_FILE" 2>/dev/null || true
-        docker exec rabbitmq rm /tmp/rabbitmq_backup.tar.gz 2>/dev/null || true
+        $RT exec rabbitmq tar -czf /tmp/rabbitmq_backup.tar.gz /var/lib/rabbitmq/mnesia 2>/dev/null || true
+        $RT cp rabbitmq:/tmp/rabbitmq_backup.tar.gz "$BACKUP_FILE" 2>/dev/null || true
+        $RT exec rabbitmq rm /tmp/rabbitmq_backup.tar.gz 2>/dev/null || true
         echo "  ✅ RabbitMQ备份完成"
     elif command -v rabbitmqctl &> /dev/null; then
         RABBITMQ_DATA_DIR=$(rabbitmqctl environment 2>/dev/null | \

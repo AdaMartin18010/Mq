@@ -1,7 +1,5 @@
 # Docker Compose 所有消息队列系统配置示例
 
-version: '3.8'
-
 services:
   # Kafka
   zookeeper:

@@ -1,5 +1,6 @@
 #!/bin/bash
 # 健康仪表板脚本（实时显示所有系统状态）
+RT="${MQ_RUNTIME:-$(if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; fi)}"
 
 set -e
 
@@ -41,10 +42,10 @@ while true; do
     
     echo ""
     echo "--- RabbitMQ ---"
-    if docker ps | grep -q rabbitmq; then
-        if docker exec rabbitmq rabbitmqctl status &> /dev/null; then
+    if $RT ps | grep -q rabbitmq; then
+        if $RT exec rabbitmq rabbitmqctl status &> /dev/null; then
             echo "  状态: ✅ 运行中"
-            QUEUES=$(docker exec rabbitmq rabbitmqctl list_queues name 2>/dev/null | wc -l)
+            QUEUES=$($RT exec rabbitmq rabbitmqctl list_queues name 2>/dev/null | wc -l)
             echo "  队列数: $QUEUES"
         else
             echo "  状态: ❌ 状态异常"
