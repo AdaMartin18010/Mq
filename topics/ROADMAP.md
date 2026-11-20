@@ -363,5 +363,16 @@
 | 批次 | 内容 | 状态 |
 | ------ | ------ | ------ |
 | 168 WIP 收编+H2 销账 | 01-87~90 四页 TOC 子条目+表格空白（前一线机械残留）+HERMES-STATE 空白收编；H2 冒烟资产修复销账（批次167 六轮终验实证） | ✅ 完成 |
+| 169 H1 Microcks 收尾 | compose 增 async-minion+keycloak fixture；4 业务场景 spec 自包含导入（201）+8 服务登记+minion 接线；**6/6 场景契约测试全绿（9/9 用例 success，ASYNC_API_SCHEMA runner）**；根因链 4 项闭环（startOffset=0 / operations.messages+payload 标准化 / testEndpoint 字段名 / INTERNAL 29092） | ✅ 完成 |
+| 170 测试/运维 skill 梳理+自我改进 | AI_SKILL-07 梳理文档（28 项分类+核心 7 项逐项核对判定全可用）+新建 2 skill（microcks-async-contract-test / podman-wsl2-stability）+README 06/07 登记 | ✅ 完成 |
 
-**剩余挂账（全部触发源驱动）**：hermes 执行全队列（H1-H6+TC-DESIGN+15 缺口+Jepsen 复现+L5/L6）/季度复核 2027-02/大版本窗口/@asyncapi/diff 安装（node 环境）/kg 规则 9-10（待内核）。
+**追加批次十四（2026-11-20 用户确认，队列 171–174）**：
+
+| 批次 | 内容 | 状态 |
+| ------ | ------ | ------ |
+| 171 H3 GAME DAY | TC-CHA-01/02/03 三场景 dry-run（podman 轨道复验取证）+OPS 断言层核对+cases/ 首批入库（≥1 五段式）+nats cases 补强（A4）；`--live`=用户在场授权门（挂起） | ⬜ 队列 |
+| 172 H6 SEC 复扫 | 6 个 WARN 模板实机复扫（对照 14/0/0 基线）+evidence-index 随 verified 增量更新 | ⬜ 队列 |
+| 173 H4 基准首跑 | Kafka vs NATS 小规模（03-66 方法）→ benchmark 模板四元组 → L3 回灌审批单生成（用户签核门，挂起） | ⬜ 队列 |
+| 174 H5 周期常态化 | cron：nightly 冒烟 / weekly dry-run / E0 九步（task-packages 三 spec 在盘）；前置 H3/H6/H4 已满足 | ⬜ 队列 |
+
+**剩余挂账（全部触发源驱动）**：hermes 执行队列 171–174（上表）+P2 触发驱动（TC-DESIGN+15 缺口+Jepsen 复现+L5/L6）/季度复核 2027-02/大版本窗口（Kafka 5.x、AsyncAPI 3.1.0）/@asyncapi/diff 安装（node 环境）/kg 规则 9-10（待内核）。
