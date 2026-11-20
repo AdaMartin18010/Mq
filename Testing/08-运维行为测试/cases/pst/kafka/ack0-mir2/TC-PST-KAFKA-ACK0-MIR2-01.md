@@ -21,7 +21,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/pst/kafka/ack0-mir2/TC-PST-KAFKA-ACK0-MIR2-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-PST-KAFKA-ACK0-MIR2-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联

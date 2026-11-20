@@ -20,7 +20,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/kafka/rolling/TC-OPS-KAFKA-ROLLING-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-OPS-KAFKA-ROLLING-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联

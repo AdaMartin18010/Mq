@@ -21,7 +21,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/pst/redis/aof-rewrite/TC-PST-REDIS-AOF-REWRITE-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-PST-REDIS-AOF-REWRITE-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联

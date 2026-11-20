@@ -1,4 +1,4 @@
-# 运维行为目录（22 项 × 7 系统适用矩阵）
+# 运维行为目录（25 项 × 7 系统适用矩阵）
 # 列: code	category	name	applicability(逗号分隔系统,-=不适用)	inject(注入方式)	assert_style	src(行为依据)
 code	category	name	applicability	inject	assert_style	src
 DISKFULL	fault	磁盘满	KAFKA,RABBITMQ,NATS,PULSAR,ROCKETMQ,REDIS,MQTT	fallocate/大消息填充	日志关键字+写拒绝+恢复	03-68 §故障行为
@@ -19,7 +19,7 @@ DYNCONFIG	config	动态配置域	KAFKA,PULSAR,REDIS	alter config	动态 vs 需�
 INVALIDCFG	config	非法配置拒绝	全部	注入非法值	启动失败/拒绝+错误可读	03-68
 METARESTORE	restore	元数据恢复	KAFKA(KRaft快照),PULSAR(Oxia),NATS(流重建)	删元数据+恢复	快照/重建一致性	01-61/01-62
 LOGREPAIR	restore	日志修复	KAFKA,PULSAR(Bookie校验和)	截断段文件	恢复+坏段隔离	01-61
-QUOTA	quota	配额生效	KAFKA,P Produce/ Fetch 限速),PULSAR(资源组),REDIS(无配额-反向)	超限压测	限速可观测	01-61/03-68
+QUOTA	quota	配额生效	KAFKA(produce/fetch 限速),PULSAR(资源组),REDIS(无配额-反向)	超限压测	限速可观测	01-61/03-68
 CONNLIMIT	quota	连接数上限	全部	连接风暴	拒绝行为+恢复	03-68
 MSGSIZE	quota	消息大小上限	全部	超限消息	拒绝+错误码+边界值	01-72 §大小矩阵
 REBALPRODUCE	clientops	再平衡期间生产	KAFKA,RABBITMQ,PULSAR,NATS	消费组启停成员	生产不中断+重平衡时长	01-75/01-76 陷阱节

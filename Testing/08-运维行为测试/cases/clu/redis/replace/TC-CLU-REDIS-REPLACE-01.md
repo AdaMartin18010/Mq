@@ -21,7 +21,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/clu/redis/replace/TC-CLU-REDIS-REPLACE-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-CLU-REDIS-REPLACE-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联

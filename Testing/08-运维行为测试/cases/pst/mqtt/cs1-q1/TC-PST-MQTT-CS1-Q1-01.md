@@ -21,7 +21,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/pst/mqtt/cs1-q1/TC-PST-MQTT-CS1-Q1-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-PST-MQTT-CS1-Q1-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联

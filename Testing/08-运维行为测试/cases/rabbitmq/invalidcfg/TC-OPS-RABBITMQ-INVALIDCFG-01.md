@@ -19,7 +19,7 @@
 ## Dry-run 验证
 
 ```bash
-bash Testing/08-运维行为测试/cases/rabbitmq/invalidcfg/TC-OPS-RABBITMQ-INVALIDCFG-01.sh   # 计划打印（挂账）
+bash Testing/08-运维行为测试/cases/case-dryrun.sh TC-OPS-RABBITMQ-INVALIDCFG-01   # 计划打印（dry-run RC=0）
 ```
 
 ## 关联
