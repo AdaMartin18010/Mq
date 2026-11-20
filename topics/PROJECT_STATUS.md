@@ -23,7 +23,7 @@
 | **运维脚本** | 132 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线）；批次180/181 新增 spec-diff-check/tc-design-check（127→131）；批次183 新增 spec-validate-check（131→132 实地 find 核实） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1705** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（git ls-files 实测；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684）；2026-11-21 批次180/181：+18（批次176 H5 运行器+178/179 基准+180 asyncapi-tools 6 件），且 find 口径新增排除 node_modules（npm 依赖 gitignore 非 KB 内容），1684→1702；2026-11-21 批次183：+2（spec-validate.js/spec-validate-check.sh）→1705（git ls-files 实测；注：批次181 声明 1702 vs 批次183 核 HEAD 实测 1703 存在 +1 既有偏差，非本批引入） |
+| **总计** | **1704** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（consistency-audit find 实测口径；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684）；2026-11-21 批次180/181：+18（批次176 H5 运行器+178/179 基准+180 asyncapi-tools 6 件），且 find 口径新增排除 node_modules（npm 依赖 gitignore 非 KB 内容），1684→1702；2026-11-21 批次183/184：+2（spec-validate.js/spec-validate-check.sh），1702→1704（find 实测；注1：git ls-files=1705 系 .vscode×3 入 git 口径差，consistency 门以 find 为准；注2：find 口径含 2 个 gitignore 运行时产物 mq-bench.exe/__pycache__，系既有口径噪声非 KB 内容） |
 
 ### 各系列主题文件分布
 

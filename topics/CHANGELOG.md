@@ -10,6 +10,14 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.41.0] - 2026-11-21
+
+### [GOV] 批次184：spec-validate 入 E0 第十二步（十二步全量门禁 12/12 PASS RC=0）+ 门禁自身三缺陷修复
+
+**[GOV] 184** E0 门禁化：hermes-e0-run.sh 十一步→十二步（新增 E0-spec-validate：调 spec-validate-check.sh，16 spec 自动发现，RC=4 降级 SKIP，失败时打印 `"ok":false` 明细+汇总，node 缺失 SKIP）；**全量复跑 12/12 执行、12 PASS、RC=0**（results/2026-11-21/）；TC-DEP-16 既有夜巡 case 即 hermes-e0-run.sh 全量门，步骤 12 随其覆盖，不重复注册新 case（诚实口径：无新增用例）
+**[GOV] 184b** 门禁自身三缺陷修复（复跑真红暴露）：① **contract-spec-check.sh %2F 误报**——L1-L2 层检查器对 `operations[].channel.$ref` 做裸串比对，未解 RFC 6901 JSON pointer 转义，把官方 `%2F` 写法（AsyncAPI 解析器要求，批次183 已修 spec 侧）误判 OP_REF_DANGLING×4（pulsar/audit-trail 各 2）；修=比对前 `%7E`→`~`、`%2F`→`/` 解转义（spec 侧合规、检查器侧缺陷，双向实证：修复后 contract 14 spec PASS，且 unescape 不放过真悬挂——fixture 负向对照仍红）② **consistency 总数口径**——PROJECT_STATUS 批次183 误用 git ls-files 口径 1705（含 .vscode×3、漏 find 口径 2 个 gitignore 运行时产物 mq-bench.exe/__pycache__），consistency-audit 门以 find 实测为准=1704，总数回写 1704 并双注口径差；③ **hermes-e0-run.sh 步骤 1 返回码协议冲突**——step_doc_check 把错误数直接作返回码，"ERROR=2" 时 rc=2 撞 run_step 的 SKIP 保留码，步骤标签失真显示 SKIP（主计数器仍计 FAIL）；修=错误数>0 一律 return 1
+**[GOV] 184c** 禁词自引修复：DSL_ASYNCAPI_AUDIT 批次183 新增文本两处"100% 覆盖"触发 doc-self-check 禁用表述 ERROR×2（禁词规则=活文档禁完成度宣称），改"全量覆盖"；同节两处"未入 E0"过期声称随本批回写"批次184 已入 E0 第十二步"
+
 ## [3.40.0] - 2026-11-21
 
 ### [GOV] 批次183：L6 DSL schema 校验落地（spec-validate）+ 仓内 8 件 spec schema/$ref 缺陷修复 + 审计反转勘误

@@ -63,6 +63,9 @@ for oid, o in ops.items():
     ref = ((o or {}).get("channel") or {}).get("$ref", "")
     if ref and ref.startswith("#/channels/"):
         name = ref[len("#/channels/"):]
+        # RFC 6901 JSON pointer 解转义（批次184）：通道键含 / 时官方写法为 %2F，
+        # 未解转义会把合规 spec 误判 OP_REF_DANGLING（AsyncAPI 解析器要求 %2F）
+        name = name.replace("%7E", "~").replace("%2F", "/")
         if name not in chs: errs.append(f"OP_REF_DANGLING: {oid}->{name}")
 msgs = ((d.get("components") or {}).get("messages")) or {}
 # 外部 $ref 解析（批次163b）：contract.yaml#/... 引用须可解析

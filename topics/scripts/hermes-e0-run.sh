@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design → spec-diff（十一步，批次182）
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design → spec-diff → spec-validate（十二步，批次184）
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -16,12 +16,13 @@ HISTORY_LOG="Testing/self-check-history.log"
 usage() {
   cat <<'EOF'
 用法: hermes-e0-run.sh [--help]
-  执行 E0 静态验证十一步骤（doc-check/bash-syntax/registry/decision/spotcheck/
-  contract/tc-static/kg/consistency/tc-design/spec-diff），生成 results/<date>/E0-*.json/.log
+  执行 E0 静态验证十二步骤（doc-check/bash-syntax/registry/decision/spotcheck/
+  contract/tc-static/kg/consistency/tc-design/spec-diff/spec-validate），生成 results/<date>/E0-*.json/.log
   与 summary.md，并追加一行到 Testing/self-check-history.log。
   步骤 6 为契约 spec 校验（契约语义测试 L1-L2 层，批次71）。
   步骤 10 为 TC-DESIGN 用例族三向一致性（01-89 §1.89.5 挂账落地，批次181）。
   步骤 11 为 spec-diff 回归（L6 工具门禁化，批次182；node 缺失时 SKIP）。
+  步骤 12 为 spec-validate 全量 schema 校验（L6 工具门禁化，批次184；16 spec 自动发现，node 缺失时 SKIP）。
 EOF
 }
 
@@ -86,14 +87,17 @@ EOF
 # 步骤 1: doc-self-check quick
 step_doc_check() {
   local output
-  output=$("./topics/scripts/doc-self-check.sh" quick 2>&1)
+  output=$(./topics/scripts/doc-self-check.sh quick 2>&1)
   echo "$output"
   local errors warns
   errors=$(echo "$output" | grep -oE 'ERROR=[0-9]+' | tail -1 | cut -d= -f2)
   warns=$(echo "$output" | grep -oE 'WARN=[0-9]+' | tail -1 | cut -d= -f2)
   echo "EXTRACTED_ERRORS=${errors:-0}"
   echo "EXTRACTED_WARNS=${warns:-0}"
-  return "${errors:-0}"
+  # 批次184：错误数不得直接作返回码——rc=2 被 run_step 协议保留为 SKIP，
+  # "2 个错误"会被误显示为 SKIP（主计数器仍计 FAIL，但步骤标签失真）
+  if [[ -n "${errors:-}" && "$errors" -gt 0 ]]; then return 1; fi
+  return 0
 }
 
 # 步骤 2: 全量 bash -n
@@ -258,9 +262,32 @@ step_spec_diff() {
   return 0
 }
 
+# 步骤 12: spec-validate 全量 schema 校验（L6 工具门禁化，批次184；16 spec 自动发现）
+step_spec_validate() {
+  if ! command -v node >/dev/null 2>&1; then
+    echo "SKIP: node 未安装（spec-validate 需 node 环境）"
+    return 2
+  fi
+  local out rc=0
+  out="$(./topics/scripts/spec-validate-check.sh 2>&1)"; rc=$?
+  if [ "$rc" -eq 4 ]; then
+    echo "SKIP: spec-validate 降级（node 缺失，RC=4）"
+    return 2
+  fi
+  if [ "$rc" -ne 0 ]; then
+    printf '%s\n' "$out" | grep -E '"ok":false|汇总' | head -5
+    echo "FAIL: spec-validate RC=$rc（存在 schema 缺陷）"
+    return 1
+  fi
+  local n
+  n="$(printf '%s\n' "$out" | grep -oE '[0-9]+/[0-9]+ 通过' | head -1)"
+  echo "PASS: spec-validate 全量 schema 校验 ${n:-16/16}（L6 工具门禁化正常）"
+  return 0
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=11
+  local pass=0 fail=0 skip=0 total=12
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -337,6 +364,17 @@ main() {
     fail=$((fail + 1))
   fi
 
+  # 步骤 12
+  run_step "E0-spec-validate" "spec-validate 全量 schema 校验（16 spec）" step_spec_validate
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then
+    pass=$((pass + 1))
+  elif [[ $step_rc -eq 2 ]]; then
+    skip=$((skip + 1))
+  else
+    fail=$((fail + 1))
+  fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -354,7 +392,7 @@ main() {
 执行率: $total/$total ($exec_rate%)
 通过率: $pass/$total ($pass_rate%)
 缺口率: $fail/$total ($gap_rate%)
-- SKIP: $skip（步骤 5/11 在依赖缺失时可 SKIP，其余步骤须全执行）
+- SKIP: $skip（步骤 5/11/12 在依赖缺失时可 SKIP，其余步骤须全执行）
 
 | 步骤 | 结果 | 日志 |
 |------|------|------|
@@ -369,6 +407,7 @@ main() {
 | E0-consistency | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-consistency.log" | cut -d' ' -f2) | results/$DATE/E0-consistency.log |
 | E0-tc-design | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-design.log" | cut -d' ' -f2) | results/$DATE/E0-tc-design.log |
 | E0-spec-diff | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spec-diff.log" | cut -d' ' -f2) | results/$DATE/E0-spec-diff.log |
+| E0-spec-validate | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spec-validate.log" | cut -d' ' -f2) | results/$DATE/E0-spec-validate.log |
 EOF
 
   # 追加 history log
