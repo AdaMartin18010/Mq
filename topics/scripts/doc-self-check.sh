@@ -48,7 +48,7 @@ while IFS= read -r f; do
     link_dec="${link//%20/ }"
     [ -e "$d/$link_dec" ] || err "死链: $f -> $link"
   done < <(grep -oE '\]\(([^)[:space:]]+\.md)(#[^)]*)?\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//; s/#.*$//')
-done < <(find topics AI_Skills Testing -type f -name '*.md'; echo README.md)
+done < <(find topics AI_Skills Testing -type f -name '*.md' -not -path '*/node_modules/*'; echo README.md)
 
 # ---------- 4. 定位声明 (ERROR, 02/03 系列主题文档，README 除外) ----------
 for f in topics/0[23]-*/*.md; do
@@ -61,7 +61,7 @@ done
 # 注意：FNR==1 重置 fence 状态（多文件 awk 状态不跨文件泄漏）
 while IFS= read -r line; do
   warn "代码块缺语言标注: $line"
-done < <(find topics AI_Skills Testing -type f -name '*.md' -exec awk 'FNR==1{infence=0} /^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
+done < <(find topics AI_Skills Testing -type f -name '*.md' -not -path '*/node_modules/*' -exec awk 'FNR==1{infence=0} /^```/{ if (!infence && $0=="```") print FILENAME":"FNR; infence=!infence }' {} + 2>/dev/null)
 
 # ---------- 6. 最后更新日期 (WARN) ----------
 for f in topics/0[1-4]-*/*.md AI_Skills/*.md Testing/*/*.md; do

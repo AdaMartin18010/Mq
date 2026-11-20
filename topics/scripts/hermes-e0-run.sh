@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency（九步）
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design（十步，批次181）
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -16,9 +16,11 @@ HISTORY_LOG="Testing/self-check-history.log"
 usage() {
   cat <<'EOF'
 用法: hermes-e0-run.sh [--help]
-  执行 E0 静态验证六步骤，生成 results/<date>/E0-*.json/.log 与 summary.md，
-  并追加一行到 Testing/self-check-history.log。
+  执行 E0 静态验证十步骤（doc-check/bash-syntax/registry/decision/spotcheck/
+  contract/tc-static/kg/consistency/tc-design），生成 results/<date>/E0-*.json/.log
+  与 summary.md，并追加一行到 Testing/self-check-history.log。
   步骤 6 为契约 spec 校验（契约语义测试 L1-L2 层，批次71）。
+  步骤 10 为 TC-DESIGN 用例族三向一致性（01-89 §1.89.5 挂账落地，批次181）。
 EOF
 }
 
@@ -218,9 +220,14 @@ step_consistency() {
   python3 "./topics/scripts/consistency-audit.py"
 }
 
+# 步骤 10: TC-DESIGN 用例族三向一致性（01-89 §1.89.5 挂账落地，批次181）
+step_tc_design() {
+  "./topics/scripts/tc-design-check.sh"
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=9
+  local pass=0 fail=0 skip=0 total=10
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -281,6 +288,11 @@ main() {
   step_rc=$?
   if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
 
+  # 步骤 10
+  run_step "E0-tc-design" "tc-design-check TC-DESIGN 用例族三向一致性" step_tc_design
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -311,6 +323,7 @@ main() {
 | E0-tc-static | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-static.log" | cut -d' ' -f2) | results/$DATE/E0-tc-static.log |
 | E0-kg | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-kg.log" | cut -d' ' -f2) | results/$DATE/E0-kg.log |
 | E0-consistency | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-consistency.log" | cut -d' ' -f2) | results/$DATE/E0-consistency.log |
+| E0-tc-design | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-design.log" | cut -d' ' -f2) | results/$DATE/E0-tc-design.log |
 EOF
 
   # 追加 history log

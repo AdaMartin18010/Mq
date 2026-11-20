@@ -10,6 +10,15 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.38.0] - 2026-11-21
+
+### [GOV] 批次176-181：H5 运行器常态化+NATS/RabbitMQ 基准解锁+L6 spec 版本差分工具+TC-DESIGN 三向一致性入门禁
+
+**[GOV] 176** H5 周期常态化：hermes-task-run.sh 权威运行器（precheck 一次 RC0/2 放行 3 阻塞→逐案 900s timeout→results/<pkg>-<执行日>/ 逐案 JSON+SUMMARY）+ cron 双任务（nightly 0 3 * * * / weekly 周一）；实跑 nightly 8/8 PASS
+**[GOV] 178/179** 基准解锁实测：NATS（q178）+ RabbitMQ 3.13.7（q179：1KB×10k/s×60s QoS500 稳态 p50=0.65ms/p99=6.3ms/p99.9=7.3ms；首版 harness 采样停摆缺陷修复+作废数据披露）；回灌 KB=L3 用户签核门
+**[GOV] 180** L6 spec 版本差分工具：Testing/asyncapi-tools（@asyncapi/diff 0.6.1 钉版）+spec-diff.js 库封装（无 CLI，diff() 同步 DiffResult，breaking/nonBreaking/unclassified 三分，RC 0/1/2/3）+topics/scripts/spec-diff-check.sh（node 缺失 RC=4 降级/首跑自动 install/cygpath 归一）+breaking fixture；双向实证=fixture 检出 breaking=3 RC=1 / self-diff RC=0
+**[GOV] 181** TC-DESIGN 三向一致性：topics/scripts/tc-design-check.sh（§1.89.2 表 11 种子行↔注册表 11 行↔design-review case 文件 11 件，C1 一一对应/C2 种子=注册/C3 结构/C4 规则源/C5 标题）；**入 E0 第十步**（hermes-e0-run.sh 九步→十步，E0 10/10 PASS RC=0）；变异测试=造假文件 3 项 FAIL 正确检出；node_modules 扫描排除入 doc-self-check/consistency-audit（gitignore 依赖非 KB 内容）；PROJECT_STATUS 总计 1684→1702/运维脚本 127→131
+
 ## [3.37.0] - 2026-11-18
 
 ### [GOV] 批次158-166：设计评审用例+图谱推理实施+知识元查询+挂账大规模清零+一致性入门禁

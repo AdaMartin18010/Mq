@@ -20,10 +20,10 @@
 | **元文档** | 27 | topics根目录（INDEX/ROADMAP/CHANGELOG/STATUS/GLOSSARY/LEARNING_PATH/MCP_EXPORT_ASSESSMENT/QUICK_* 等，不含 topics/README.md） |
 | **代码示例** | 53 | Python/Go/Rust/C++/C/Java + AsyncAPI 生成风格示例 |
 | **配置模板** | 69 | 服务器/客户端、Prometheus/Grafana、Docker Compose、AsyncAPI 契约、KEDA 与告警规则集、事件契约六模板（批次31/37） |
-| **运维脚本** | 127 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线） |
+| **运维脚本** | 131 | 含 scripts/README；五校验 + hermes 七件套 + contract 四校验 + sec-baseline-scan（安全基线）；批次180/181 新增 spec-diff-check/tc-design-check（127→131 实地 find 核实） |
 | **Agent Skills** | 17 文件 | AI_Skills/skills/ 七个技能（SKILL.md + references/scripts，结构回放 7/7） |
 | **原始概念** | 6 | concept/concept01~06（历史资产，映射表见 topics/README.md） |
-| **总计** | **1684** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684） |
+| **总计** | **1702** | 含顶层README、AGENTS.md、LICENSE；不含 .git/.vscode（实地 find 核实；108 已对口账：主题 257 闭合，总计含 results/ 产物）# 口径：不含 results/ 运行时产物（2026-11-20 批次167：+1 podman-migration-evidence.md，1683→1684）；2026-11-21 批次180/181：+18（批次176 H5 运行器+178/179 基准+180 asyncapi-tools 6 件），且 find 口径新增排除 node_modules（npm 依赖 gitignore 非 KB 内容），1684→1702 |
 
 ### 各系列主题文件分布
 
