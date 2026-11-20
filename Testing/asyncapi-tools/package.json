@@ -1,0 +1,9 @@
+{
+  "name": "mq-asyncapi-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AsyncAPI tooling for L6 (spec diff / breaking-change detection)",
+  "dependencies": {
+    "@asyncapi/diff": "0.6.1"
+  }
+}
