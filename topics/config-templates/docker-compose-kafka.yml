@@ -3,6 +3,14 @@
 #   Kafka 4.0 起移除 ZooKeeper 模式，cp-kafka:latest 强制 KRaft（缺 KAFKA_PROCESS_ROLES 即启动失败）。
 #   改为 apache/kafka:4.4.0 单镜像 KRaft（与 Testing/fixtures/docker-compose-test-env.yml 同口径）。
 #   三节点 broker+controller 混合部署，quorum=3；宿主端口语义不变（9092/9093/9094）。
+# 监听器语义（2026-11-20 批次174/175 实证）：
+#   - 宿主客户端 → localhost:909X（EXTERNAL，宿主端口映射，宿主内 localhost 可达各容器）
+#   - 网内客户端 → kafka-N:29092（INTERNAL，容器 DNS；引导经 INTERNAL 时集群视图完整）
+#   - EXTERNAL advertised 为 localhost:909X 是宿主视角语义：容器内客户端经 EXTERNAL 引导
+#     时会将其他节点解析到自身 localhost（9093/9094 容器内不可达）→ 集群视图残缺。
+#     故 healthcheck 一律用 INTERNAL 引导（各节点自身名），否则 api-versions 对 2/3 节点
+#     报 ERROR → unhealthy（批次173 观察到的'3 独立单节点/unhealthy'即此根因；
+#     INTERNAL 路径复制实测正常：RF=3 全分区 ISR=3）。
 services:
   kafka-1:
     image: apache/kafka:4.4.0
@@ -23,7 +31,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "kafka-1:29092"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -47,7 +55,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "kafka-2:29092"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -71,7 +79,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD", "/opt/kafka/bin/kafka-cluster.sh", "api-versions", "--bootstrap-server", "kafka-3:29092"]
       interval: 10s
       timeout: 5s
       retries: 12

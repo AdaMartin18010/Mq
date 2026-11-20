@@ -156,6 +156,8 @@ Mq/
 
 - ✅ 批次174 H5 周期常态化（2026-11-20）：冒烟测试四系统全绿 **PASS=4 FAIL=0 SKIP=0 RC=0**（kafka/nats/rabbitmq/redis，单轮约 6 分钟，kafka KRaft 冷启约 3 分钟占主体）；四项修复：① 宿主 nats CLI 缺失→`go install` v0.5.2（C:/Users/luyan/go/bin，PATH 内）② nats 模板 compose 与 `nats:latest` 实为 **nats-server v2.15.3** 不兼容→每节点补 `--name`（server_name 硬要求）+`--cluster_name`（集群名硬要求；`-s`/`-c` 短形式实测无效=客户端标志/配置文件标志）③ nats 就绪等待 `sleep 3`→`nats stream ls` 轮询 60s 上限（三节点组建窗口）④ WSL2/podman 宿主端口转发对 rabbit mgmt HTTP 失效（TCP 握手成功但 Empty reply，三轮复现）→脚本 `rq()` 访问器=宿主 curl 优先+容器网络命名空间 curl sidecar 回退；副作用：长驻证据栈停止（自包含冒烟与长驻栈端口互斥，9092/4222/5672/15672）+**NATS 基准解锁**（批次173 队列176 前提已消，仍受 L3 审批门约束）；证据 results/2026-11-20/h5-smoke-normalization-evidence.md
 
+- ✅ 批次175 队列175 Kafka 拓扑核查+healthcheck 修复（2026-11-20）：核查结论=**拓扑本身正常**（KRaft quorum=3 容器 DNS 互联；RF=3 全 3 分区 ISR=3 实证；网内 INTERNAL 引导集群视图 3 节点全 OK）→ 批次173 "3 独立单节点"描述**失实已更正**；真实缺陷=healthcheck 经 EXTERNAL（localhost:9092）引导时 AdminClient 将 2/3 节点解析到容器自身 localhost（9093/9094 仅宿主可达）→ api-versions ERROR → 3 节点 healthcheck 恒 unhealthy；修复=docker-compose-kafka.yml 三处 healthcheck 改 INTERNAL 引导（kafka-N:29092）+头部双监听语义注释；终验=重建栈 3/3 healthy + 冒烟 PASS（干净宿主）+宿主 9092/9093/9094 全 open；L3 审批单 A4 项标注已完成（联邦口径基线重采=后续可执行项随 A1）；证据 results/2026-11-20/q175-kafka-topology-evidence.md
+
 ### 7.2 AI 代理协作协议
 
 > **执行分工（2026-11-18 起，K6）**：执行类工作（容器测试/周期任务/资产修复）移交 hermes 自治推进（队列见 topics/KB_DIVISION.md §2）；主控负责规划/治理/审计/知识梳理；用户负责背书与裁决。hermes 产物须经 results/ 佐证+registry 流转，主控抽审可回放。
