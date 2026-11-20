@@ -11,13 +11,13 @@
 
 ## 当前在域
 
-（hermes 执行时填写，如：Testing/08/cases/nats/ — A4 GAME DAY 准备）
+（空——H1 已闭环，批次169 提交后无在域）
 
 ## 队列进度（H1-H6）
 
 | 项 | 状态 | 产物路径 | 完成时间 |
 | ---- | ------ | ---------- | ---------- |
-| H1 A3 Microcks 收尾 | ⬜ 未开始 | — | — |
+| H1 A3 Microcks 收尾 | ✅ 完成（批次169：4 spec 自包含导入+async-minion 接线+6/6 场景契约测试全绿 9/9 用例，根因链 4 项闭环） | results/2026-11-20/h1-microcks-evidence.md | 2026-11-20 |
 | H2 冒烟资产修复 | ✅ 完成（批次167 六轮冒烟终验 PASS=3/FAIL=0/SKIP=1，2026-11-20） | results/2026-11-20/podman-migration-evidence.md §5 | 2026-11-20 |
 | H3 GAME DAY+cases | ⬜ | — | — |
 | H4 基准首跑+L3 审批单 | ⬜ | — | — |

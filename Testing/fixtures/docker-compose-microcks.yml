@@ -1,7 +1,14 @@
-# Microcks 契约行为验证环境（批次 78）
+# Microcks 契约行为验证环境（批次 78；批次169 升级 2.x 安全面；批次169-H1 补 async-minion）
 # 用途：对 Testing/06-契约语义测试/03-业务场景/ 的 8 个 AsyncAPI spec 提供 mock + contract test（CNCF Incubating）
-# 启动：docker compose -f Testing/fixtures/docker-compose-microcks.yml up -d
-# 注意：镜像 tag 首次实跑时以 quay.io/microcks/microcks 官方最新为准（时效纪律）
+# 启动：先起 Kafka 栈（topics/config-templates/docker-compose-kafka.yml），再
+#       podman compose -f Testing/fixtures/docker-compose-microcks.yml up -d
+# 2.x 安全面（批次169 实证 2026-11-20）：API 重组（/api/services 族+JWT Bearer），
+#   认证=Keycloak realm "microcks"。官方 install/docker-compose 三通道分离：
+#   KEYCLOAK_URL（容器内 DNS 控制面）/ ISSUER_URI（token issuer，--hostname 锚定）/ JWK_SET_URI（容器内 DNS 拉签名键）
+# async 面（批次169-H1 实证 2026-11-20）：ASYNC_API_SCHEMA 测试由 app 分派到 async-minion 运行时
+#   （app.jar: async-minion.url=${ASYNC_MINION_URL:http://localhost:8081}，官方 async-addon 同款接线）；
+#   minion 与 app 同接 Kafka KRaft 栈网络（config-templates_default），spec server 用 INTERNAL 监听
+#   kafka-N:29092（容器内可解析；EXTERNAL 的 advertised localhost:909x 仅宿主可达）
 name: mq-microcks
 
 services:
@@ -11,11 +18,22 @@ services:
     ports:
       - "8580:8080"            # Web UI + API
     depends_on:
+      keycloak:
+        condition: service_healthy
       mongo:
         condition: service_healthy
     environment:
       - SPRING_MONGODB_URI=mongodb://mongo:27017/microcks   # Spring Boot 4 前缀（spring.mongodb.*；旧 SPRING_DATA_MONGODB_* 被忽略回落 localhost，microcks/microcks#2053 实证 2026-11-20）
       - SPRING_PROFILES_ACTIVE=prod
+      - KEYCLOAK_URL=http://keycloak:8080                    # 容器内 DNS 控制面（官方 compose 同款）
+      - KEYCLOAK_PUBLIC_URL=http://localhost:18080           # 公网重定向面
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/realms/microcks   # token issuer 期望值（keycloak --hostname 锚定）
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/microcks/protocol/openid-connect/certs   # 容器内拉签名键（绕开容器内 localhost 不可达）
+      - ASYNC_MINION_URL=http://mq-microcks-async-minion:8081   # ASYNC_API_SCHEMA 测试分派目标（app.jar 默认 localhost:8081 容器内不可达）
+      - KAFKA_BOOTSTRAP_SERVER=kafka-1:29092,kafka-2:29092,kafka-3:29092   # 内部事件总线（INTERNAL 监听；EXTERNAL localhost:909x 仅宿主可达）
+    networks:
+      - mq-microcks_default
+      - config-templates_default
     volumes:
       # 只读挂载场景包 spec 目录，供导入/校验
       - ../..:/workspace:ro
@@ -24,6 +42,60 @@ services:
       interval: 15s
       timeout: 5s
       retries: 10
+    labels:
+      - "hermes.run=microcks"
+      - "mq-test=contract"
+
+  # 异步运行时（批次169 H1, 官方 async-addon 形态）：
+  # 消费 microcks-asyncapi-triggers 触发主题, 经 KAFKA binding 向测试 Kafka 发送并回调 app 记录断言。
+  # 容器名 mq-microcks-async-minion 固定（app 的 ASYNC_MINION_URL 与宿主端口 8581 依赖它）。
+  async-minion:
+    image: quay.io/microcks/microcks-async-minion:1.15.0
+    container_name: mq-microcks-async-minion
+    ports:
+      - "8581:8081"
+    environment:
+      - QUARKUS_PROFILE=docker-compose
+      # Java 24 基座（镜像 1.15.0 重打）: jboss-threads ThreadAccess 需 add-opens, 否则 executor
+      # 线程 ExceptionInInitializerError 崩溃（IllegalAccessError: java.base 未 open java.lang）,
+      # 测试分派 HTTP 请求无法处理（批次169 H1 实证 2026-11-20: 4 测试恒 inProgress）
+      - JAVA_OPTIONS=--add-opens java.base/java.lang=ALL-UNNAMED
+    volumes:
+      # 连接器地址 + 3 处 Kafka bootstrap 覆盖（Quarkus runner jar 自动加载 /deployments/config）
+      - ./microcks-config:/deployments/config:ro
+    networks:
+      - mq-microcks_default
+      - config-templates_default
+    depends_on:
+      microcks:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/q/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    labels:
+      - "hermes.run=microcks"
+      - "mq-test=contract"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0   # 官方 install/docker-compose 同款（vanilla Keycloak，realm 走 --import-realm）
+    container_name: mq-microcks-keycloak
+    ports:
+      - "18080:8080"           # admin+token（issuer 锚定 localhost:18080，官方默认口）
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./keycloak/microcks-realm-sample.json:/opt/keycloak/data/import/microcks-realm.json:ro
+    command: ["start-dev", "--hostname=http://localhost:18080", "--import-realm", "--health-enabled=true"]
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo -e 'GET /health/live HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n' > /dev/tcp/localhost/9000"]
+      start_period: 10s
+      interval: 10s
+      timeout: 2s
+      retries: 30
     labels:
       - "hermes.run=microcks"
       - "mq-test=contract"
@@ -40,6 +112,15 @@ services:
       retries: 5
     labels:
       - "hermes.run=microcks"
+
+networks:
+  mq-microcks_default:
+    name: mq-microcks_default
+  # 外部网络: 由 topics/config-templates/docker-compose-kafka.yml 创建（批次169 H1）,
+  # 使 app/minion 可解析 kafka-1/2/3:29092
+  config-templates_default:
+    name: config-templates_default
+    external: true
 
 volumes:
   microcks-mongo-data:

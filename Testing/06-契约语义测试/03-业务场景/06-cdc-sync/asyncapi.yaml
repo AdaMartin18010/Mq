@@ -6,7 +6,7 @@ info:
   description: 数据变更捕获事件流（envelope 复用 cdc-debezium-event-template.yaml；x-semantics 标注引用 TEST-14）
 servers:
   prod-kafka:
-    host: 'kafka:9092'
+    host: 'kafka-1:29092,kafka-2:29092,kafka-3:29092'   # INTERNAL 监听（批次169-H1；EXTERNAL localhost:9092 仅宿主可达）
     protocol: kafka
 channels:
   cdc.inventory.customers:
