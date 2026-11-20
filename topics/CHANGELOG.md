@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.40.0] - 2026-11-21
+
+### [GOV] 批次183：L6 DSL schema 校验落地（spec-validate）+ 仓内 8 件 spec schema/$ref 缺陷修复 + 审计反转勘误
+
+**[GOV] 183** L6 门禁工具：`Testing/asyncapi-tools/spec-validate.js`（@asyncapi/parser 3.6.6 封装，`new Parser()`+`fromFile` API，severity error=fail / warning·info 仅上报）+ `topics/scripts/spec-validate-check.sh`（git ls-files 自动发现 16 spec，node 缺失 RC=4 降级，cygpath -m 归一 Windows 路径）；**双向实证**：修复后 16/16 全绿 RC=0 + 注入坏 $ref 负向对照 RC=1 检出；**同批修复 8 件 spec 真实缺陷**：① 坏 $ref×4 处（pulsar `orders/order-events`、audit-trail `audit/records` 通道键含 `/` 未做 JSON pointer `%2F` 转义）② `replicationFactor` 非官方字段×3 件（kafka binding 0.3.0/0.4.0/0.5.0 官方字段集均为 topic/partitions/replicas/topicConfiguration/bindingVersion，parser 内置 schema 实证）③ skeleton `cleanup.policy: delete` 非数组→`[delete]` ④ amqp-example routingKey 分支误带 queue（官方 oneOf 分支互斥：routingKey 禁 queue）⑤ inventory kafka binding 缩进错位（partitions 落 channel 根）
+**[GOV] 183b** 审计勘误：DSL_ASYNCAPI_AUDIT 两处方向颠倒声称更正（原称 skeleton 用"非官方 replicas 而非 replicationFactor"——实为反向，`replicas` 为全版本官方字段，真正违规=3 件 spec 用 `replicationFactor`），勘误落 L2/L3 缺口节+缺口优先级表+补齐路线图四处，批次183 实录节入关键审计发现
+
 ## [3.39.0] - 2026-11-21
 
 ### [GOV] 批次182：spec 版本差分入 E0 第十一步+E0 全量静态门入 nightly 任务包

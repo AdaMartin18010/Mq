@@ -43,11 +43,11 @@ operations:
   publishOrderEvent:
     action: send
     channel:
-      $ref: '#/channels/orders/order-events'
+      $ref: '#/channels/orders%2Forder-events'
   subscribeOrderEvents:
     action: receive
     channel:
-      $ref: '#/channels/orders/order-events'
+      $ref: '#/channels/orders%2Forder-events'
     x-pulsar-subscription:
       name: order-service-sub
       type: Key_Shared               # 按键有序+并行（01-62/02-27 顺序性设计衔接）

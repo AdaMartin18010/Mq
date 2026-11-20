@@ -24,14 +24,11 @@ channels:
         $ref: '#/components/messages/OrderNotification'
     bindings:
       amqp:
-        is: routingKey                 # 本 channel 以 routingKey 寻址（v0.3.0）
+        is: routingKey                 # 本 channel 以 routingKey 寻址（v0.3.0；routingKey 分支禁 queue，消费方私有队列由订阅方声明）
         exchange:
           name: orders.events
           type: topic                  # topic 交换器（02-14 路由模式衔接）
           durable: true
-        queue:
-          name: ''                     # fan-out 时留空，由消费方声明私有队列
-          durable: false
   orders.notifications.dlq:
     address: orders.notifications.dlq
     messages:

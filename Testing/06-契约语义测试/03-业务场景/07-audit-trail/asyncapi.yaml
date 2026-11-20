@@ -24,11 +24,11 @@ channels:
 operations:
   appendAuditRecord:
     action: send
-    channel: { $ref: '#/channels/audit/records' }
+    channel: { $ref: '#/channels/audit%2Frecords' }
     x-semantics: [持久化, 顺序性, 交付语义]
   replayAuditChain:
     action: receive
-    channel: { $ref: '#/channels/audit/records' }
+    channel: { $ref: '#/channels/audit%2Frecords' }
     x-semantics: [顺序性, 持久化]
 components:
   messages:

@@ -23,7 +23,7 @@ channels:
       kafka:
         bindingVersion: '0.5.0'
         partitions: 3        # 与 02-27 分区设计衔接
-        replicationFactor: 3 # 与 03-16 基线衔接
+        replicas: 3        # 与 03-16 基线衔接
   orders.order.dlq:
     address: orders.order.dlq
     messages:
