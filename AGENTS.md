@@ -148,6 +148,7 @@ Mq/
 - ✅ 批次146-151 概念体系 2.0（2026-11-18，回应"概念梳理敷衍无理论层次"批评）：五层理论塔+266 篇逐层归档/七大论证型+270 篇标注（定理上限仅 4 篇）/关系七型 10 机推规则/四模型族适用律/导读理论塔导航/kg rules 3→10+无环校验——concept/ 从读书笔记升格为**论证元理论**
 - ✅ 批次152-157 AsyncAPI 纵深六批（2026-11-18，回应全面梳理批评）：构件本体+kg 173 节点/规范族六层符合性栈/转换规则全集/构件论证模板/技术栈全景 14 版本实测/契约设计规范 v1——AsyncAPI 域形成本体→符合性→转换→论证→工具→规范完整纵深
 - ✅ 批次167 容器运行时 Docker→podman 迁移（2026-11-20）：RT shim（podman 首选+docker 回退+MQ_RUNTIME 覆盖）入 5 核心脚本（mq-smoke-test/microcks-compose/game-day/tc-sem-05/07）+3 层深死链修复×3（microcks ROOT、tc-sem-05/07 precheck）+E0 五脚本 cygpath 注入（YAML_PARSE_FAIL×14 修复，E0 九步 9/9 绿）+6 compose 适配（kafka healthcheck→kafka-cluster.sh 29092、mongo healthcheck→mongosh、microcks SPRING_MONGODB_URI 依 microcks/microcks#2053 定案、version 3.8 废弃行清除）+kafka 模板 Confluent ZK→KRaft 重写（apache/kafka:4.4.0 三节点，cp-kafka KRaft-only 实证，既有模板缺陷）+/opt/kafka/bin 全路径修正（镜像 PATH 缺陷）+冒烟 29092 INTERNAL 引导+240s KRaft 冷启窗口+rabbitmq messages_ready 兼容+quorum 收敛轮询+**T6 批量波 54 脚本 $RT 化**（128/128 bash -n 全绿、残留裸 docker 命令行 0）+端到端证据链（3-broker 全 healthy、Microcks health=200、H1 六轮冒烟终验 PASS=3/FAIL=0/SKIP=1[nats 宿主无 CLI 按设计]、game-day dry-run RC=0）+TEST-09/10/11/07 矩阵 README 四项运行时声明——**E1 podman 轨道为宿主默认，E2 docker 回退**
+- ✅ 批次168 WIP 一致性收编+H2 销账（2026-11-20）：01-87~90 四页 TOC 子条目+表格空白（前一线机械残留）+HERMES-STATE 空白变更收编提交；H2 冒烟资产修复销账（批次167 六轮冒烟终验实证）
 
 ### 7.2 AI 代理协作协议
 

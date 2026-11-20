@@ -356,6 +356,12 @@
 
 | 批次 | 内容 | 状态 |
 | ------ | ------ | ------ |
-| 167 Docker→podman 迁移 | RT shim（podman 首选+docker 回退+MQ_RUNTIME 覆盖）入 5 核心脚本；3 层深死链修复×3；E0 五脚本 cygpath 注入（九步 9/9 绿）；6 compose 适配（kafka healthcheck→kafka-cluster.sh 29092/mongo→mongosh/microcks SPRING_MONGODB_URI 依 #2053/version 3.8 清除）；端到端证据链（3-broker healthy+Microcks health=200+H1 冒烟+game-day dry-run）；TEST-09/10/11/07 矩阵 README 运行时声明（324 卡等价替换不逐卡改） | ✅ 完成 |
+| 167 Docker→podman 迁移 | RT shim（podman 首选+docker 回退+MQ_RUNTIME 覆盖）入 5 核心脚本；3 层深死链修复×3；E0 五脚本 cygpath 注入（九步 9/9 绿）；6 compose 适配（kafka healthcheck→kafka-cluster.sh 29092/mongo→mongosh/microcks SPRING_MONGODB_URI 依 #2053 定案/version 3.8 清除）；端到端证据链（3-broker healthy+Microcks health=200+H1 冒烟+game-day dry-run）；TEST-09/10/11/07 矩阵 README 运行时声明（324 卡等价替换不逐卡改） | ✅ 完成 |
+
+**追加批次十三（2026-11-20 一致性收编+H 队列执行）**：
+
+| 批次 | 内容 | 状态 |
+| ------ | ------ | ------ |
+| 168 WIP 收编+H2 销账 | 01-87~90 四页 TOC 子条目+表格空白（前一线机械残留）+HERMES-STATE 空白收编；H2 冒烟资产修复销账（批次167 六轮终验实证） | ✅ 完成 |
 
 **剩余挂账（全部触发源驱动）**：hermes 执行全队列（H1-H6+TC-DESIGN+15 缺口+Jepsen 复现+L5/L6）/季度复核 2027-02/大版本窗口/@asyncapi/diff 安装（node 环境）/kg 规则 9-10（待内核）。

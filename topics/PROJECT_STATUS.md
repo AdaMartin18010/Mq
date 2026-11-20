@@ -86,6 +86,7 @@ INDEX.md、README.md、README_FIRST.md、QUICK_START.md、QUICK_START_GUIDE.md�
 - ✅ 批次111-116 全量消化+地基+映射+用例扩展+闭环（2026-11-18：concept 8 卷 257 篇逐篇消化、01-83~86 地基四篇+01-82 六维映射、ASE 89 条/registry 284 行、TEST-16 hermes 执行规划与问题闭环三模板）
 - ✅ 批次117-120 Testing/07-集成矩阵（2026-11-18：四维维度化用例库 560 用例文件=7系统×5语言×16特性，matrix-registry 唯一事实源+matrix-check 入 E0+harness --sys/--lang 过滤；registry 825 行）——批次 1-116 全部闭环，剩滚动例行项与真实执行集中批（挂账）
 - ✅ 批次167 容器运行时 Docker→podman 迁移（2026-11-20：RT shim 入 5 核心脚本+3 层深死链修复×3+E0 五脚本 cygpath 注入[九步 9/9 绿]+6 compose 适配[kafka healthcheck→kafka-cluster.sh、mongo→mongosh、microcks SPRING_MONGODB_URI 依 #2053 定案]+端到端证据链[3-broker 全 healthy、Microcks health=200、H1 冒烟、game-day dry-run RC=0]+TEST-09/10/11/07 矩阵 README 运行时声明）——E1 podman 轨道宿主默认，E2 docker 回退
+- ✅ 批次168 WIP 一致性收编+H2 销账（2026-11-20：01-87~90 TOC/空白机械残留+HERMES-STATE 空白收编；H2 冒烟资产修复销账[批次167 六轮终验实证]）
 
 ---
 
