@@ -24,6 +24,8 @@
 | [AI_SKILL-03-技能制作规范](AI_SKILL-03-技能制作规范.md) | 命名/frontmatter/正文/预算/引用/评审清单（AGENTS.md 的扩展） | 深度分析（250-400 行） |
 | [AI_SKILL-04-技能模板与模型](AI_SKILL-04-技能模板与模型.md) | 三套模板 + 三个模型样例 + references/scripts 模板 | 深度分析（250-400 行） |
 | [AI_SKILL-05-用例与用法说明](AI_SKILL-05-用例与用法说明.md) | 多平台安装启用、触发机制、6 个用例、评估方法、FAQ | 运维/指南（180-290 行） |
+| [AI_SKILL-06-技能审计与修订报告](AI_SKILL-06-技能审计与修订报告.md) | 7 个 mq-* 技能的 frontmatter/行数/漂移/结构回放审计 | 审计报告 |
+| [AI_SKILL-07-测试与运维skill全面梳理_2026-11-20](AI_SKILL-07-测试与运维skill全面梳理_2026-11-20.md) | Hermes 技能库测试/运维域 28 项梳理、核心 7 项核对、缺口 G1/G2 判定与自我改进执行（新建 microcks-async-contract-test / podman-wsl2-stability） | 梳理/执行记录 |
 
 ## 技能目录
 
