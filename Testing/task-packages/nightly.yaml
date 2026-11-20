@@ -29,6 +29,10 @@ environments:
         script: ./topics/scripts/validate-config.sh
         args: ["redis", "topics/config-templates/redis-stream-config.conf"]
         artifacts: ["results/nightly-2026-11-18/E0-TC-DEP-08d.json"]
+      - id: TC-DEP-16
+        script: ./topics/scripts/hermes-e0-run.sh
+        args: []
+        artifacts: ["results/nightly-2026-11-18/E0-TC-DEP-16.json"]
   - name: E2
     engine: docker
     precheck: ./topics/scripts/hermes-env-precheck.sh

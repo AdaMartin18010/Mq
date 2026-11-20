@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.39.0] - 2026-11-21
+
+### [GOV] 批次182：spec 版本差分入 E0 第十一步+E0 全量静态门入 nightly 任务包
+
+**[GOV] 182** L6 门禁化：hermes-e0-run.sh 十步→十一步（新增 E0-spec-diff 回归：版本对样本=仓内 v1 spec `06-契约语义测试/01-契约规格/specs/asyncapi-nats-example.yaml`×v2-break fixture，断言 self-diff RC=0 + fixture RC=1 BREAKING≥3，node 缺失 SKIP）；E0 11/11 PASS RC=0；nightly 任务包新增 TC-DEP-16（hermes-e0-run.sh 全量静态门入夜巡，注册表 DEP 域 mapped）；DSL_ASYNCAPI_AUDIT L6 行两处“未入 E0”过期声称回写（版本对样本已在仓+已入门禁）
+**[GOV] 182b** 运行器/冒烟缺陷修复：① hermes-task-run.sh flush env 误标（用文件最后一个 env 标注全部 case→按 case 自身 env 组装）夜巡逐 JSON 回归 9/9 全对；② 冒烟 compose→单节点 `podman run` 迁移（podman 6.1.4 WSL 后端 compose 委派链需 Windows 侧 npipe，结构性必败；三节点 compose 模板保留参考）——kafka 补 `KAFKA_INTER_BROKER_LISTENER_NAME=EXTERNAL`、rabbitmq 修两缺陷（alpine 变体 entrypoint 无 cookie 落盘→wrapper 预写与 bookworm 同语义 5/5 UP 零复现；3.13 env 播种只应用 USER 不应用 PASS→改 guest/guest）；nightly 全量 9/9 PASS fail=0（results/nightly-2026-11-21/）
+
 ## [3.38.0] - 2026-11-21
 
 ### [GOV] 批次176-181：H5 运行器常态化+NATS/RabbitMQ 基准解锁+L6 spec 版本差分工具+TC-DESIGN 三向一致性入门禁

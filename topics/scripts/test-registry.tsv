@@ -1271,3 +1271,4 @@ TC-SYN-PULSAR-RACK-01	SYN	case-dryrun.sh	E2	08-运维行为测试	pending
 TC-SYN-RABBITMQ-FED-01	SYN	case-dryrun.sh	E2	08-运维行为测试	pending
 TC-SYN-REDIS-CCR-01	SYN	case-dryrun.sh	E2	08-运维行为测试	pending
 TC-SYN-REDIS-PSYNC-01	SYN	case-dryrun.sh	E2	08-运维行为测试	pending
+TC-DEP-16	DEP	hermes-e0-run.sh	E0	TEST-09,TEST-11	mapped

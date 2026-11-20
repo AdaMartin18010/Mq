@@ -43,7 +43,7 @@ def flush():
     if cur and cur[0]:
         if not cur[3]:
             cur[3] = "{}-{}.json".format(env or "?", cur[0])
-        cases.append(cur)
+        cases.append([env or "?", cur[0], cur[1]] + cur[2] + [cur[3]])
     cur = None
 for line in open(spec, encoding="utf-8"):
     raw = line.rstrip("\r\n")
@@ -82,7 +82,7 @@ for line in open(spec, encoding="utf-8"):
             continue
 flush()
 for c in cases:
-    print("\t".join([env or "?", c[0], c[1]] + c[2] + [c[3]]))
+    print("\t".join(c))
 PYEOF
 
 if [ ! -s "$OUT/.cases.tsv" ]; then

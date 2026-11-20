@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design（十步，批次181）
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design → spec-diff（十一步，批次182）
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -16,11 +16,12 @@ HISTORY_LOG="Testing/self-check-history.log"
 usage() {
   cat <<'EOF'
 用法: hermes-e0-run.sh [--help]
-  执行 E0 静态验证十步骤（doc-check/bash-syntax/registry/decision/spotcheck/
-  contract/tc-static/kg/consistency/tc-design），生成 results/<date>/E0-*.json/.log
+  执行 E0 静态验证十一步骤（doc-check/bash-syntax/registry/decision/spotcheck/
+  contract/tc-static/kg/consistency/tc-design/spec-diff），生成 results/<date>/E0-*.json/.log
   与 summary.md，并追加一行到 Testing/self-check-history.log。
   步骤 6 为契约 spec 校验（契约语义测试 L1-L2 层，批次71）。
   步骤 10 为 TC-DESIGN 用例族三向一致性（01-89 §1.89.5 挂账落地，批次181）。
+  步骤 11 为 spec-diff 回归（L6 工具门禁化，批次182；node 缺失时 SKIP）。
 EOF
 }
 
@@ -225,9 +226,41 @@ step_tc_design() {
   "./topics/scripts/tc-design-check.sh"
 }
 
+# 步骤 11: spec-diff 回归（L6 工具门禁化，批次182；版本对样本=仓内 v1 spec × v2-break fixture）
+step_spec_diff() {
+  if ! command -v node >/dev/null 2>&1; then
+    echo "SKIP: node 未安装（spec-diff 需 node 环境）"
+    return 2
+  fi
+  local V1="Testing/06-契约语义测试/01-契约规格/specs/asyncapi-nats-example.yaml"
+  local FIX="Testing/fixtures/asyncapi-nats-example-v2-break.yaml"
+  # 自检: self-diff 必须无 breaking
+  local self_rc=0
+  "./topics/scripts/spec-diff-check.sh" "$V1" "$V1" >/dev/null 2>&1 || self_rc=$?
+  if [ "$self_rc" -ne 0 ] && [ "$self_rc" -ne 4 ]; then
+    echo "FAIL: self-diff RC=$self_rc（工具自身异常）"
+    return 1
+  fi
+  # 回归: v1→v2-break 必须检出 breaking≥3
+  local out fix_rc=0
+  out="$(./topics/scripts/spec-diff-check.sh "$V1" "$FIX" 2>&1)"; fix_rc=$?
+  if [ "$fix_rc" -ne 1 ]; then
+    echo "FAIL: fixture 差分 RC=$fix_rc（期望 1=检出 breaking）"
+    return 1
+  fi
+  local n
+  n="$(printf '%s\n' "$out" | grep -c 'BREAKING' || true)"
+  if [ "$n" -lt 3 ]; then
+    echo "FAIL: fixture BREAKING 计数=$n（期望 ≥3）"
+    return 1
+  fi
+  echo "PASS: self-diff RC=0 + fixture RC=1 BREAKING=$n（L6 工具回归正常）"
+  return 0
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=10
+  local pass=0 fail=0 skip=0 total=11
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -293,6 +326,17 @@ main() {
   step_rc=$?
   if [[ $step_rc -eq 0 ]]; then pass=$((pass + 1)); else fail=$((fail + 1)); fi
 
+  # 步骤 11
+  run_step "E0-spec-diff" "spec-diff 回归（v1×v2-break fixture）" step_spec_diff
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then
+    pass=$((pass + 1))
+  elif [[ $step_rc -eq 2 ]]; then
+    skip=$((skip + 1))
+  else
+    fail=$((fail + 1))
+  fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -310,7 +354,7 @@ main() {
 执行率: $total/$total ($exec_rate%)
 通过率: $pass/$total ($pass_rate%)
 缺口率: $fail/$total ($gap_rate%)
-- SKIP: $skip (静态验证步骤全部执行，无 SKIP)
+- SKIP: $skip（步骤 5/11 在依赖缺失时可 SKIP，其余步骤须全执行）
 
 | 步骤 | 结果 | 日志 |
 |------|------|------|
@@ -324,6 +368,7 @@ main() {
 | E0-kg | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-kg.log" | cut -d' ' -f2) | results/$DATE/E0-kg.log |
 | E0-consistency | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-consistency.log" | cut -d' ' -f2) | results/$DATE/E0-consistency.log |
 | E0-tc-design | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-tc-design.log" | cut -d' ' -f2) | results/$DATE/E0-tc-design.log |
+| E0-spec-diff | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spec-diff.log" | cut -d' ' -f2) | results/$DATE/E0-spec-diff.log |
 EOF
 
   # 追加 history log

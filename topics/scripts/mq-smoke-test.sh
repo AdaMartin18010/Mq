@@ -25,26 +25,44 @@ port_free() { ! (echo >/dev/tcp/127.0.0.1/"$1") 2>/dev/null; }
 have_cli()  { command -v "$1" >/dev/null 2>&1; }
 
 # ---------- Kafka ----------
+# 2026-11-21: compose 改单节点 podman run——podman 6.1.4 WSL 后端下 podman compose
+#   委派 docker-compose.exe，而 Windows 侧无 npipe://./pipe/podman-machine-default
+#   管道（WSL 后端仅 WSL 内通道），委派链结构性失效。单节点 KRaft 语义等价于
+#   冒烟断言（单 topic 生产消费往返，无需三节点 quorum）；三节点模板保留为参考。
 smoke_kafka() {
   port_free 9092 || { skip kafka "端口 9092 被占用"; return; }
-  cleanup_kafka() { $RT compose -f "$CT/docker-compose-kafka.yml" down -v >/dev/null 2>&1; }
+  cleanup_kafka() { $RT rm -f mq-smoke-kafka >/dev/null 2>&1; }
   trap cleanup_kafka RETURN
-  say "[kafka 1/4] 启动容器..."
-  $RT compose -f "$CT/docker-compose-kafka.yml" up -d >/dev/null 2>&1 || { fail kafka "compose 启动失败"; return; }
-  say "[kafka 2/4] 等待就绪（KRaft 三节点冷启动约 3 分钟，最长等 240 秒）..."
+  say "[kafka 1/4] 启动容器（单节点 KRaft）..."
+  $RT rm -f mq-smoke-kafka >/dev/null 2>&1
+  $RT run -d --name mq-smoke-kafka -p 9092:9092 \
+    -e KAFKA_NODE_ID=1 \
+    -e KAFKA_PROCESS_ROLES=broker,controller \
+    -e KAFKA_LISTENERS=EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:19093 \
+    -e KAFKA_ADVERTISED_LISTENERS=EXTERNAL://localhost:9092 \
+    -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT \
+    -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+    -e KAFKA_INTER_BROKER_LISTENER_NAME=EXTERNAL \
+    -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:19093 \
+    -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+    -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+    -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+    -e KAFKA_AUTO_CREATE_TOPICS_ENABLE=true \
+    apache/kafka:4.4.0 >/dev/null 2>&1 || { fail kafka "容器启动失败"; return; }
+  say "[kafka 2/4] 等待就绪（单节点 KRaft 冷启动，最长等 240 秒）..."
   local ready=0
   for _ in $(seq 1 120); do
-    $RT exec kafka-1 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:29092 --list >/dev/null 2>&1 && { ready=1; break; }
+    $RT exec mq-smoke-kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 && { ready=1; break; }
     sleep 2
   done
   [ "$ready" = 1 ] || { fail kafka "240 秒未就绪"; return; }
   say "[kafka 3/4] 生产消费往返..."
-  $RT exec kafka-1 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:29092 \
+  $RT exec mq-smoke-kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
     --create --topic smoke-test --partitions 1 --replication-factor 1 >/dev/null 2>&1
   echo "smoke-$(date +%s)" | \
-    $RT exec -i kafka-1 /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:29092 --topic smoke-test >/dev/null 2>&1
+    $RT exec -i mq-smoke-kafka /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic smoke-test >/dev/null 2>&1
   local got
-  got=$($RT exec kafka-1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:29092 \
+  got=$($RT exec mq-smoke-kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
         --topic smoke-test --from-beginning --max-messages 1 --timeout-ms 15000 2>/dev/null | head -1)
   if [ -n "$got" ]; then pass kafka; else fail kafka "未消费到消息"; fi
   say "[kafka 4/4] 清理..."; cleanup_kafka; trap - RETURN
@@ -54,11 +72,12 @@ smoke_kafka() {
 smoke_nats() {
   port_free 4222 || { skip nats "端口 4222 被占用"; return; }
   have_cli nats || { skip nats "无 nats CLI"; return; }
-  cleanup_nats() { $RT compose -f "$CT/docker-compose-nats.yml" down -v >/dev/null 2>&1; rm -f /tmp/nats-sub.out; }
+  cleanup_nats() { $RT rm -f mq-smoke-nats >/dev/null 2>&1; rm -f /tmp/nats-sub.out; }
   trap cleanup_nats RETURN
-  say "[nats 1/3] 启动容器..."
-  $RT compose -f "$CT/docker-compose-nats.yml" up -d >/dev/null 2>&1 || { fail nats "compose 启动失败"; return; }
-  # 三节点 JetStream 集群组建需要时间（路由互联+元数据 leader 选举），sleep 3 不足；轮询就绪最长 60s（批次174 实测修复）
+  say "[nats 1/3] 启动容器（单节点 JetStream）..."
+  $RT rm -f mq-smoke-nats >/dev/null 2>&1
+  $RT run -d --name mq-smoke-nats -p 4222:4222 -p 8222:8222 nats:latest -js -m 8222 >/dev/null 2>&1 || { fail nats "容器启动失败"; return; }
+  # 单节点 JetStream 就绪快（无需集群路由互联），轮询就绪最长 60s
   local nready=0
   for _ in $(seq 1 30); do
     nats stream ls -s nats://localhost:4222 >/dev/null 2>&1 && { nready=1; break; }
@@ -85,34 +104,43 @@ smoke_nats() {
 # ---------- RabbitMQ ----------
 smoke_rabbitmq() {
   port_free 5672 || { skip rabbitmq "端口 5672 被占用"; return; }
-  cleanup_mq() { $RT compose -f "$CT/docker-compose-rabbitmq.yml" down -v >/dev/null 2>&1; }
+  cleanup_mq() { $RT rm -f mq-smoke-rabbit >/dev/null 2>&1; }
   trap cleanup_mq RETURN
-  say "[rabbitmq 1/3] 启动容器..."
-  $RT compose -f "$CT/docker-compose-rabbitmq.yml" up -d >/dev/null 2>&1 || { fail rabbitmq "compose 启动失败"; return; }
+  say "[rabbitmq 1/3] 启动容器（单节点，quorum 队列单副本合法）..."
+  $RT rm -f mq-smoke-rabbit >/dev/null 2>&1
+  # alpine 变体 entrypoint 无 RABBITMQ_ERLANG_COOKIE 落盘步骤（bookworm 有），
+  # beam 运行时自举 cookie 存在 eacces 竞态（间歇崩溃, 批次182 实证）。
+  # wrapper=预写 cookie 文件（与 bookworm entrypoint 同语义）再走原 su-exec 路径。
+  # 凭据=guest/guest（镜像默认, loopback_users.guest=false）：
+  # 3.13 服务端 env 播种只应用 RABBITMQ_DEFAULT_USER 不应用 PASS（authenticate_user 实证）。
+  local rab_cmd=(sh -c 'echo "$RABBITMQ_ERLANG_COOKIE" > /var/lib/rabbitmq/.erlang.cookie && chown rabbitmq /var/lib/rabbitmq/.erlang.cookie && chmod 400 /var/lib/rabbitmq/.erlang.cookie && exec su-exec rabbitmq rabbitmq-server')
+  $RT run -d --name mq-smoke-rabbit -p 5672:5672 -p 15672:15672 \
+    -e RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG \
+    rabbitmq:3.13-management-alpine "${rab_cmd[@]}" >/dev/null 2>&1 || { fail rabbitmq "容器启动失败"; return; }
   local i
   # mgmt API 访问器: 宿主 curl 优先；WSL2/podman 宿主端口转发对 rabbit mgmt HTTP 实测失效
   # （TCP 握手成功但 Empty reply, 批次174 三轮复测）, 回退=容器网络命名空间内 curl sidecar
   local rab1id
-  rab1id=$($RT compose -f "$CT/docker-compose-rabbitmq.yml" ps -q 2>/dev/null | head -1)
+  rab1id=$($RT inspect -f '{{.Id}}' mq-smoke-rabbit 2>/dev/null)
   rq() {
     if curl -s --max-time 8 "$@" 2>/dev/null; then return 0; fi
     [ -n "$rab1id" ] && $RT run --rm --network "container:$rab1id" curlimages/curl "$@" 2>/dev/null
   }
   for i in $(seq 1 30); do
-    rq -s -u admin:admin -o /dev/null http://127.0.0.1:15672/api/overview && break; sleep 2
+    rq -s -u guest:guest -o /dev/null http://127.0.0.1:15672/api/overview && break; sleep 2
   done
   say "[rabbitmq 2/3] 队列声明 + 收发..."
-  if rq -s -u admin:admin -H "content-type:application/json" \
+  if rq -s -u guest:guest -H "content-type:application/json" \
       -X PUT -d '{"auto_delete":false,"durable":true,"arguments":{"x-queue-type":"quorum"}}' \
       http://127.0.0.1:15672/api/queues/%2F/smoke-test >/dev/null 2>&1; then
     sleep 3  # quorum 队列 Raft 收敛窗口, 立即 publish 会丢消息
-    rq -s -u admin:admin -H "content-type:application/json" \
+    rq -s -u guest:guest -H "content-type:application/json" \
       -X POST -d '{"properties":{},"routing_key":"smoke-test","payload":"smoke","payload_encoding":"string"}' \
       http://127.0.0.1:15672/api/exchanges/%2F/amq.default/publish >/dev/null 2>&1
     local n i2
     n=0
     for i2 in $(seq 1 5); do  # quorum 队列 Raft 提交收敛, 轮询最多 10 秒
-      n=$(rq -s -u admin:admin http://127.0.0.1:15672/api/queues/%2F/smoke-test 2>/dev/null | grep -oE '"messages(_ready)?":[0-9]+' | head -1 | grep -oE '[0-9]+$')
+      n=$(rq -s -u guest:guest http://127.0.0.1:15672/api/queues/%2F/smoke-test 2>/dev/null | grep -oE '"messages(_ready)?":[0-9]+' | head -1 | grep -oE '[0-9]+$')
       [ "${n:-0}" -ge 1 ] && break
       sleep 2
     done
