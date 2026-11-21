@@ -31,6 +31,7 @@
 | weekly | 周六 10:00 | E2 全量（weekly.yaml）+ 契约行为（Microcks --live 就绪后） | weekly 包 + summary |
 | pre-release | 人工触发 | E3 关键集（pre-release.yaml） | 发布门禁报告 |
 | 真实执行集中批 | 用户在场约定 | GAME DAY/TC-SEM --live/基准首跑 | failbundle + RTO 趋势 |
+| 月末 | 每月末（hermes 生成，人审） | **L4 月度验收汇总**：`monthly-acceptance.py` 聚合 E0 history+nightly/weekly SUMMARY+registry 流转+用户门 → `results/acceptance-YYYY-MM.md`（批次197） | 周期覆盖率 ≥80% 判定；连续两月 <80% 升级人审 |
 
 ### 优先级与资源预算
 
