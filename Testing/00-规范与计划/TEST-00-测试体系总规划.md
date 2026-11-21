@@ -39,10 +39,12 @@
 ## 三、验证要求分层（什么门禁在哪层）
 
 ```text
-E0 每次提交（十三步）：doc-check / bash-n / registry / decision / spotcheck
+E0 每次提交（十四步）：doc-check / bash-n / registry / decision / spotcheck
                     / contract-spec / tc-assert / kg-check / consistency
-                    / tc-design / spec-diff / spec-validate / secret-scan  ← 全自动
-                    （批次181-194 逐步扩展；secret-scan=仓库机密泄露扫描 批次194）
+                    / tc-design / spec-diff / spec-validate / secret-scan
+                    / codeblock-check                                      ← 全自动
+                    （批次181-198 逐步扩展；secret-scan=仓库机密泄露扫描 批次194；
+                      codeblock-check=文档内嵌代码块语言标注+bash 语法 批次198）
 E1/E2 夜间-周：容器冒烟+集成+契约行为（Microcks）+语义样例        ← hermes 周期
 E3 发布前：集群关键集+混沌                                        ← 用户在场
 真实执行集中批（挂账）：TC-SEM --live / GAME DAY / 基准首跑 / Microcks 首启

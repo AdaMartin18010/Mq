@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # E0 静态验证入口（TEST-09 §T.09.2 / TEST-11 §T.11.1 验证环节实现）
 # 用法: hermes-e0-run.sh [--help]
-# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design → spec-diff → spec-validate → secret-scan（十三步，批次194）
+# 步骤: doc-self-check quick → bash -n → TSV 校验 → decision → spotcheck → contract → tc-assert → kg → consistency → tc-design → spec-diff → spec-validate → secret-scan → codeblock-check（十四步，批次198）
 # 退出码: 0=全 PASS/SKIP；1=存在 FAIL
 set -u
 
@@ -16,14 +16,15 @@ HISTORY_LOG="Testing/self-check-history.log"
 usage() {
   cat <<'EOF'
 用法: hermes-e0-run.sh [--help]
-  执行 E0 静态验证十三步骤（doc-check/bash-syntax/registry/decision/spotcheck/
-  contract/tc-static/kg/consistency/tc-design/spec-diff/spec-validate/secret-scan），生成 results/<date>/E0-*.json/.log
+  执行 E0 静态验证十四步骤（doc-check/bash-syntax/registry/decision/spotcheck/
+  contract/tc-static/kg/consistency/tc-design/spec-diff/spec-validate/secret-scan/codeblock-check），生成 results/<date>/E0-*.json/.log
   与 summary.md，并追加一行到 Testing/self-check-history.log。
   步骤 6 为契约 spec 校验（契约语义测试 L1-L2 层，批次71）。
   步骤 10 为 TC-DESIGN 用例族三向一致性（01-89 §1.89.5 挂账落地，批次181）。
   步骤 11 为 spec-diff 回归（L6 工具门禁化，批次182；node 缺失时 SKIP）。
   步骤 12 为 spec-validate 全量 schema 校验（L6 工具门禁化，批次184；16 spec 自动发现，node 缺失时 SKIP）。
   步骤 13 为仓库机密泄露扫描（批次194；7 类高信号形态，git 缺失时 SKIP）。
+  步骤 14 为文档内嵌代码块巡检（批次198；语言标注白名单+bash 块语法，python3 缺失时 SKIP）。
 EOF
 }
 
@@ -304,9 +305,27 @@ step_secret_scan() {
   return 0
 }
 
+# 步骤 14: 文档内嵌代码块巡检（批次198）
+step_codeblock_check() {
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "SKIP: python3 未安装（doc-codeblock-check 需 python3）"
+    return 2
+  fi
+  local out rc=0
+  out="$(python3 ./topics/scripts/doc-codeblock-check.py 2>&1)"; rc=$?
+  if [ "$rc" -ne 0 ]; then
+    printf '%s\n' "$out" | tail -8
+    echo "FAIL: doc-codeblock-check RC=$rc（未知语言标注或 bash 语法错）"
+    return 1
+  fi
+  printf '%s\n' "$out" | grep -E "CODEBLOCK_CHECK|PASS" | head -2
+  echo "PASS: doc-codeblock-check 文档代码块巡检（标注白名单+bash 语法）"
+  return 0
+}
+
 # 主流程
 main() {
-  local pass=0 fail=0 skip=0 total=13
+  local pass=0 fail=0 skip=0 total=14
   local errors=0 warns=0 spotcheck_result="PASS"
   local step_result step_rc step_duration
 
@@ -405,6 +424,17 @@ main() {
     fail=$((fail + 1))
   fi
 
+  # 步骤 14
+  run_step "E0-codeblock-check" "doc-codeblock-check 文档代码块巡检" step_codeblock_check
+  step_rc=$?
+  if [[ $step_rc -eq 0 ]]; then
+    pass=$((pass + 1))
+  elif [[ $step_rc -eq 2 ]]; then
+    skip=$((skip + 1))
+  else
+    fail=$((fail + 1))
+  fi
+
   # summary.md
   local exec_rate pass_rate gap_rate
   exec_rate=$(awk "BEGIN {printf \"%.0f\", $total/$total*100}")
@@ -439,6 +469,7 @@ main() {
 | E0-spec-diff | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spec-diff.log" | cut -d' ' -f2) | results/$DATE/E0-spec-diff.log |
 | E0-spec-validate | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-spec-validate.log" | cut -d' ' -f2) | results/$DATE/E0-spec-validate.log |
 | E0-secret-scan | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-secret-scan.log" | cut -d' ' -f2) | results/$DATE/E0-secret-scan.log |
+| E0-codeblock-check | $(grep -m1 'RESULT:' "$RESULTS_DIR/E0-codeblock-check.log" | cut -d' ' -f2) | results/$DATE/E0-codeblock-check.log |
 EOF
 
   # 追加 history log

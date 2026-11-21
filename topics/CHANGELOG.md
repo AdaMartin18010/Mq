@@ -20,7 +20,14 @@
 - 证据：`results/2026-11-21/h3-live-evidence-2026-11-21.md` + 6 件 EVD 文件（gitignored）；宿主日志 scratch/h3_live_run{,2,3}.log。
 - 配套：PROJECT_STATUS 1732 不变（find 实测零漂移；批次196 运行新增 1 pyc 入 __pycache__ 噪声集）；E0 十三步全绿。
 
-## [3.53.0] - 2026-11-21
+## [3.55.0] - 2026-11-21
+
+### [KB] 批次198：文档内嵌代码块巡检入 E0（第十四步）
+
+**[KB] 198** `topics/scripts/doc-codeblock-check.py`：① 语言标注真实性——开场 fence 标注必须在白名单（仓内现行 33 种 fail-closed，新增须显式入表）② 裸开场 fence=WARN 计数（输出块惯例，现行 1 处）③ bash 块逐块 `bash -n` 语法检查，排除面 7 类实证登记（`<占位符>`/redis-cli·XADD·XREADGROUP 等/az·asyncapi/mm2 properties/显式伪代码/JAAS 片段）；`--selftest` 双向实证（坏标注检出+坏语法检出+干净件放行）；入 E0 第十四步（python3 缺失 SKIP），TEST-00 同步十四步
+**[KB] 198b** 首扫即抓真 bug×1=03-19 故障恢复演练 `watch -n 2 '...grep -E '"'"'routes'"'"'|...'` 段 `'"'"'` 惯用法少引号（尾 `''` 引号永不闭合，复制即报错）已修规范形（全仓 1348 md/1298 bash 块语法全绿，裸 fence WARN=1 登记）；PROJECT_STATUS 1733→1734；E0 十四步全绿
+
+## [3.54.0] - 2026-11-21
 
 ### [KB] 批次197：月度验收汇总落地（L4 层，对齐 BufferCache）
 
