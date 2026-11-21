@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "description": "本项目性能基线锚点（机读版，bench-compare.sh 的回归参照）",
+    "human_readable_source": "topics/01-基础概念与对比分析/01-18-性能基准测试对比.md §1.18.6",
+    "approval": "Testing/L3-审批单-H4基准转正-2026-11-20.md（A1/A2/A3 已批准，2026-11-21 签核）",
+    "evidence": [
+      "results/2026-11-20/h4-benchmark-baseline.md",
+      "results/2026-11-20/q178-nats-baseline.md",
+      "results/2026-11-20/q179-rabbitmq-baseline.md",
+      "results/2026-11-21/q191-kafka-federation-baseline.md"
+    ],
+    "collected": "2026-11-20/21",
+    "unit_convention": "速率=records|msg/s；延迟=ms；所有值为本机测试环境实测（WSL2 podman，宿主 Core Ultra 9 285K/96GB）",
+    "calibration_note": "bench-compare --run 为快速回归（时长/请求量缩减），阈值宽于正式基线（±30%）；正式重采须按 L3 审批单 §5 复现命令全量执行"
+  },
+  "kafka_single": {
+    "params": "1KB / pace 10000 msg/s / 60s / acks=all / batch.size=16384 / linger.ms=10",
+    "topology": "kafka-1 单节点 KRaft（apache/kafka:4.4.0），bootstrap=EXTERNAL 9092，官方 perf 工具容器内 exec",
+    "steady_records_per_sec": 9931.0,
+    "steady_window_range": [9318.2, 9931.0],
+    "full_window_avg_ms": 1.45,
+    "p99_ms": 4,
+    "p99_9_ms": 89,
+    "max_ms": 109
+  },
+  "kafka_federation": {
+    "params": "同 kafka_single（区别=bootstrap 三节点 INTERNAL 29092）",
+    "topology": "kafka-1/2/3 三节点 KRaft quorum=3，RF3 探针 topic 全分区 ISR=3",
+    "steady_records_per_sec_range": [9997.0, 10003.0],
+    "full_window_records_per_sec": 9998.0004,
+    "steady_window_avg_ms_range": [1.1, 1.3],
+    "full_window_avg_ms": 2.62,
+    "p99_ms": 64,
+    "p99_9_ms": 184,
+    "caveat": "全窗口分位数含 ramp-up 污染（ramp-up avg 18.5ms/max 465ms）；稳态窗口 max 4~13ms"
+  },
+  "nats_rtt": {
+    "params": "1KB 请求 / 1B 应答 / 串行 request-reply / 自然速率（非 pace）/ 2 轮各 600000 请求（mq-bench nats -mode rtt）",
+    "topology": "nats-test 单节点容器（nats-server v2.15.3），宿主 Go 客户端 nats.go",
+    "rounds": [
+      {"requests": 600000, "elapsed_s": 201.1, "rate_msg_s": 2983.6, "avg_ms": 0.335, "p50_ms": 0.514, "p99_ms": 0.932, "p99_9_ms": 1.256, "max_ms": 44.99},
+      {"requests": 600000, "elapsed_s": 214.8, "rate_msg_s": 2793.0, "avg_ms": 0.358, "p50_ms": 0.515, "p99_ms": 1.003, "p99_9_ms": 1.300, "max_ms": 44.47}
+    ],
+    "paced_pub_10k_60s": "zero_errors",
+    "caveat": "串行环速率=单客户端上限非服务端容量；与 kafka producer-only / rabbit e2e 口径不可横向互比"
+  },
+  "rabbitmq_e2e": {
+    "params": "1KB / pace 10000 msg/s / 60s / QoS prefetch=500 + 批量 ack（mq-bench rabbit，amqp091-go 双 channel）",
+    "topology": "rabbitmq-test 单节点容器（RabbitMQ 3.13.7）",
+    "publish_rate_msg_s": 10000.0,
+    "received": "600000/600000",
+    "avg_ms": 1.753,
+    "p50_ms": 0.654,
+    "p95_ms": 5.676,
+    "p99_ms": 6.298,
+    "p99_9_ms": 7.339,
+    "max_ms": 24.935,
+    "caveat": "e2e 含消费回读路径，大于 producer-only 口径属预期；首版 harness 停摆缺陷已修、作废数据保留对照"
+  }
+}

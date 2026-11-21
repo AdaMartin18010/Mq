@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.51.0] - 2026-11-21
+
+### [KB] 批次195：基准回归断言落地（baselines.json + bench-compare 入 weekly）
+
+**[KB] 195** `Testing/benchmark/baselines.json`=L3 已批四锚点机读版（kafka_single/kafka_federation/nats_rtt 两轮/rabbitmq_e2e，含参数/拓扑/caveat/approval 链，人读源=01-18 §1.18.6）；`topics/scripts/bench-compare.sh` 两模式：`--verify` 锚点静态自洽（分位序/窗口包络/速率自洽，python 相对路径避 MSYS 坑）与 `--run nats|rabbit|kafka` 快速回归（15s/10 万条缩减负载，±30% 阈值[kafka paced 吞吐 ±15%]，rabbit 另守零积压断言 n≥135000/150000）；**kafka 走容器内 exec perf（容器网络，不依赖宿主端口转发）**，nats/rabbit 走宿主 mq-bench，broker 不可达=SKIP(4)（回归未执行≠回归失败，WSL2 端口转发实证不可达）；mq-bench.exe 缺失自动 go build
+**[KB] 195b** 实测三态双向实证：`--verify` VERIFY_OK；`--run kafka` 联邦口径实测 9993.0 vs 锚点 9998.0（偏差 0.05%）PASS；nats/rabbit 容器起后宿主不可达 → 诚实 SKIP（测后容器已复原停）；两坑修复=① podman exec 容器内 POSIX 路径须 `export MSYS_NO_PATHCONV=1`（否则被改写为 C:/Program Files/Git/... 致 RC=127）② awk 函数内 `\$1` 转义反了（shell 值未内联，BEGIN 块字段为空除零）→ 去反斜杠内联；任务包接线=gen case 表 +4 映射（TC-BENCH-001 nightly E0 --verify / 002-004 weekly E2 --run），registry BENCH 域 +4 行 mapped，nightly/weekly 重生成校验过；PROJECT_STATUS 1725→1727
+
 ## [3.50.0] - 2026-11-21
 
 ### [KB] 批次194：仓库机密泄露扫描门入 E0（第十三步）

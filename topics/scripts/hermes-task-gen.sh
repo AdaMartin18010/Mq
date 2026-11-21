@@ -118,6 +118,10 @@ case_script_and_args() {
     TC-CLU-06c)  script="chaos-test.sh";      args=(nats server) ;;
     TC-OBS-04)   script="alert-quality-check.sh"; args=(--week) ;;
     TC-OBS-08)   script="benchmark.sh";       args=(kafka 30 1000) ;;
+    TC-BENCH-001) script="bench-compare.sh";  args=(--verify) ;;
+    TC-BENCH-002) script="bench-compare.sh";  args=(--run kafka) ;;
+    TC-BENCH-003) script="bench-compare.sh";  args=(--run nats) ;;
+    TC-BENCH-004) script="bench-compare.sh";  args=(--run rabbit) ;;
     *)
       # fallback：从注册表读取 script 列，无参
       script="$(awk -F'\t' -v id="$case_id" '$1==id {print $3}' "$REGISTRY" | head -1)"
@@ -178,11 +182,11 @@ generate_plan() {
 
   case "$plan" in
     nightly)
-      yaml+="$(emit_environment "$plan" E0 local-git-bash "./topics/scripts/hermes-env-precheck.sh" "TC-DEP-05,TC-DEP-06,TC-DEP-08,TC-DEP-08c,TC-DEP-08d" "$plan_id")\n"
+      yaml+="$(emit_environment "$plan" E0 local-git-bash "./topics/scripts/hermes-env-precheck.sh" "TC-DEP-05,TC-DEP-06,TC-DEP-08,TC-DEP-08c,TC-DEP-08d,TC-BENCH-001" "$plan_id")\n"
       yaml+="$(emit_environment "$plan" E2 docker "./topics/scripts/hermes-env-precheck.sh" "TC-DEP-01,TC-DEP-02,TC-DEP-03" "$plan_id")\n"
       ;;
     weekly)
-      yaml+="$(emit_environment "$plan" E2 docker "./topics/scripts/hermes-env-precheck.sh" "TC-DEP-01,TC-DEP-02,TC-DEP-03,TC-DEP-04,TC-DEP-04c,TC-DEP-04d,TC-DEP-10,TC-DEP-11b,TC-DEP-11c,TC-INT-09,TC-INT-10,TC-INT-11,TC-INT-12" "$plan_id")\n"
+      yaml+="$(emit_environment "$plan" E2 docker "./topics/scripts/hermes-env-precheck.sh" "TC-DEP-01,TC-DEP-02,TC-DEP-03,TC-DEP-04,TC-DEP-04c,TC-DEP-04d,TC-DEP-10,TC-DEP-11b,TC-DEP-11c,TC-INT-09,TC-INT-10,TC-INT-11,TC-INT-12,TC-BENCH-002,TC-BENCH-003,TC-BENCH-004" "$plan_id")\n"
       ;;
     pre-release)
       yaml+="$(emit_environment "$plan" E3 k8s "./topics/scripts/hermes-env-precheck.sh" "TC-CLU-01,TC-CLU-02,TC-CLU-03,TC-CLU-06b,TC-CLU-06c,TC-OBS-04,TC-OBS-08" "$plan_id")\n"
