@@ -12,12 +12,12 @@
 
 | 序 | 项 | 状态/门 | 负责 | 下一步触发 |
 | ---- | ---- | ---- | ---- | ---- |
-| 1 | H3 GAME DAY --live（TC-CHA-01/02/03 真实注入；dry-run 411/411 已绿 批次171） | **用户在场授权门** | hermes 执行 | 用户约时间；kafka-1/2/3 栈在跑（批次191 留跑）即起即测 |
-| 2 | 真实执行集中批余量 | TC-SEM --live 样例 + H3（xlang 容器形态已由本机 5 语言实跑替代=批次190，集中批范围收缩） | hermes | 同上门 |
+| 1 | H3 GAME DAY --live（TC-CHA-01/02/03 真实注入；dry-run 411/411 已绿 批次171） | ✅ **done（2026-11-21，用户在场授权批）** | hermes 执行 | TC-CHA-01/02 6/6 PASS LIVE_RC=0（freeze 90s + 分区 125s，acks=all 零丢失+ISR 恢复）；TC-CHA-03=WSL2 不可执行边界；证据=results/2026-11-21/h3-live-evidence-2026-11-21.md |
+| 2 | 真实执行集中批余量 | 仅 TC-SEM --live 样例（H3 已 done 2026-11-21；xlang 容器形态已由本机 5 语言实跑替代=批次190） | hermes | L3 用户在场门（TC-SEM-05/07） |
 | 3 | L3 审批单 H4（A1 Kafka 基线转正+A2 NATS+A3 RabbitMQ 回灌+A4 拓扑） | **A1-A3 全闭环**（191/192 执行）；无挂账 | 已结 | — |
 | 4 | P2 触发驱动 | kg 规则 9-10（待内核）/ 季度复核 2027-02 / Kafka 4.5+·AsyncAPI 3.2+ GA 重开大版本窗口 | 主控 | 各触发源 |
 | 5 | 卫生核查（批次193 实测，均为 no-op 留证） | ① 任务包 artifacts 日期戳=无害（hermes-task-run 只取文件名入当日 results/<pkg>-<date>/，spec 内日期仅历史锚）② 孤儿 config-templates-zookeeper-1=已不在（podman ps -a 实证）③ kafka 栈在跑=191 留跑待 H3 | 已核 | — |
-| 6 | 后续规划批（用户 2026-11-21 确认串行） | 194 机密扫描门入 E0 ✅ → 195 基准回归断言 ✅（baselines+bench-compare 入 nightly/weekly）→ 196 动态验证脚本族 → 197 月度验收汇总 → 198 文档内嵌代码块巡检 | 主控 | 逐批执行汇报 |
+| 6 | 后续规划批（用户 2026-11-21 确认串行） | 194 机密扫描门入 E0 ✅ → 195 基准回归断言 ✅ → 196 动态验证脚本族 ✅（dynamic-check.sh 入口+4 子脚本全绿）→ H3 --live 验证批 ✅（2026-11-21，TC-CHA-01/02 6/6 PASS，见队列行 1）→ 197 月度验收汇总 → 198 文档内嵌代码块巡检 | 主控 | 逐批执行汇报 |
 
 ## 波次任务清单
 
@@ -144,7 +144,7 @@
 | 78 Microcks 集成 | docker-compose + 06-行为验证层 + TC-CON-01/02（CNCF Incubating 工具，国际先例核实） | ✅ 静态就绪（真实首启挂账用户在场批次） |
 | 79 ODCS v3.1.0 对齐 | 映射表 + quality/sla 范例 + contract-to-odcs.py（8 场景 check 全过） | ✅ 完成（2026-11-18） |
 | 80 Conformance 矩阵 | 协议 TCK 清单 + Jepsen 证据表（Bufstream/Redpanda 核实） | ✅ 完成（2026-11-18） |
-| 81 混沌工具链 | Testing/06-混沌与故障注入 + game-day.sh（三注入矩阵，dry-run） | ✅ 静态就绪（真实注入挂账） |
+| 81 混沌工具链 | Testing/06-混沌与故障注入 + game-day.sh（三注入矩阵，dry-run 411/411）+ game-day-live.sh（TC-CHA-01/02 真实注入 2026-11-21 6/6 PASS LIVE_RC=0） | ✅ 完成（dry-run + live 双绿；TC-CHA-03=WSL2 不可执行边界） |
 | 82 动态系统测试 | TEST-15：04-03 方程可测化 DYN-A1~A3 + 回路优先级映射 + RTO 趋势表 | ✅ 静态就绪（2026-11-18） |
 | 83 存储解耦与队列化 | 01-67 专章（四路线对比/Jepsen 证据/share groups KIP-932@4.2、KIP-1191@4.4 核实） | ✅ 完成（2026-11-18） |
 | 84 抽象消息层 | 01-68 专章（Dapr/Knative/Argo 十二维对照 + conformance 复用方案） | ✅ 完成（2026-11-18） |

@@ -10,6 +10,23 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.53.0] - 2026-11-21
+
+### [TEST] H3 --live 真注入验证批（用户在场授权门关闭，TC-CHA-01/02 全 PASS）
+
+- `Testing/06-混沌与故障注入/game-day-live.sh` v2 真注入执行（run-3，09:27–09:34）：TC-CHA-01 broker freeze 90s（pause kafka-1，producer 同冻=设计语义）+ TC-CHA-02 网络分区 125s（network disconnect kafka-1），**6/6 断言 PASS，LIVE_RC=0**：producer acks=all 退出 0、end offset==请求量（2100000/2000000，含在途零丢失）、unpause/reconnect 后 ISR 3/3 恢复（cha02 catch-up=22s）；Leader 分布 before=[1,2,3 各一] → 分区期重选举至 kafka-2/3 并追平。
+- run-2（PASS=*** FAIL=2）根因闭环：producer 默认 `delivery.timeout.ms=120000` 于注入窗口（>120s 含重选举）到期丢弃 batch（`Expiring 15 record(s)`，短缺 2046×15 精确吻合，broker 侧零丢失）+ run-1 中断残留 topic 污染（`already exists` 实证）；v2 修复=delivery.timeout.ms/max.block.ms=600000 + watchdog 600s + 启动前 topic 预清理。
+- 诚实边界：「end offset==请求量」断言成立条件=delivery.timeout.ms > 注入窗口+重选举时间（当前 600s 覆盖 ≤5min 注入）；TC-CHA-03 磁盘压力维持 WSL2 不可执行边界。
+- 证据：`results/2026-11-21/h3-live-evidence-2026-11-21.md` + 6 件 EVD 文件（gitignored）；宿主日志 scratch/h3_live_run{,2,3}.log。
+- 配套：PROJECT_STATUS 1732 不变（find 实测零漂移；批次196 运行新增 1 pyc 入 __pycache__ 噪声集）；E0 十三步全绿。
+
+## [3.52.0] - 2026-11-21
+
+### [KB] 批次196：动态验证脚本族落地（L2.5 会话层，对齐 BufferCache）
+
+**[KB] 196** `topics/scripts/dynamic-check.sh` 入口 + 4 件子脚本（全量 PASS，<3min）：① `ops-selfheal-budget.sh` 自愈预算模拟（KafkaConsumerLagHigh/RabbitMQQueueBacklog 锚点在位 + KEDA lagThreshold=1000 单副本排空 0.10s vs TC-OBS-08 预算 300s 复算）；② `config-steady-check.sh` 配置稳态巡检（version: 废弃行/kafka healthcheck=FAIL 门禁；:latest=WAR 登记[nats:latest=批次174 例外；confluent cp-*:latest=ZK 遗留漂移×2 登记待清；redis/prometheus/grafana latest×3]）；③ `contract-boundary-recheck.py` 契约边界复算（8 生成器双跑数值负载全等 + quantity=10^18+7/TTL=0 探针在位）；④ `skill-selftest.sh` 技能动态自测（7 技能 frontmatter+references/scripts 引用路径全可达）；registry DYN 域 +1（TC-DYN-05 mapped）
+**[KB] 196b** 排除面三次修正（写检查器必须吃自己的狗粮实证）：① 墙钟字段（occurredAt/deadline 等 8 种形态）非种子漂移 ② audit 链 integrityHash/prevHash 内嵌墙钟（设计如此=批次188 链式完整性）③ `blob://<uuid>` 值内嵌 uuid（大小写不敏感匹配 + UUID 值形态排除）；脚本自身坑×1=dynamic-check.sh 顶层多写一行预 cd 致 ROOT 解析错位；PROJECT_STATUS 1727→1732；E0 十三步全绿（bash-syntax 覆盖 4 新脚本）
+
 ## [3.51.0] - 2026-11-21
 
 ### [KB] 批次195：基准回归断言落地（baselines.json + bench-compare 入 weekly）

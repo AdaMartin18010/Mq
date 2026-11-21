@@ -1276,3 +1276,4 @@ TC-BENCH-001	BENCH	bench-compare.sh	E0	01-18-性能基准测试对比§1.18.6/Te
 TC-BENCH-002	BENCH	bench-compare.sh	E2	01-18-性能基准测试对比§1.18.6/Testing/benchmark/baselines.json	mapped
 TC-BENCH-003	BENCH	bench-compare.sh	E2	01-18-性能基准测试对比§1.18.6/Testing/benchmark/baselines.json	mapped
 TC-BENCH-004	BENCH	bench-compare.sh	E2	01-18-性能基准测试对比§1.18.6/Testing/benchmark/baselines.json	mapped
+TC-DYN-05	DYN	dynamic-check.sh	E0	05-体系与机制/TEST-16(时刻表)+ROADMAP主控执行队列	mapped
