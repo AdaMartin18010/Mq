@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.47.0] - 2026-11-21
+
+### [KB] 批次190：xlang 矩阵实跑结果回灌 KB（01-08 §1.8.6 跨语言JSON互操作边界）
+
+**[KB] 190** 01-08 新增 §1.8.6（含 TOC 行+数据来源行+最后更新 2026-11-21）：三小节=① 语义级分歧 1 项（inventory.quantity 19 位奇数 10^18+7：node 投影塌缩 10^18，py/go/java/rs 精确；根因 JS Number float64 超 2^53 安全整数界；**Go 精确性取决于解码模式**=project 通道 UseNumber 精确 / emit 通道默认 float64 塌缩，边界由编码路径而非语言本身决定）② 形态级分歧 4 项（cdc-sync 整值 float .0 截断 / iot-telemetry float repr / orders Jackson 科学记数 9.9999999999E8 / payments 整值 float repr，均语义等价无害）③ 契约结论 4 条（安全整数界 ≤2^53≈9.007×10^15，JS 侧 BigInt 显式解析或 string 传输；Go 侧 UseNumber() 或 int64 类型化字段；≤2^53 范围 204 数值对全等全绿；时区/可选性/类型/编码四维全零）；全部数值取批次189 在盘证据（results/2026-11-21/xlang-matrix/ summary.tsv+refdiv.tsv），零新增声称
+**[KB] 190b** 落点裁定=01-08（权威数据与基准测试域，实测互操作数据归属），非 01-32（工程生态工具链域）；账本回写：PROJECT_STATUS 总数 1722 不变（无新文件）、RECOVERY §0+批次表 190 行；E0 复跑 12/12 RC=0
+
 ## [3.46.0] - 2026-11-21
 
 ### [GOV] 批次189：xlang 跨语言矩阵 --live 实跑闭环（P2 跨语言矩阵静态半闭环→全闭环）
