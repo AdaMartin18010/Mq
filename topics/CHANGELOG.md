@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.48.0] - 2026-11-21
+
+### [KB] 批次191：Kafka 联邦口径基线重采 + A1 基线转正（L3 A1 批准执行）
+
+**[KB] 191** L3 审批单 A1 批准执行（2026-11-21 用户签核「全部」）：① 3 节点栈启动（容器实体在盘 `podman start`，3/3 healthy=批次175 INTERNAL healthcheck 修复态）② 拓扑实证=quorum voters 3 节点 + RF3 探针 topic 全 3 分区 ISR=3 + Leader 分布 1/2/3 + api-versions 3 节点无 fenced（探针验证后删除）③ **联邦口径重采**（与批次173 同参数：1KB/10k pace/60s/acks=all/batch16384/linger10，区别=bootstrap 三节点 INTERNAL）：稳态 9997.0~10003.0 records/sec（12 窗口）、稳态窗口 avg 1.1~1.3ms/max 4~13ms、全窗口 9998.000400 records/sec/avg 2.62ms/p99 64ms/p99.9 184ms（含 ramp-up 污染）④ 口径声明 3 条（pace 限速=承载力结论非上限/联邦 p99 尾延迟归因/auto-create RF=1 探针实证边界）；证据=results/2026-11-21/q191-kafka-federation-baseline.md + q191_fed_perf_raw.log
+**[KB] 191b** 01-18 新增 §1.18.6 本项目实测基线锚点（L3 已批准）=测试环境表 + Kafka producer 基线（A1）（单机锚点 9931.0 + 联邦口径双表 + 口径声明），TOC+最后更新 2026-11-21 同步；L3 审批单 A1 行=已批准+已执行；NATS/RabbitMQ 两小节随批次192；E0 复跑 12/12 RC=0
+
 ## [3.47.0] - 2026-11-21
 
 ### [KB] 批次190：xlang 矩阵实跑结果回灌 KB（01-08 §1.8.6 跨语言JSON互操作边界）
