@@ -10,6 +10,20 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.55.0] - 2026-11-21
+
+### [KB] 批次198：文档内嵌代码块巡检入 E0（第十四步）
+
+**[KB] 198** `topics/scripts/doc-codeblock-check.py`：① 语言标注真实性——开场 fence 标注必须在白名单（仓内现行 33 种 fail-closed，新增须显式入表）② 裸开场 fence=WARN 计数（输出块惯例，现行 1 处）③ bash 块逐块 `bash -n` 语法检查，排除面 7 类实证登记（`<占位符>`/redis-cli·XADD·XREADGROUP 等/az·asyncapi/mm2 properties/显式伪代码/JAAS 片段）；`--selftest` 双向实证（坏标注检出+坏语法检出+干净件放行）；入 E0 第十四步（python3 缺失 SKIP），TEST-00 同步十四步
+**[KB] 198b** 首扫即抓真 bug×1=03-19 故障恢复演练 `watch -n 2 '...grep -E '"'"'routes'"'"'|...'` 段 `'"'"'` 惯用法少引号（尾 `''` 引号永不闭合，复制即报错）已修规范形（全仓 1348 md/1298 bash 块语法全绿，裸 fence WARN=1 登记）；PROJECT_STATUS 1733（口径变更：find 新增排除 __pycache__[E0 第十四步自生成 pyc 曾致次跑计数漂移，移出可再生噪声集]，净 0）；E0 十四步全绿
+
+## [3.54.0] - 2026-11-21
+
+### [KB] 批次197：月度验收汇总落地（L4 层，对齐 BufferCache）
+
+**[KB] 197** `topics/scripts/monthly-acceptance.py`（`monthly-acceptance.py [YYYY-MM]`，默认当月）：聚合四源——E0 history（当月运行/累计 error·warn）+ nightly/weekly SUMMARY.json（实跑/应跑=当月天数+周一数）+ registry 状态分布（verified 快照锚供次月环比）+ ROADMAP 主控队列（用户门/挂起行，✅ done 行自动剔除）→ 生成 `results/acceptance-YYYY-MM.md`（results/ gitignore 本地件）；判定=周期覆盖率 ≥80% 通过，连续两月 <80% 升级人审（扫描历史报告环比）；首月实报：11 月覆盖率 8%（2/24，cron 批次176 才实装，诚实不通过），E0 当月 63 次跑，registry verified=29 快照
+**[KB] 197b** TEST-16 时刻表增"月末"行（L4 触发点）；产物坑×1=报告生成与代码编辑同消息竞态曾致旧逻辑残留（重跑即正）；PROJECT_STATUS 1732→1733；E0 十三步全绿
+
 ## [3.53.0] - 2026-11-21
 
 ### [TEST] H3 --live 真注入验证批（用户在场授权门关闭，TC-CHA-01/02 全 PASS）
@@ -19,20 +33,6 @@
 - 诚实边界：「end offset==请求量」断言成立条件=delivery.timeout.ms > 注入窗口+重选举时间（当前 600s 覆盖 ≤5min 注入）；TC-CHA-03 磁盘压力维持 WSL2 不可执行边界。
 - 证据：`results/2026-11-21/h3-live-evidence-2026-11-21.md` + 6 件 EVD 文件（gitignored）；宿主日志 scratch/h3_live_run{,2,3}.log。
 - 配套：PROJECT_STATUS 1732 不变（find 实测零漂移；批次196 运行新增 1 pyc 入 __pycache__ 噪声集）；E0 十三步全绿。
-
-## [3.55.0] - 2026-11-21
-
-### [KB] 批次198：文档内嵌代码块巡检入 E0（第十四步）
-
-**[KB] 198** `topics/scripts/doc-codeblock-check.py`：① 语言标注真实性——开场 fence 标注必须在白名单（仓内现行 33 种 fail-closed，新增须显式入表）② 裸开场 fence=WARN 计数（输出块惯例，现行 1 处）③ bash 块逐块 `bash -n` 语法检查，排除面 7 类实证登记（`<占位符>`/redis-cli·XADD·XREADGROUP 等/az·asyncapi/mm2 properties/显式伪代码/JAAS 片段）；`--selftest` 双向实证（坏标注检出+坏语法检出+干净件放行）；入 E0 第十四步（python3 缺失 SKIP），TEST-00 同步十四步
-**[KB] 198b** 首扫即抓真 bug×1=03-19 故障恢复演练 `watch -n 2 '...grep -E '"'"'routes'"'"'|...'` 段 `'"'"'` 惯用法少引号（尾 `''` 引号永不闭合，复制即报错）已修规范形（全仓 1348 md/1298 bash 块语法全绿，裸 fence WARN=1 登记）；PROJECT_STATUS 1733→1734；E0 十四步全绿
-
-## [3.54.0] - 2026-11-21
-
-### [KB] 批次197：月度验收汇总落地（L4 层，对齐 BufferCache）
-
-**[KB] 197** `topics/scripts/monthly-acceptance.py`（`monthly-acceptance.py [YYYY-MM]`，默认当月）：聚合四源——E0 history（当月运行/累计 error·warn）+ nightly/weekly SUMMARY.json（实跑/应跑=当月天数+周一数）+ registry 状态分布（verified 快照锚供次月环比）+ ROADMAP 主控队列（用户门/挂起行，✅ done 行自动剔除）→ 生成 `results/acceptance-YYYY-MM.md`（results/ gitignore 本地件）；判定=周期覆盖率 ≥80% 通过，连续两月 <80% 升级人审（扫描历史报告环比）；首月实报：11 月覆盖率 8%（2/24，cron 批次176 才实装，诚实不通过），E0 当月 63 次跑，registry verified=29 快照
-**[KB] 197b** TEST-16 时刻表增"月末"行（L4 触发点）；产物坑×1=报告生成与代码编辑同消息竞态曾致旧逻辑残留（重跑即正）；PROJECT_STATUS 1732→1733；E0 十三步全绿
 
 ## [3.52.0] - 2026-11-21
 
