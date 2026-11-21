@@ -20,6 +20,13 @@
 - 证据：`results/2026-11-21/h3-live-evidence-2026-11-21.md` + 6 件 EVD 文件（gitignored）；宿主日志 scratch/h3_live_run{,2,3}.log。
 - 配套：PROJECT_STATUS 1732 不变（find 实测零漂移；批次196 运行新增 1 pyc 入 __pycache__ 噪声集）；E0 十三步全绿。
 
+## [3.53.0] - 2026-11-21
+
+### [KB] 批次197：月度验收汇总落地（L4 层，对齐 BufferCache）
+
+**[KB] 197** `topics/scripts/monthly-acceptance.py`（`monthly-acceptance.py [YYYY-MM]`，默认当月）：聚合四源——E0 history（当月运行/累计 error·warn）+ nightly/weekly SUMMARY.json（实跑/应跑=当月天数+周一数）+ registry 状态分布（verified 快照锚供次月环比）+ ROADMAP 主控队列（用户门/挂起行，✅ done 行自动剔除）→ 生成 `results/acceptance-YYYY-MM.md`（results/ gitignore 本地件）；判定=周期覆盖率 ≥80% 通过，连续两月 <80% 升级人审（扫描历史报告环比）；首月实报：11 月覆盖率 8%（2/24，cron 批次176 才实装，诚实不通过），E0 当月 63 次跑，registry verified=29 快照
+**[KB] 197b** TEST-16 时刻表增"月末"行（L4 触发点）；产物坑×1=报告生成与代码编辑同消息竞态曾致旧逻辑残留（重跑即正）；PROJECT_STATUS 1732→1733；E0 十三步全绿
+
 ## [3.52.0] - 2026-11-21
 
 ### [KB] 批次196：动态验证脚本族落地（L2.5 会话层，对齐 BufferCache）
