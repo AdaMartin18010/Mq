@@ -17,6 +17,7 @@
 
 | 项 | 状态 | 产物路径 | 完成时间 |
 | ---- | ------ | ---------- | ---------- |
+| 批次189 xlang --live 实跑收口 | ✅ 完成（主控接管在途会话产物：Testing/xlang/ harness + --live 接线 + 生成器钉种子；矩阵 8 场景×20 边全 RC=0：相1 分歧 5 项[1 semantic=Node/Go 19 位整数塌缩+4 repr]、相2 88 行=8 precision+80 repr；registry TC-XLAN-A1~A4/B1~B2 verified；分类器并集比较 bug 修复=陷阱账 23） | results/2026-11-21/xlang-matrix/ | 2026-11-21 |
 | H1 A3 Microcks 收尾 | ✅ 完成（批次169：4 spec 自包含导入+async-minion 接线+6/6 场景契约测试全绿 9/9 用例，根因链 4 项闭环） | results/2026-11-20/h1-microcks-evidence.md | 2026-11-20 |
 | H2 冒烟资产修复 | ✅ 完成（批次167 六轮冒烟终验 PASS=3/FAIL=0/SKIP=1，2026-11-20） | results/2026-11-20/podman-migration-evidence.md §5 | 2026-11-20 |
 | H3 GAME DAY+cases | 🟡 部分完成（批次171 dry-run 层：411/411 全绿+注册表 411/411+nats 17/17；`--live`=用户在场授权门挂起） | results/2026-11-20/h3-case-dryrun-evidence.md | 2026-11-20 |

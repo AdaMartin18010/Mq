@@ -86,7 +86,7 @@
 
 - **证据**: `hermes-e0-run.sh` 步骤 6/7 已接入 `contract-spec-check.sh` 与 `tc-assert-check.sh`（行 175-183）；`test-registry.tsv` 已注册 TC-SEM-01~12 与 TC-BUS-01~08（行 200-218）。
 - **实测**: 修复前 4 个脚本均因 `SERIES_DIR="$PROJECT_ROOT/契约语义测试"` 硬编码旧目录而退化：`contract-spec-check` 只查到 2 个 config-template spec；`tc-assert-check` 直接报错找不到断言库。修复后 14 spec 与 25 项断言校验全绿。
-- **缺口**: **批次183 DSL schema 校验工具已落地**（`Testing/asyncapi-tools/spec-validate.js`+`topics/scripts/spec-validate-check.sh`，@asyncapi/parser 3.6.6 封装，16 spec 全量覆盖 schema/$ref/binding 字段校验，双向实证：修复后全绿 RC=0 + 注入坏 $ref 门真红 RC=1；同批修复 8 件 spec 缺陷：坏 $ref×4 处（JSON pointer `%2F` 转义）/`replicationFactor` 非官方字段×3 件/`cleanup.policy` 非数组×1 件/amqp routingKey 分支误带 queue×1 件/inventory kafka binding 缩进错位×1 件）；**批次184 已入 E0 第十二步**（`hermes-e0-run.sh` 十二步全量门禁，12/12 执行，node 缺失 SKIP）；`contract-spec-check` 不检查外部 $ref 与 `bindingVersion`；跨语言金样本矩阵 `xlang-matrix.sh` 仍是占位骨架，`--live` 未实现；spec 版本差分已入 E0 第十一步（批次182：版本对样本=仓内 v1 spec×v2-break fixture，回归断言 self RC=0/fixture RC=1 breaking=3，node 缺失 SKIP）。**批次185 大版本窗口裁定**：① AsyncAPI 基线 3.0.0→3.1.0 全仓升级（24 文件 26 处：16 yaml=14 可运行 spec+回归 fixture+模板 skeleton+3 config-template、8 md 页=6 KB 示例+concept/08 本体页+本审计文档；官方 release notes：3.1.0=minor 零破坏、唯一新增 ROS 2 bindings、迁移=`asyncapi` 字段版本变更；工具链 parser 3.6.6/specs 6.11.1 本就是 3.1.0 时代件；实测升级后全 E0 12/12 RC=0、parser"latest version"版本建议信息清零、spec-diff 回归 breaking=3 不变）；② **外部 $ref 解析裁定=已由 parser 覆盖**（实测：缺失外部 $ref → parser ENOENT error → spec-validate RC=1，E0 第十二步即覆盖，不另建检查器避免重复功能）；③ **bindingVersion 裁定=不强制**（官方 schema kafka 0.3/0.4/0.5 channel.json `required` 均空=非 schema 必填，硬 fail 即对官方 spec 过度校验；现行 16 yaml 全带、零缺失，维持惯例声明不入门禁）。
+- **缺口**: **批次183 DSL schema 校验工具已落地**（`Testing/asyncapi-tools/spec-validate.js`+`topics/scripts/spec-validate-check.sh`，@asyncapi/parser 3.6.6 封装，16 spec 全量覆盖 schema/$ref/binding 字段校验，双向实证：修复后全绿 RC=0 + 注入坏 $ref 门真红 RC=1；同批修复 8 件 spec 缺陷：坏 $ref×4 处（JSON pointer `%2F` 转义）/`replicationFactor` 非官方字段×3 件/`cleanup.policy` 非数组×1 件/amqp routingKey 分支误带 queue×1 件/inventory kafka binding 缩进错位×1 件）；**批次184 已入 E0 第十二步**（`hermes-e0-run.sh` 十二步全量门禁，12/12 执行，node 缺失 SKIP）；`contract-spec-check` 不检查外部 $ref 与 `bindingVersion`；~~跨语言金样本矩阵 `xlang-matrix.sh` 仍是占位骨架，`--live` 未实现~~ **批次189 复核销项**：`--live` 已于 2026-11-21 本机 5 语言全配对实跑闭环（`Testing/xlang/` harness：5 语言 project+emit 客户端 + 两相 driver + ensure-lib jackson 钉；8 场景×20 有向边 RC=0，相1 分歧 5 项=1 semantic[Node/Go 19 位奇数整数 float64 塌缩]+4 repr 良性，相2 88 行=8 precision+80 repr_drift；registry TC-XLAN-A1~A4/B1~B2 verified；证据 `results/2026-11-21/xlang-matrix/`）；spec 版本差分已入 E0 第十一步（批次182：版本对样本=仓内 v1 spec×v2-break fixture，回归断言 self RC=0/fixture RC=1 breaking=3，node 缺失 SKIP）。**批次185 大版本窗口裁定**：① AsyncAPI 基线 3.0.0→3.1.0 全仓升级（24 文件 26 处：16 yaml=14 可运行 spec+回归 fixture+模板 skeleton+3 config-template、8 md 页=6 KB 示例+concept/08 本体页+本审计文档；官方 release notes：3.1.0=minor 零破坏、唯一新增 ROS 2 bindings、迁移=`asyncapi` 字段版本变更；工具链 parser 3.6.6/specs 6.11.1 本就是 3.1.0 时代件；实测升级后全 E0 12/12 RC=0、parser"latest version"版本建议信息清零、spec-diff 回归 breaking=3 不变）；② **外部 $ref 解析裁定=已由 parser 覆盖**（实测：缺失外部 $ref → parser ENOENT error → spec-validate RC=1，E0 第十二步即覆盖，不另建检查器避免重复功能）；③ **bindingVersion 裁定=不强制**（官方 schema kafka 0.3/0.4/0.5 channel.json `required` 均空=非 schema 必填，硬 fail 即对官方 spec 过度校验；现行 16 yaml 全带、零缺失，维持惯例声明不入门禁）。
 
 ---
 
@@ -123,6 +123,8 @@ $ bash topics/scripts/xlang-matrix.sh --live
 LIVE：全配对执行骨架就位（ fixtures 多语言容器 + Microcks 断言流随真实批次落地）
 exit 2
 ```
+
+> **批次189 注（2026-11-21）**：上述 `--live` exit 2 为审计期实录，已失效。`--live` 现为本机 5 语言全配对实跑（`Testing/xlang/` harness 直接接线，多语言容器方案由本机工具链实跑替代）；矩阵实跑 8 场景×20 边全 RC=0，registry TC-XLAN-A1~A4/B1~B2 已 verified。
 
 **批次183 实录**（spec-validate 落地 + spec 缺陷修复）:
 
@@ -163,7 +165,7 @@ $ bash topics/scripts/spec-validate-check.sh
    - 8 场景 asyncapi.yaml 全手写，无 design→asyncapi 生成器；01-32 提到 Modelina/Generator，但项目未落地从 contract.yaml 自动生成 AsyncAPI 的脚本。
 
 3. **多语言生成链停留在示例（P1）**
-   - `topics/examples/asyncapi-generated-producer-example.py` 是手写"Modelina 风格"代码，非真实生成物；`topics/examples/01-编程语言对比分析.md` 存在重复章节号（如 6.2、7.8 等占位），缺少跨语言类型语义对照矩阵；`xlang-matrix.sh --live` 挂账。
+   - `topics/examples/asyncapi-generated-producer-example.py` 是手写"Modelina 风格"代码，非真实生成物；`topics/examples/01-编程语言对比分析.md` 存在重复章节号（如 6.2、7.8 等占位），缺少跨语言类型语义对照矩阵；~~`xlang-matrix.sh --live` 挂账~~ **批次189 销项**（本机 5 语言全配对实跑闭环，8 场景×20 边 RC=0；对照矩阵正文项仍开放）。
 
 4. **测试验证闭环有结构性缺口（P0/P1）**
    - P0: 4 个脚本硬编码旧目录 `契约语义测试`，导致 E0 长期只查 2 个模板。根因是批次 53 将目录从 `契约语义测试` 重命名为 `Testing/06-契约语义测试` 后未同步脚本（`git status` 显示 rename 记录）。已修复为 `Testing/06-契约语义测试`。
@@ -185,7 +187,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P1 | `contract-spec-check` 不解析外部 `$ref: contract.yaml#` | payload 字段变更无法被 E0 捕获 | ✅ 批次185 裁定：外部 $ref 解析已由 parser 覆盖（spec-validate=E0 第十二步；实测缺失外部 $ref→parser ENOENT→RC=1），house 检查器不重复实现 |
 | P1 | 7/8 场景包缺 `quality/sla` ODCS 段（ODCS 对齐不完整） | 批次186 复核：8/8 全有实质 quality/sla 段，--check 8/8 CHECK_OK，导出结构一致，column 引用零悬挂 | ✅ 已复核（原「未修」为过期口径，作废） |
 | P1 | 无 design→asyncapi 生成器 | 转换靠手写，效率低、易出错 | 未改 |
-| P2 | 跨语言金样本矩阵未实跑 | 01-77 提出的 5 语言对等验证停留在规划 | 未改 |
+| P2 | 跨语言金样本矩阵未实跑 | 01-77 提出的 5 语言对等验证停留在规划 | ✅ 批次189：`--live` 本机实跑闭环（8 场景×20 边 RC=0；1 semantic=Node/Go 19 位整数精度塌缩+4 repr 良性；registry TC-XLAN 6 行 verified） |
 | P2 | ~~`asyncapi-contract-skeleton.yaml` 用非官方 `replicas` 字段~~ **勘误（批次183）：方向颠倒**，`replicas` 为官方字段；真正违规=3 件 spec 用 `replicationFactor` | 模板无冲突；3 spec 与官方 schema 冲突 | ✅ 批次183 已修 3 件 spec（`replicationFactor`→`replicas`）+ skeleton `cleanup.policy` 数组化，16/16 全绿 |
 
 ---
@@ -200,7 +202,7 @@ $ bash topics/scripts/spec-validate-check.sh
 | P1 外部 $ref 解析 | 批次 94 | `contract-spec-check.sh` 增加 `contract.yaml#` 存在性与字段存在检查 | ✅ 批次185 裁定：parser（E0 第十二步）已覆盖外部 $ref 解析与 ENOENT 失败，不重复实现 |
 | P1 ODCS 段补齐 | 批次94 | 02-08 场景包 contract.yaml 补 `quality/sla`；验收：`contract-to-odcs.py --check` 全绿 + 导出 YAML 结构一致 | ✅ 批次186 复核：8/8 段齐备（非批次94 未执行，系既有实现），--check 8/8 CHECK_OK + 导出结构一致 + column 引用零悬挂；--check 增可选段缺失 WARN（不 fail） |
 | P1 生成器 | 批次95 | ✅ `contract-to-asyncapi.py` 已落地（批次187）：contract.yaml → AsyncAPI 3.1.0 骨架（components.messages 全集派生 payload $ref，与 8 场景既有形态逐字一致；servers/通道/binding 标注 x-todo 不可推导）+ `--verify` 结构等价校验 8/8 通过 + 01 验收骨架官方 parser ok=true 0 errors |
-| P2 跨语言矩阵 | 批次 100（原挂账） | `xlang-matrix.sh --live` + fixtures 多语言容器 + 金样本集扩至 8 场景 | **批次187 静态半闭环**：金样本 3→8 组（gen-inventory/gen-notification/gen-cdc-sync/gen-audit-trail/gen-task-queue 新增，边界值各场景契约派生共 41 探针，审计链式完整性校验入自检），`xlang-matrix.sh --validate` 8/8 VALIDATE_OK RC=0，JSONL 冒烟 8/8 合法；余 `--live`（5 语言 20 边实跑 + 多语言容器）挂真实执行集中批 |
+| P2 跨语言矩阵 | 批次 100（原挂账） | `xlang-matrix.sh --live` + fixtures 多语言容器 + 金样本集扩至 8 场景 | **批次187 静态半闭环**：金样本 3→8 组（gen-inventory/gen-notification/gen-cdc-sync/gen-audit-trail/gen-task-queue 新增，边界值各场景契约派生共 41 探针，审计链式完整性校验入自检），`xlang-matrix.sh --validate` 8/8 VALIDATE_OK RC=0，JSONL 冒烟 8/8 合法；余 `--live`（5 语言 20 边实跑 + 多语言容器）挂真实执行集中批。**批次189 全闭环**：`Testing/xlang/` harness 落地（5 语言 project+emit 双模式客户端 + matrix_driver 两相驱动 + ensure-lib jackson 双钉定；多语言容器方案由本机工具链实跑替代），8 生成器钉 `random.seed(20261121)`，矩阵实跑 8 场景×20 有向边全 RC=0（相1 分歧 5 项：inventory.quantity=唯一 semantic[Node/Go float64 塌缩 19 位奇数 10^18+7→10^18]，余 4 项 repr 良性；相2 差异 88 行=8 precision+80 repr_drift，time_offset/optionality/type_shift/encoding 全 0）；分类器改按规范值逐一核对（首版并集比较误判已修=陷阱账 23）；registry TC-XLAN-A1~A4/B1~B2 verified；证据 `results/2026-11-21/xlang-matrix/` |
 | P2 模板字段修正 | 批次 94 | ~~skeleton `replicas` → `replicationFactor`~~ **勘误（批次183）：方向颠倒，skeleton 本就正确**；实际修 3 件 spec `replicationFactor`→`replicas` + skeleton `cleanup.policy` 数组化 + spec-validate 门落地 | ✅ 批次183 spec-validate 16/16 全绿（RC=0），门=`topics/scripts/spec-validate-check.sh`，批次184 已入 E0 第十二步 |
 | P2 Spectral 规则补全 | 批次 94 | 在 `topics/config-templates/spectral-asyncapi-ruleset.yaml` 增加 `binding-version-required` 规则 | `spectral lint` 对缺失 bindingVersion 报错；**批次185 注**：本机 tools 目录未装 spectral（规则不可实跑验证），且官方 schema 非必填（L6 裁定③）——降为可选项，若执行规则须标注 house 惯例非 schema 要求 |
 
