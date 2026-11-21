@@ -10,6 +10,13 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.50.0] - 2026-11-21
+
+### [KB] 批次194：仓库机密泄露扫描门入 E0（第十三步）
+
+**[KB] 194** `topics/scripts/secret-scan.sh` 落地：7 类高信号机密形态扫描（PEM 私钥头/AWS AKIA/GitHub ghp·gho·ghu·ghs·ghr/Slack xox[baprs]-·webhook/Google AIza/OpenAI sk-），git 跟踪文件面（git grep，含已暂存），自测 fixture（`Testing/fixtures/secret-scan/`，明假值 7 类）生产排除；**有意不收**通用 password=（config-templates 占位值必误报）与 JWT（KB 安全文档格式示例必误报），取舍注记入脚本头；`--selftest` 双向实证（fixture 7/7 类检出 + 全仓生产扫描 HITS=0）；入 `hermes-e0-run.sh` 第十三步（usage/total/summary 同步，git 缺失 SKIP）
+**[KB] 194b** 踩坑修复=**git grep 模式以 `-` 开头被当选项解析**（PEM 头漏检，自测只报 6 类）→ 全部 git grep 调用改 `-e` 显式定界，自测 7/7；TEST-00 §三 E0 描述从"八步"同步为十三步（已过期 5 批）；PROJECT_STATUS 总计 1722→1725（+secret-scan.sh/fixture 2 件 + H3 并发产物 game-day-live.sh 1 件先纳计数）；E0 十三步 12/13→计数修正后复验全绿
+
 ## [3.49.0] - 2026-11-21
 
 ### [KB] 批次192：NATS/RabbitMQ 基线回灌 KB（L3 A2/A3 批准执行）

@@ -1,0 +1,11 @@
+# secret-scan 自测正样本（批次194）——全部为明假值，仅用于 --selftest 检出验证
+# 本目录被 secret-scan.sh 生产扫描显式排除；新增形态须在此补对应样本
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+GITHUB_TOKEN=ghp_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8S9t0
+SLACK_TOKEN=xoxb-123456789012-abcdefghijkl
+GOOGLE_API_KEY=AIzaSyD4iE7xn0QxREDACTED00FAKE00KEY000000
+SLACK_WEBHOOK=https://hooks.slack.com/services/T0123FAKE/B0123FAKE/x0123456789abcdef01234
+OPENAI_SK=sk-ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789fake
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA7fake0sample0for0selftest0only0not0a0real0key0at0all0 whatsoever
+-----END RSA PRIVATE KEY-----
