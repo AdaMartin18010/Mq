@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """库存场景测试数据生成器（契约语义测试 03-业务场景/03-inventory 对齐，批次187 金样本扩展）"""
 import sys, json, uuid, random
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 
 BOUNDARY = [
     {"reservationId": "", "note": "空预留单号-幂等键非法"},
     {"sku": "", "note": "空 SKU"},
     {"quantity": 0, "note": "零数量预留"},
     {"quantity": 10**12, "note": "极大数量"},
+    {"quantity": 10**18 + 7, "note": "跨语言精度探针（奇数大整数，float64 尾数不可精确表示）"},
     {"ttlSeconds": 0, "note": "TTL=0 即时过期边界（T.14）"},
     {"sku": "预留商品-Ω≈ç√", "note": "Unicode 商品名"},
 ]

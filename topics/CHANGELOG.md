@@ -10,6 +10,15 @@
 > - 原文指针：归档后在 CHANGELOG.md 对应位置保留一行指针，如 `> [3.x.x] 条目已归档至 topics/archive/changelog/2026-05.md`。
 > - 当前状态：本次更新后文件未超过 400 行，暂不实际迁移；规则先行建立，超限时按本规则执行。
 
+## [3.46.0] - 2026-11-21
+
+### [GOV] 批次189：xlang 跨语言矩阵 --live 实跑闭环（P2 跨语言矩阵静态半闭环→全闭环）
+
+**[GOV] 189** `Testing/xlang/` 新建：5 语言 JSON 客户端（py/node/go/java/rs，各 project+emit 双模式：project=本语言解析器逐字段投影 `{精确字面量, 语义值}`，emit=本语言默认编码器重序列化）+ `matrix_driver.py` 两相驱动（相1 参考分歧=同一样本 5 语言投影的规范值分歧，分 repr/semantic 两类；相2 边 round-trip=B 解析 A 的 emit 输出 vs B 直解原样本）+ `ensure-lib.sh`（jackson-core sha256 钉）+ 构建产物 gitignore；xlang-matrix.sh `--live` 接线（原 exit 2 骨架→实跑）
+**[GOV] 189a** **8 生成器钉 `random.seed(20261121)`**=金样本可复现：两次独立生成 204/204 数值对全等实证；uuid4 不可种子化（os.urandom）但 ID 字段不进跨语言 diff，不影响矩阵结果可复现性
+**[GOV] 189b** **矩阵实跑结果（8 场景 × 20 有向边，全 RC=0，2026-11-21）**：相1 分歧 5 项——**inventory.quantity=semantic 唯一真分歧**（node/go emit 19 位奇数 10^18+7 → 10^18，JS Number/Go encoding/json float64 精度损失；emitter∈{node,go} 的 8 边 precision_loss=1）；cdc-sync before/after.amount、iot-telemetry.value、payments.amount=repr（整值 float 的 .0 截断 4920.0→4920 / 25.0→25 / java Jackson 科学记数 9.9999999999E8）；相2 差异 88 行=repr_drift 80 + precision_loss 8，time_offset/optionality_collapse/type_shift/encoding_diff 全 0；**结论：int 量纲 19 位探针之外无跨语言语义分歧，int/float 形态差与科学记数差均为良性表征差**
+**[GOV] 189c** 分类器判定标准=**按规范值逐一核对**（int/float 键跨型归并，-1 与 -1.0 同键）：全部值被全部语言持有=repr；任一值在某语言缺失（被替换为不同数值）=semantic。首版并集比较逻辑错误（并集=全事件值集，恒误判 semantic）已修；账本回写+陷阱账 23；E0 复跑 12/12 RC=0
+
 ## [3.45.0] - 2026-11-21
 
 ### [GOV] 批次188：跨语言金样本 3→8 场景全对齐（P2 跨语言矩阵静态半闭环）

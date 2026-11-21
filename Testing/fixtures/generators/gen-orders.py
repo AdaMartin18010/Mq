@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """订单场景测试数据生成器（契约语义测试 03-业务场景/01-order-lifecycle 对齐）"""
 import sys, json, uuid, random
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 
 BOUNDARY = [
     {"orderId": "", "note": "空订单号-非法输入"},                        # 边界：空键

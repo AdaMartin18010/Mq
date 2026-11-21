@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """CDC 同步场景测试数据生成器（契约语义测试 03-业务场景/06-cdc-sync 对齐，批次187 金样本扩展）"""
 import sys, json, uuid, random, time
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 
 OPS = ["c", "u", "d", "r"]
 

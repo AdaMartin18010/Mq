@@ -1,0 +1,5 @@
+# 构建产物（可再生：bash ensure-lib.sh / cargo build / go build / javac）
+rs/target/
+java/*.class
+go/project_emit
+lib/jackson-core.jar

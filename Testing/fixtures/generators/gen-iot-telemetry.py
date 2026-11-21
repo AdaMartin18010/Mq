@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """IoT 遥测场景测试数据生成器（03-业务场景/05-iot-telemetry 对齐）"""
 import sys, json, uuid, random, time
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 
 METRICS = [("temperature", -40, 125, "°C"), ("pressure", 0, 1000, "kPa"), ("humidity", 0, 100, "%")]
 

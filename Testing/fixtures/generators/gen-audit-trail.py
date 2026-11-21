@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """审计留痕场景测试数据生成器（契约语义测试 03-业务场景/07-audit-trail 对齐，批次187 金样本扩展）"""
 import sys, json, uuid, random, hashlib
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 from datetime import datetime, timezone
 
 ACTIONS = ["order.create", "order.cancel", "stock.reserve", "user.login", "admin.grant"]

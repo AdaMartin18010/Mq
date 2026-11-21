@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """支付场景测试数据生成器（03-业务场景/02-payment-reconciliation 对齐）"""
 import sys, json, uuid, random
+random.seed(20261121)  # 金样本固定种子: 矩阵可复现 (批次190)
 
 CURRENCIES = ["CNY", "USD", "EUR"]
 
